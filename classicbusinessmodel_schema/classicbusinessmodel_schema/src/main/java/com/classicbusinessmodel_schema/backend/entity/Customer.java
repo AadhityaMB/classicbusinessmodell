@@ -1,70 +1,86 @@
 package com.classicbusinessmodel_schema.backend.entity;
 
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-
 
 @Entity
 @Table(name = "customers")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Customer {
 
         @Id
-        @NotNull
+        @Column(name = "customernumber")
         private Integer customerNumber;
 
-        @NotBlank
+        @Column(name = "customername", length = 50, nullable = false)
+        @NotBlank(message = "Customer name is required")
+        @Size(max = 50)
         private String customerName;
 
-        @NotBlank
+        @Column(name = "contactlastname", length = 50, nullable = false)
+        @NotBlank(message = "Contact last name is required")
+        @Size(max = 50)
         private String contactLastName;
 
-        @NotBlank
+        @Column(name = "contactfirstname", length = 50, nullable = false)
+        @NotBlank(message = "Contact first name is required")
+        @Size(max = 50)
         private String contactFirstName;
 
-        @NotBlank
+        @Column(name = "phone", length = 50, nullable = false)
+        @NotBlank(message = "Phone is required")
+        @Size(max = 50)
         private String phone;
 
-        @NotBlank
+        @Column(name = "addressline1", length = 50, nullable = false)
+        @NotBlank(message = "Address line 1 is required")
+        @Size(max = 50)
         private String addressLine1;
 
+        @Column(name = "addressline2", length = 50)
+        @Size(max = 50)
         private String addressLine2;
 
-        @NotBlank
+        @Column(name = "city", length = 50, nullable = false)
+        @NotBlank(message = "City is required")
+        @Size(max = 50)
         private String city;
 
+        @Column(name = "state", length = 50)
+        @Size(max = 50)
         private String state;
 
+        @Column(name = "postalcode", length = 15)
+        @Size(max = 15)
         private String postalCode;
 
-        @NotBlank
+        @Column(name = "country", length = 50, nullable = false)
+        @NotBlank(message = "Country is required")
+        @Size(max = 50)
         private String country;
-        private Double creditLimit;
 
-        /*
-        Many customers handled by one employee
-        */
-        @ManyToOne
-        @JoinColumn(name = "salesRepEmployeeNumber")
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "salesrepemployeenumber")
+        @NotNull(message = "Sales representative is required")
+
         private Employee salesRepEmployee;
-        /*
-         One customer many orders
-         */
-        @OneToMany(mappedBy = "customer")
-        private List<Orders> orders;
 
-        /*
-        One customer many payments
-        */
-        @OneToMany(mappedBy = "customer")
-        private List<Payment> payments;
+        @Column(name = "creditlimit", precision = 10, scale = 2)
+        @DecimalMin(value = "0.0", message = "Credit limit cannot be negative")
+        private BigDecimal creditLimit;
+
+        @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+        private List<Orders> orders = new ArrayList<>();
+
+        @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+        private List<Payment> payments = new ArrayList<>();
 }
-
