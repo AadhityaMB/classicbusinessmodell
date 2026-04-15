@@ -13,6 +13,6 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class OrderDetailsId implements Serializable {
 
-    private Integer orderNumber;
-    private String productCode;
+    private Integer order;
+    private String product;
 }
