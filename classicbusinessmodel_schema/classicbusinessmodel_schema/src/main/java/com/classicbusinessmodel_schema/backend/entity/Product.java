@@ -1,5 +1,6 @@
 package com.classicbusinessmodel_schema.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -14,56 +15,44 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Product {
 
         @Id
-        @Column(name = "productcode", length = 15)
-        @NotBlank(message = "Product code is required")
-        @Size(max = 15)
+        @Column(name = "productCode")
         private String productCode;
 
-        @Column(name = "productname", length = 70, nullable = false)
-        @NotBlank(message = "Product name is required")
+        @NotBlank
         @Size(max = 70)
         private String productName;
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "productline", nullable = false)
-        @NotNull(message = "Product line is required")
+        @JoinColumn(name = "productLine", nullable = false)
         private ProductLine productLine;
 
-        @Column(name = "productscale", length = 10, nullable = false)
-        @NotBlank(message = "Product scale is required")
+        @NotBlank
         @Size(max = 10)
         private String productScale;
 
-        @Column(name = "productvendor", length = 50, nullable = false)
-        @NotBlank(message = "Product vendor is required")
+        @NotBlank
         @Size(max = 50)
         private String productVendor;
 
-        @Column(name = "productdescription", columnDefinition = "TEXT", nullable = false)
-        @NotBlank(message = "Product description is required")
+        @NotBlank
         private String productDescription;
 
-        @Column(name = "quantityinstock", nullable = false)
-        @NotNull(message = "Quantity in stock is required")
-        @Min(value = 0, message = "Stock cannot be negative")
-        @Max(value = 32767, message = "Exceeds SMALLINT limit")
+        @NotNull
         private Integer quantityInStock;
 
-        @Column(name = "buyprice", precision = 10, scale = 2, nullable = false)
-        @NotNull(message = "Buy price is required")
-        @DecimalMin(value = "0.01", message = "Buy price must be positive")
+        @NotNull
+        @DecimalMin("0.0")
         private BigDecimal buyPrice;
 
-        @Column(name = "msrp", precision = 10, scale = 2, nullable = false)
-        @NotNull(message = "MSRP is required")
-        @DecimalMin(value = "0.01", message = "MSRP must be positive")
-        private BigDecimal msrp;
+        @NotNull
+        @DecimalMin("0.0")
+        private BigDecimal MSRP;
 
-        @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-        @ToString.Exclude
-        @EqualsAndHashCode.Exclude
-        private List<OrderDetails> orderDetails = new ArrayList<>();
+        @JsonIgnore
+        @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+        private List<OrderDetails> orderDetails;
 }

@@ -1,5 +1,6 @@
 package com.classicbusinessmodel_schema.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -14,29 +15,22 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ProductLine {
 
     @Id
-    @Column(name = "productline", length = 50, nullable = false)
-    @NotBlank(message = "Product line name is required")
-    @Size(max = 50)
+    @Column(name = "productLine")
     private String productLine;
 
-    @Column(name = "textdescription", length = 4000)
-    @Size(max = 4000)
     private String textDescription;
 
-    @Column(name = "htmldescription", columnDefinition = "TEXT")
     private String htmlDescription;
 
-    @Lob
-    @Column(name = "image")
     private byte[] image;
 
-    @OneToMany(mappedBy = "productLine", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private List<Product> products = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "productLine", fetch = FetchType.LAZY)
+    private List<Product> products;
 }
 
 

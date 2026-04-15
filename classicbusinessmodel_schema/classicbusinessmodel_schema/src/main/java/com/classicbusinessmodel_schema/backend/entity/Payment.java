@@ -2,39 +2,40 @@ package com.classicbusinessmodel_schema.backend.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 
 @Entity
 @Table(name = "payments")
+@IdClass(PaymentId.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Payment {
 
-        @EmbeddedId
-        private PaymentId id;
-
-        @Column(name = "paymentdate", nullable = false)
-        @NotNull(message="Payment date is required")
-        private Date paymentDate;
-
-        @NotNull(message = "Amount is required")
-        @Column(name = "amount",precision=10, scale=2, nullable=false)
-        @DecimalMin(value = "0.0", inclusive=false,message = "Amount must be positive")
-        private Double amount;
-
-        //Many payments belong to one customer
+        @Id
         @ManyToOne(fetch = FetchType.LAZY)
-        @MapsId("customerNumber")
-        @JoinColumn(name = "customernumber" , nullable = false)
+        @JoinColumn(name = "customerNumber")
         private Customer customer;
 
+        @Id
+        @NotBlank
+        @Size(max = 50)
+        private String checkNumber;
+
+        @NotNull
+        private LocalDate paymentDate;
+
+        @NotNull
+        @DecimalMin("0.0")
+        private BigDecimal amount;
 }

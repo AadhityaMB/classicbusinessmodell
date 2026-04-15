@@ -1,5 +1,6 @@
 package com.classicbusinessmodel_schema.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -7,45 +8,39 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 @Entity
 @Table(name = "orders")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Orders {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_seq")
-    @SequenceGenerator(name = "order_seq", sequenceName = "order_sequence", allocationSize = 1)
-    @Column(name = "ordernumber")
+    @Column(name = "orderNumber")
     private Integer orderNumber;
 
-    @Column(name = "orderdate", nullable = false)
-    @NotNull(message = "Order date is required")
+    @NotNull
     private LocalDate orderDate;
 
-    @Column(name = "requireddate", nullable = false)
-    @NotNull(message = "Required date is required")
+    @NotNull
     private LocalDate requiredDate;
 
-    @Column(name = "shippeddate")
     private LocalDate shippedDate;
 
-    @Column(name = "status", length = 15, nullable = false)
-    @NotBlank(message = "Status is required")
+    @NotBlank
     @Size(max = 15)
     private String status;
 
-    @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customernumber", nullable = false)
-    @NotNull(message = "Customer is required")
+    @JoinColumn(name = "customerNumber", nullable = false)
     private Customer customer;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderDetails> orderDetails = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private List<OrderDetails> orderDetails;
 }
