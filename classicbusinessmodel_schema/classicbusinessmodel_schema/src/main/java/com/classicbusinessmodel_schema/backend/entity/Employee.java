@@ -1,10 +1,10 @@
 package com.classicbusinessmodel_schema.backend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,47 +16,49 @@ import java.util.List;
 public class Employee {
 
     @Id
-    @NotNull
+    @Column(name = "employeenumber")
+    @NotNull(message = "Employee number is required")
     private Integer employeeNumber;
 
-    @NotBlank
+    @Column(name = "lastname", length = 50, nullable = false)
+    @NotBlank(message = "Last name is required")
+    @Size(max = 50)
     private String lastName;
 
-    @NotBlank
+    @Column(name = "firstname", length = 50, nullable = false)
+    @NotBlank(message = "First name is required")
+    @Size(max = 50)
     private String firstName;
 
-    @NotBlank
+    @Column(name = "extension", length = 10, nullable = false)
+    @NotBlank(message = "Extension is required")
+    @Size(max = 10)
     private String extension;
 
-    @NotBlank
+    @Column(name = "email", length = 100, nullable = false, unique = true)
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    @Size(max = 100)
     private String email;
 
-    @NotBlank
-    private String jobTitle;
-
-    /*
-     Many employees belong to one office
-     */
-    @ManyToOne
-    @JoinColumn(name = "officeCode")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "officecode", nullable = false)
+    @NotNull(message = "Office is required")
     private Office office;
 
-    /*
-     Self relationship (manager)
-     */
-    @ManyToOne
-    @JoinColumn(name = "reportsTo")
-    private Employee manager;
+    // Self-referencing manager
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reportsto")
+    private Employee reportsTo;
 
-    /*
-     Employees under this manager
-     */
-    @OneToMany(mappedBy = "manager")
-    private List<Employee> subordinates;
+    @OneToMany(mappedBy = "reportsTo", fetch = FetchType.LAZY)
+    private List<Employee> subordinates = new ArrayList<>();
 
-    /*
-     One employee handles many customers
-     */
-    @OneToMany(mappedBy = "salesRepEmployee")
-    private List<Customer> customers;
+    @Column(name = "jobtitle", length = 50, nullable = false)
+    @NotBlank(message = "Job title is required")
+    @Size(max = 50)
+    private String jobTitle;
+
+    @OneToMany(mappedBy = "salesRepEmployee", fetch = FetchType.LAZY)
+    private List<Customer> customers = new ArrayList<>();
 }
