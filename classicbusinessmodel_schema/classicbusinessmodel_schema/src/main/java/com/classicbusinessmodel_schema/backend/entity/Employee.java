@@ -1,6 +1,8 @@
 package com.classicbusinessmodel_schema.backend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -14,16 +16,22 @@ import java.util.List;
 public class Employee {
 
     @Id
+    @NotNull
     private Integer employeeNumber;
 
+    @NotBlank
     private String lastName;
 
+    @NotBlank
     private String firstName;
 
+    @NotBlank
     private String extension;
 
+    @NotBlank
     private String email;
 
+    @NotBlank
     private String jobTitle;
 
     /*
