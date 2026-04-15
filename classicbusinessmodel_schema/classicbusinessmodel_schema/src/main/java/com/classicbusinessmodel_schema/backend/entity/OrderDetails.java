@@ -1,14 +1,10 @@
 package com.classicbusinessmodel_schema.backend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
-
 
 @Entity
 @Table(name = "orderdetails")
@@ -16,16 +12,18 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(OrderDetails.OrderDetailId.class)
 public class OrderDetails {
 
-    @Id
+    @EmbeddedId
+    private OrderDetailsId id;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("order")   // ✅ FIXED (matches ID field)
     @JoinColumn(name = "ordernumber", nullable = false)
     private Orders order;
 
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("product") // ✅ FIXED (matches ID field)
     @JoinColumn(name = "productcode", nullable = false)
     private Product product;
 
@@ -41,16 +39,5 @@ public class OrderDetails {
 
     @Column(name = "orderlinenumber", nullable = false)
     @NotNull(message = "Order line number is required")
-    private Short orderLineNumber;
-
-    // ---------- Composite Key ----------
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    public static class OrderDetailId implements Serializable {
-        private Integer order;
-        private String product;
-    }
+    private short orderLineNumber;
 }
