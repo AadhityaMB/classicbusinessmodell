@@ -8,36 +8,31 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "orderdetails")
+@IdClass(OrderDetailsId.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class OrderDetails {
 
-    @EmbeddedId
-    private OrderDetailsId id;
-
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("order")   // ✅ FIXED (matches ID field)
-    @JoinColumn(name = "ordernumber", nullable = false)
+    @JoinColumn(name = "orderNumber")
     private Orders order;
 
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("product") // ✅ FIXED (matches ID field)
-    @JoinColumn(name = "productcode", nullable = false)
+    @JoinColumn(name = "productCode")
     private Product product;
 
-    @Column(name = "quantityordered", nullable = false)
-    @NotNull(message = "Quantity ordered is required")
-    @Min(value = 1, message = "Quantity must be at least 1")
+    @NotNull
     private Integer quantityOrdered;
 
-    @Column(name = "priceeach", precision = 10, scale = 2, nullable = false)
-    @NotNull(message = "Price is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be positive")
+    @NotNull
+    @DecimalMin("0.0")
     private BigDecimal priceEach;
 
-    @Column(name = "orderlinenumber", nullable = false)
-    @NotNull(message = "Order line number is required")
-    private short orderLineNumber;
+    @NotNull
+    private Integer orderLineNumber;
 }

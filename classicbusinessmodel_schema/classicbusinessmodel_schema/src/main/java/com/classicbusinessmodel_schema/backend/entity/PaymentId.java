@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.io.Serializable;
 
-@Embeddable
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,8 +13,6 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class PaymentId implements Serializable {
 
-    private Integer customerNumber;
-
+    private Integer customer;
     private String checkNumber;
-
 }
