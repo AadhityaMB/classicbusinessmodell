@@ -1,11 +1,9 @@
 package com.classicbusinessmodel_schema.backend.entity;
 
-import jakarta.persistence.Embeddable;
 import lombok.*;
 
 import java.io.Serializable;
 
-@Embeddable
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,6 +11,6 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class OrderDetailsId implements Serializable {
 
-    private Integer orderNumber;
-    private String productCode;
+    private Integer order;      // matches Orders PK type
+    private String product;     // matches Product PK type
 }
