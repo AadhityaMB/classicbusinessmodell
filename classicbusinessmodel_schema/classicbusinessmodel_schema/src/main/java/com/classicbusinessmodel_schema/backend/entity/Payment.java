@@ -1,6 +1,7 @@
 package com.classicbusinessmodel_schema.backend.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,20 +20,21 @@ import java.util.Date;
 public class Payment {
 
         @EmbeddedId
-        @NotNull
         private PaymentId id;
 
-        @NotNull
+        @Column(name = "paymentdate", nullable = false)
+        @NotNull(message="Payment date is required")
         private Date paymentDate;
 
-        @NotNull
+        @NotNull(message = "Amount is required")
+        @Column(name = "amount",precision=10, scale=2, nullable=false)
+        @DecimalMin(value = "0.0", inclusive=false,message = "Amount must be positive")
         private Double amount;
 
         //Many payments belong to one customer
-        @ManyToOne
+        @ManyToOne(fetch = FetchType.LAZY)
         @MapsId("customerNumber")
-        @JoinColumn(name = "customerNumber")
-        @NotNull
+        @JoinColumn(name = "customernumber" , nullable = false)
         private Customer customer;
 
 }
