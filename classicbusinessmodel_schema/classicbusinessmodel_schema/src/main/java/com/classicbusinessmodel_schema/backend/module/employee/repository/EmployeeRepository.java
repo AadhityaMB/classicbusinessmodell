@@ -12,15 +12,15 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     List<Employee> findByManagerEmployeeNumber(Integer managerId);
     List<Employee> findByOfficeOfficeCode(String officeCode);
 
-    // ✅ CUSTOM QUERY 1
+    //  CUSTOM QUERY 1
     @Query("SELECT e FROM Employee e WHERE e.jobTitle = :jobTitle")
     List<Employee> findEmployeesByJobTitle(String jobTitle);
 
-    // ✅ CUSTOM QUERY 2
+    //  CUSTOM QUERY 2
     @Query("SELECT e FROM Employee e WHERE e.manager.employeeNumber = :managerId")
     List<Employee> findSubordinatesCustom(Integer managerId);
 
-    // ✅ CUSTOM QUERY 3
+    //  CUSTOM QUERY 3
     @Query("SELECT e.email FROM Employee e")
     List<String> findAllEmployeeEmails();
 }

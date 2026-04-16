@@ -8,15 +8,15 @@ import java.util.List;
 
 public interface OfficeRepository extends JpaRepository<Office, String> {
 
-    // ✅ CUSTOM QUERY 1 - By City
+    //  CUSTOM QUERY 1 - By City
     @Query("SELECT o FROM Office o WHERE o.city = :city")
     List<Office> findByCityCustom(String city);
 
-    // ✅ CUSTOM QUERY 2 - By Country
+    //  CUSTOM QUERY 2 - By Country
     @Query("SELECT o FROM Office o WHERE o.country = :country")
     List<Office> findByCountryCustom(String country);
 
-    // ✅ CUSTOM QUERY 3 - Get Cities only
+    //  CUSTOM QUERY 3 - Get Cities only
     @Query("SELECT o.city FROM Office o")
     List<String> findAllCities();
 }
