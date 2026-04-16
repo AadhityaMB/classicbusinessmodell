@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface PaymentService {
+
     List<Payment> getPaymentsByCustomer(Integer customerId);
 
     List<Payment> getPaymentsBetweenDates(LocalDate start, LocalDate end);

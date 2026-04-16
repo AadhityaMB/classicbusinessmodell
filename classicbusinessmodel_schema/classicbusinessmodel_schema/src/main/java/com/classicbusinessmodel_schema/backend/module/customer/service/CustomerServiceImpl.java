@@ -5,6 +5,7 @@ import com.classicbusinessmodel_schema.backend.entity.Customer;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -82,4 +83,8 @@ public class CustomerServiceImpl implements CustomerService {
     public List<Customer> searchCustomers(String city, String country) {
         return repository.findByCityAndCountry(city, country);
     }
+
 }
+
+}
+

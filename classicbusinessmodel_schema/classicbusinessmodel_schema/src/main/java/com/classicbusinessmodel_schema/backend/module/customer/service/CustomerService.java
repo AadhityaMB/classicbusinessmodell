@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface CustomerService {
+
     Customer createCustomer(Customer customer);
 
     List<Customer> getAllCustomers();
