@@ -15,4 +15,14 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     // Price filter
     List<Product> findByBuyPriceGreaterThan(BigDecimal price);
+
+    //Custom queries
+    // 1. Find by vendor
+    List<Product> findByProductVendor(String productVendor);
+
+    // 2. Find low stock products
+    List<Product> findByQuantityInStockLessThan(Integer quantity);
+
+    // 3. Find by name containing (search)
+    List<Product> findByProductNameContainingIgnoreCase(String keyword);
 }
