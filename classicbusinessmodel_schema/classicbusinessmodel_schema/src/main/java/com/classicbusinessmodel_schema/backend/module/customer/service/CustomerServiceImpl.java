@@ -83,4 +83,8 @@ public class CustomerServiceImpl implements CustomerService {
     public List<Customer> searchCustomers(String city, String country) {
         return repository.findByCityAndCountry(city, country);
     }
+
 }
+
+}
+
