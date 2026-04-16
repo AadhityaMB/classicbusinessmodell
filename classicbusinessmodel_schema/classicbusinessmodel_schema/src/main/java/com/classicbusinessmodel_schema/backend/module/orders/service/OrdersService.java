@@ -1,5 +1,10 @@
 package com.classicbusinessmodel_schema.backend.module.orders.service;
 
+import com.classicbusinessmodel_schema.backend.entity.Orders;
+
+import java.time.LocalDate;
+import java.util.List;
+
 public interface OrdersService {
 
     Orders createOrder(Orders order);
