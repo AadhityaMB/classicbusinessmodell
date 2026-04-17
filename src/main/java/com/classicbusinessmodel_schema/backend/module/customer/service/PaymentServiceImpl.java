@@ -5,7 +5,6 @@ import com.classicbusinessmodel_schema.backend.entity.Payment;
 import com.classicbusinessmodel_schema.backend.entity.PaymentId;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import com.classicbusinessmodel_schema.backend.module.customer.repository.PaymentRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +14,13 @@ import java.util.List;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
 
+    public PaymentServiceImpl(PaymentRepository paymentRepository) {
+        this.paymentRepository = paymentRepository;
+    }
     // Get all payments for a customer
     public List<Payment> getPaymentsByCustomer(Integer customerNumber) {
         return paymentRepository.findByCustomerCustomerNumber(customerNumber);

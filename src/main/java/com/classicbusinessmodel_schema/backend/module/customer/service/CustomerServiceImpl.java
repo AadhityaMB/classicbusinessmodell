@@ -8,7 +8,6 @@ import com.classicbusinessmodel_schema.backend.module.customer.dto.request.Custo
 import com.classicbusinessmodel_schema.backend.module.customer.dto.response.CustomerResponseDTO;
 import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;
 import com.classicbusinessmodel_schema.backend.module.employee.repository.EmployeeRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,12 +19,16 @@ import java.util.List;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final EmployeeRepository employeeRepository;
 
+    public CustomerServiceImpl(CustomerRepository customerRepository,
+                               EmployeeRepository employeeRepository) {
+        this.customerRepository = customerRepository;
+        this.employeeRepository = employeeRepository;
+    }
     // Get all customers and convert to DTO
     public Page<CustomerResponseDTO> getAllCustomers(Pageable pageable) {
         return customerRepository.findAll(pageable)

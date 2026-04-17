@@ -4,10 +4,8 @@ package com.classicbusinessmodel_schema.backend.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Table(name = "customers")

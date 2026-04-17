@@ -7,7 +7,6 @@ import com.classicbusinessmodel_schema.backend.module.customer.dto.response.Cust
 import com.classicbusinessmodel_schema.backend.module.customer.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,10 +20,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/customers")
-@RequiredArgsConstructor
 public class CustomerController {
 
     private final CustomerService customerService;
+
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     // Create customer
     @Operation(summary = "Create a new customer")
