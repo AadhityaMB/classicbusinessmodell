@@ -15,7 +15,7 @@
     </parent>
 
     <groupId>com.classicbusinessmodel</groupId>
-    <artifactId>classicbusinessmodel_schema</artifactId>
+    <artifactId>classicbusinessmodel</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>classicbusinessmodel_schema</name>
     <description>Classic Business Model Project</description>
