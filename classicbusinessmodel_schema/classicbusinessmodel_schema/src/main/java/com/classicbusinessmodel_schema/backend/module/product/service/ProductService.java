@@ -1,13 +1,22 @@
 package com.classicbusinessmodel_schema.backend.module.product.service;
 
-import com.classicbusinessmodel_schema.backend.entity.Product;
+import com.classicbusinessmodel_schema.backend.module.product.dto.request.CreateProductRequest;
+import com.classicbusinessmodel_schema.backend.module.product.dto.request.UpdateProductRequest;
+import com.classicbusinessmodel_schema.backend.module.product.dto.response.ProductResponse;
+
 import java.util.List;
 
 public interface ProductService {
 
-    List<Product> getAllProducts();
+    List<ProductResponse> getAllProducts();
 
-    Product getProductById(String productCode);
+    ProductResponse getProductById(String productCode);
 
-    List<Product> getProductsByLine(String productLine);
+    List<ProductResponse> getProductsByLine(String productLine);
+
+    ProductResponse createProduct(CreateProductRequest request);
+
+    ProductResponse updateProduct(String productCode, UpdateProductRequest request);
+
+    void deleteProduct(String productCode);
 }

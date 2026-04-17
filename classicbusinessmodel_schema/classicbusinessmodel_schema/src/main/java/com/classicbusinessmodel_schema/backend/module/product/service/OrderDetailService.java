@@ -1,17 +1,17 @@
 package com.classicbusinessmodel_schema.backend.module.product.service;
 
-import com.classicbusinessmodel_schema.backend.entity.OrderDetails;
+import com.classicbusinessmodel_schema.backend.module.product.dto.request.OrderDetailRequest;
+import com.classicbusinessmodel_schema.backend.module.product.dto.response.OrderDetailResponse;
+
 import java.util.List;
 
 public interface OrderDetailService {
 
-    // ADD ITEM
-    OrderDetails addItemToOrder(OrderDetails orderDetail);
+    OrderDetailResponse addItem(OrderDetailRequest request);
 
-    List<OrderDetails> getItemsByOrder(Integer orderNumber);
+    List<OrderDetailResponse> getItemsByOrder(Integer orderNumber);
 
-    // UPDATE ITEM
-    OrderDetails updateItem(Integer orderNumber, String productCode, OrderDetails updated);
+    OrderDetailResponse updateItem(Integer orderNumber, String productCode, OrderDetailRequest request);
 
     void deleteItem(Integer orderNumber, String productCode);
 }
