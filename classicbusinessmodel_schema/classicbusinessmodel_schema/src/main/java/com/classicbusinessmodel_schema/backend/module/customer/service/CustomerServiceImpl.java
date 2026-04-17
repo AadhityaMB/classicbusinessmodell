@@ -2,85 +2,146 @@ package com.classicbusinessmodel_schema.backend.module.customer.service;
 
 
 import com.classicbusinessmodel_schema.backend.entity.Customer;
+import com.classicbusinessmodel_schema.backend.entity.Employee;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
+import com.classicbusinessmodel_schema.backend.module.customer.dto.request.CustomerRequestDTO;
+import com.classicbusinessmodel_schema.backend.module.customer.dto.response.CustomerResponseDTO;
 import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;
+import com.classicbusinessmodel_schema.backend.module.employee.repository.EmployeeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class CustomerServiceImpl implements CustomerService {
 
-    private final CustomerRepository repository;
+    private final CustomerRepository customerRepository;
+    private final EmployeeRepository employeeRepository;
 
-    public CustomerServiceImpl(CustomerRepository repository) {
-        this.repository = repository;
+    public CustomerServiceImpl(CustomerRepository customerRepository,
+                               EmployeeRepository employeeRepository) {
+        this.customerRepository = customerRepository;
+        this.employeeRepository = employeeRepository;
+    }
+    // Get all customers and convert to DTO
+    public Page<CustomerResponseDTO> getAllCustomers(Pageable pageable) {
+        return customerRepository.findAll(pageable)
+                .map(this::convert);
     }
 
-    // CREATE
-    @Override
-    public Customer createCustomer(Customer customer) {
-        return repository.save(customer);
+    // Get customer by ID
+    public CustomerResponseDTO getCustomerById(Integer id) {
+        Customer c = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        return convert(c);
     }
 
-    // READ ALL
-    @Override
-    public List<Customer> getAllCustomers() {
-        return repository.findAll();
+    // Create new customer
+    public CustomerResponseDTO createCustomer(CustomerRequestDTO r) {
+        Customer c = new Customer();
+        set(c, r);
+        return convert(customerRepository.save(c));
     }
 
-    // READ BY ID
-    @Override
-    public Customer getCustomerById(Integer id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
+    // Update existing customer
+    public CustomerResponseDTO updateCustomer(Integer id, CustomerRequestDTO r) {
+        Customer c = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        set(c, r);
+        return convert(customerRepository.save(c));
     }
 
-    // UPDATE
-    @Override
-    public Customer updateCustomer(Integer id, Customer customer) {
-        Customer existing = getCustomerById(id);
-
-        existing.setCustomerName(customer.getCustomerName());
-        existing.setContactFirstName(customer.getContactFirstName());
-        existing.setContactLastName(customer.getContactLastName());
-        existing.setPhone(customer.getPhone());
-        existing.setCity(customer.getCity());
-        existing.setCountry(customer.getCountry());
-
-        return repository.save(existing);
-    }
-
-    // DELETE
-    @Override
+    // Delete using custom query
     public void deleteCustomer(Integer id) {
-        Customer existing = getCustomerById(id);
-        repository.delete(existing);
+        customerRepository.deleteByCustomerNumber(id);
     }
 
-    // CREDIT LIMIT GET
-    @Override
+    // Get only credit limit
     public BigDecimal getCreditLimit(Integer id) {
-        return getCustomerById(id).getCreditLimit();
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"))
+                .getCreditLimit();
     }
 
-    // CREDIT LIMIT UPDATE
-    @Override
-    public Customer updateCreditLimit(Integer id, BigDecimal creditLimit) {
-        if (creditLimit.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Credit limit cannot be negative");
+    // Update only credit limit (custom query)
+    public CustomerResponseDTO updateCreditLimit(Integer id, BigDecimal limit) {
+        customerRepository.updateCreditLimit(id, limit);
+        return getCustomerById(id);
+    }
+
+    // Search logic based on optional params
+    public List<CustomerResponseDTO> searchByGeography(String country, String city) {
+        List<Customer> customers;
+
+        if (country != null && city != null) {
+            customers = customerRepository.findByCountryAndCity(country, city);
+        } else if (country != null) {
+            customers = customerRepository.findByCountry(country);
+        } else if (city != null) {
+            customers = customerRepository.findByCity(city);
+        } else {
+            customers = customerRepository.findAll();
         }
 
-        Customer customer = getCustomerById(id);
-        customer.setCreditLimit(creditLimit);
-
-        return repository.save(customer);
+        List<CustomerResponseDTO> list = new ArrayList<>();
+        for (Customer c : customers) {
+            list.add(convert(c));
+        }
+        return list;
     }
 
-    // SEARCH
-    @Override
-    public List<Customer> searchCustomers(String city, String country) {
-        return repository.findByCityAndCountry(city, country);
+    // Map DTO → Entity
+    private void set(Customer c, CustomerRequestDTO r) {
+        c.setCustomerNumber(r.getCustomerNumber());
+        c.setCustomerName(r.getCustomerName());
+        c.setContactLastName(r.getContactLastName());
+        c.setContactFirstName(r.getContactFirstName());
+        c.setPhone(r.getPhone());
+        c.setAddressLine1(r.getAddressLine1());
+        c.setAddressLine2(r.getAddressLine2());
+        c.setCity(r.getCity());
+        c.setState(r.getState());
+        c.setPostalCode(r.getPostalCode());
+        c.setCountry(r.getCountry());
+        c.setCreditLimit(r.getCreditLimit());
+
+        // Set sales rep if provided
+        if (r.getSalesRepEmployeeNumber() != null) {
+            Employee e = employeeRepository.findById(r.getSalesRepEmployeeNumber())
+                    .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+            c.setSalesRep(e);
+        }
+    }
+
+    // Map Entity → DTO
+    private CustomerResponseDTO convert(Customer c) {
+        CustomerResponseDTO d = new CustomerResponseDTO();
+
+        d.setCustomerNumber(c.getCustomerNumber());
+        d.setCustomerName(c.getCustomerName());
+        d.setContactLastName(c.getContactLastName());
+        d.setContactFirstName(c.getContactFirstName());
+        d.setPhone(c.getPhone());
+        d.setAddressLine1(c.getAddressLine1());
+        d.setAddressLine2(c.getAddressLine2());
+        d.setCity(c.getCity());
+        d.setState(c.getState());
+        d.setPostalCode(c.getPostalCode());
+        d.setCountry(c.getCountry());
+        d.setCreditLimit(c.getCreditLimit());
+
+        // Flatten sales rep details
+        if (c.getSalesRep() != null) {
+            d.setSalesRepEmployeeNumber(c.getSalesRep().getEmployeeNumber());
+            d.setSalesRepName(c.getSalesRep().getFirstName() + " " + c.getSalesRep().getLastName());
+        }
+
+        return d;
     }
 }

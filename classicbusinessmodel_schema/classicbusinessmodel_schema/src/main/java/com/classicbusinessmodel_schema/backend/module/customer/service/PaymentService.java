@@ -3,12 +3,21 @@ package com.classicbusinessmodel_schema.backend.module.customer.service;
 
 import com.classicbusinessmodel_schema.backend.entity.Payment;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface PaymentService {
 
-    List<Payment> getPaymentsByCustomer(Integer customerId);
+    // Get payments by customer
+    List<Payment> getPaymentsByCustomer(Integer customerNumber);
 
-    List<Payment> getPaymentsBetweenDates(LocalDate start, LocalDate end);
+    // Get payments by date range
+    List<Payment> getPaymentsByDateRange(LocalDate startDate, LocalDate endDate);
+
+    // Update payment amount
+    void updatePaymentAmount(Integer customerNumber, String checkNumber, BigDecimal amount);
+
+    // Delete payment
+    void deletePayment(Integer customerNumber, String checkNumber);
 }

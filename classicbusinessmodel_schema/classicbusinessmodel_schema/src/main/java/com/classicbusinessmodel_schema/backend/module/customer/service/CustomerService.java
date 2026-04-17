@@ -1,25 +1,36 @@
 package com.classicbusinessmodel_schema.backend.module.customer.service;
 
-import com.classicbusinessmodel_schema.backend.entity.Customer;
+
+import com.classicbusinessmodel_schema.backend.module.customer.dto.request.CustomerRequestDTO;
+import com.classicbusinessmodel_schema.backend.module.customer.dto.response.CustomerResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface CustomerService {
 
-    Customer createCustomer(Customer customer);
+    // Get all customers
+    Page<CustomerResponseDTO> getAllCustomers(Pageable pageable);
+    // Get single customer by ID
+    CustomerResponseDTO getCustomerById(Integer customerNumber);
 
-    List<Customer> getAllCustomers();
+    // Create new customer
+    CustomerResponseDTO createCustomer(CustomerRequestDTO request);
 
-    Customer getCustomerById(Integer id);
+    // Update existing customer
+    CustomerResponseDTO updateCustomer(Integer customerNumber, CustomerRequestDTO request);
 
-    Customer updateCustomer(Integer id, Customer customer);
+    // Delete customer
+    void deleteCustomer(Integer customerNumber);
 
-    void deleteCustomer(Integer id);
+    // Get credit limit
+    BigDecimal getCreditLimit(Integer customerNumber);
 
-    BigDecimal getCreditLimit(Integer id);
+    // Update only credit limit
+    CustomerResponseDTO updateCreditLimit(Integer customerNumber, BigDecimal newLimit);
 
-    Customer updateCreditLimit(Integer id, BigDecimal creditLimit);
-
-    List<Customer> searchCustomers(String city, String country);
+    // Search by country/city
+    List<CustomerResponseDTO> searchByGeography(String country, String city);
 }
