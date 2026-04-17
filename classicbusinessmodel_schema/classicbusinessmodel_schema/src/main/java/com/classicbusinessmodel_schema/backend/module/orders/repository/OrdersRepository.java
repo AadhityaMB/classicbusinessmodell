@@ -20,7 +20,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 
     // Date range search
     List<Orders> findByOrderDateBetween(LocalDate start, LocalDate end);
-
+    List<Orders> findByStatusAndOrderDateBetween(String status, LocalDate fromDate, LocalDate toDate);
     // 1. Custom JPQL - Get orders with customer name
     @Query("SELECT o FROM Orders o WHERE o.customer.customerName = :name")
     List<Orders> findByCustomerName(@Param("name") String customerName);
