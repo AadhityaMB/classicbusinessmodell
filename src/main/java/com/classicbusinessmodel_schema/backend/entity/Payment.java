@@ -9,17 +9,12 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 
 @Entity
 @Table(name = "payments")
 @IdClass(PaymentId.class)
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+
 public class Payment {
 
         @Id
@@ -38,4 +33,46 @@ public class Payment {
         @NotNull
         @DecimalMin("0.0")
         private BigDecimal amount;
+
+        public Customer getCustomer() {
+                return customer;
+        }
+
+        public void setCustomer(Customer customer) {
+                this.customer = customer;
+        }
+
+        public String getCheckNumber() {
+                return checkNumber;
+        }
+
+        public void setCheckNumber(String checkNumber) {
+                this.checkNumber = checkNumber;
+        }
+
+        public LocalDate getPaymentDate() {
+                return paymentDate;
+        }
+
+        public void setPaymentDate(LocalDate paymentDate) {
+                this.paymentDate = paymentDate;
+        }
+
+        public BigDecimal getAmount() {
+                return amount;
+        }
+
+        public void setAmount(BigDecimal amount) {
+                this.amount = amount;
+        }
+
+        public Payment() {
+        }
+
+        public Payment(Customer customer, String checkNumber, LocalDate paymentDate, BigDecimal amount) {
+                this.customer = customer;
+                this.checkNumber = checkNumber;
+                this.paymentDate = paymentDate;
+                this.amount = amount;
+        }
 }

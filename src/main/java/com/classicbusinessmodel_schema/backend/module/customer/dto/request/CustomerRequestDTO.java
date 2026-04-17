@@ -29,14 +29,17 @@ public class CustomerRequestDTO {
     @Size(max = 50)
     private String addressLine1;
 
+    @Size(max = 50)
     private String addressLine2; // optional
 
     @NotBlank(message = "City is required")
     @Size(max = 50)
     private String city;
 
+    @Size(max = 50)
     private String state; // optional
 
+    @Size(max = 50)
     private String postalCode; // optional
 
     @NotBlank(message = "Country is required")
