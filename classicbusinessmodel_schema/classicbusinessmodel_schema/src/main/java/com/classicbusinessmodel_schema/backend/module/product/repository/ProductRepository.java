@@ -2,6 +2,8 @@ package com.classicbusinessmodel_schema.backend.module.product.repository;
 
 import com.classicbusinessmodel_schema.backend.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -10,19 +12,29 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
 
-    // Get by product line
-    List<Product> findByProductLineProductLine(String productLine);
+    // 1. Get products by product line
+    @Query("SELECT p FROM Product p WHERE p.productLine.productLine = :productLine")
+    List<Product> findByProductLineProductLine(@Param("productLine") String productLine);
 
-    // Price filter
-    List<Product> findByBuyPriceGreaterThan(BigDecimal price);
+    // 2. Price filter
+    @Query("SELECT p FROM Product p WHERE p.buyPrice > :price")
+    List<Product> findByBuyPriceGreaterThan(@Param("price") BigDecimal price);
 
-    //Custom queries
-    // 1. Find by vendor
-    List<Product> findByProductVendor(String productVendor);
+    // CUSTOM QUERIES
 
-    // 2. Find low stock products
-    List<Product> findByQuantityInStockLessThan(Integer quantity);
+    // Find by vendor
+    @Query("SELECT p FROM Product p WHERE p.productVendor = :productVendor")
+    List<Product> findByProductVendor(@Param("productVendor") String productVendor);
 
-    // 3. Find by name containing (search)
-    List<Product> findByProductNameContainingIgnoreCase(String keyword);
+    // Low stock products
+    @Query("SELECT p FROM Product p WHERE p.quantityInStock < :quantity")
+    List<Product> findByQuantityInStockLessThan(@Param("quantity") Integer quantity);
+
+    // Search by product name (case-insensitive)
+    @Query("SELECT p FROM Product p WHERE LOWER(p.productName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<Product> findByProductNameContainingIgnoreCase(@Param("keyword") String keyword);
+
+    // Existence check (important for duplicate handling)
+    @Query("SELECT COUNT(p) > 0 FROM Product p WHERE p.productCode = :productCode")
+    boolean existsByProductCode(@Param("productCode") String productCode);
 }

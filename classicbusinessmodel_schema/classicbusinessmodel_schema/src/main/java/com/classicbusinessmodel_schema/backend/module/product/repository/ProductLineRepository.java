@@ -2,6 +2,8 @@ package com.classicbusinessmodel_schema.backend.module.product.repository;
 
 import com.classicbusinessmodel_schema.backend.entity.ProductLine;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,12 +12,15 @@ import java.util.List;
 public interface ProductLineRepository extends JpaRepository<ProductLine, String> {
 
     //Custom queries
-    // 1. Search by text description
-    List<ProductLine> findByTextDescriptionContainingIgnoreCase(String keyword);
+    // Search by text description
+    @Query("SELECT pl FROM ProductLine pl WHERE LOWER(pl.textDescription) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<ProductLine> findByTextDescriptionContainingIgnoreCase(@Param("keyword") String keyword);
 
-    // 2. Search by HTML description
-    List<ProductLine> findByHtmlDescriptionContainingIgnoreCase(String keyword);
+    // Search by HTML description
+    @Query("SELECT pl FROM ProductLine pl WHERE LOWER(pl.htmlDescription) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<ProductLine> findByHtmlDescriptionContainingIgnoreCase(@Param("keyword") String keyword);
 
-    // 3. Check existence
-    boolean existsByProductLine(String productLine);
+    // Check existence
+    @Query("SELECT COUNT(pl) > 0 FROM ProductLine pl WHERE pl.productLine = :productLine")
+    boolean existsByProductLine(@Param("productLine") String productLine);
 }
