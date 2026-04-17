@@ -1,109 +1,168 @@
 package com.classicbusinessmodel_schema.backend.module.orders.service;
 
-import com.classicbusinessmodel_schema.backend.entity.Customer;
+import com.classicbusinessmodel_schema.backend.entity.OrderDetails;
 import com.classicbusinessmodel_schema.backend.entity.Orders;
-import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
+import com.classicbusinessmodel_schema.backend.entity.Product;
 import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;
+//import com.classicbusinessmodel_schema.backend.module.orders.dto.*;
+import com.classicbusinessmodel_schema.backend.module.orders.dto.requestDto.OrderDetailsRequestDTO;
+import com.classicbusinessmodel_schema.backend.module.orders.dto.requestDto.OrderRequestDTO;
+import com.classicbusinessmodel_schema.backend.module.orders.dto.responseDto.OrderDetailsResponseDTO;
+import com.classicbusinessmodel_schema.backend.module.orders.dto.responseDto.OrderResponseDTO;
 import com.classicbusinessmodel_schema.backend.module.orders.repository.OrdersRepository;
+import com.classicbusinessmodel_schema.backend.module.product.repository.ProductRepository;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrdersServiceImpl implements OrdersService {
 
-    private final OrdersRepository ordersRepository;
+    private final OrdersRepository orderRepository;
     private final CustomerRepository customerRepository;
+    private final ProductRepository productRepository;
 
-    public OrdersServiceImpl(OrdersRepository ordersRepository,
-                             CustomerRepository customerRepository) {
-        this.ordersRepository = ordersRepository;
-        this.customerRepository = customerRepository;
-    }
-
-    // CREATE
+    // ✅ CREATE ORDER
     @Override
-    public Orders createOrder(Orders order) {
+    public OrderResponseDTO createOrder(OrderRequestDTO request) {
 
-        if (order.getCustomer() == null) {
-            throw new IllegalArgumentException("Customer is required");
+        Orders order = new Orders();
+
+        order.setCustomer(customerRepository.findById(request.getCustomerNumber())
+                .orElseThrow(() -> new RuntimeException("Customer not found")));
+
+        order.setOrderDate(request.getOrderDate());
+        order.setRequiredDate(request.getRequiredDate());
+        order.setShippedDate(request.getShippedDate());
+        order.setStatus(request.getStatus());
+        order.setComments(request.getComments());
+
+        // 🔹 Handle OrderDetails
+        List<OrderDetails> detailsList = new ArrayList<>();
+
+        if (request.getOrderDetails() != null) {
+            for (OrderDetailsRequestDTO dto : request.getOrderDetails()) {
+
+                OrderDetails details = new OrderDetails();
+
+                Product product = productRepository.findById(dto.getProductCode())
+                        .orElseThrow(() -> new RuntimeException("Product not found"));
+
+                details.setProduct(product);
+                details.setQuantityOrdered(dto.getQuantityOrdered());
+                details.setPriceEach(dto.getPriceEach());
+                details.setOrderLineNumber(dto.getOrderLineNumber());
+
+                details.setOrder(order); // link both sides
+                detailsList.add(details);
+            }
         }
 
-        Integer customerId = order.getCustomer().getCustomerNumber();
+        order.setOrderDetails(detailsList);
 
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-
-        order.setCustomer(customer);
-        order.setOrderDate(LocalDate.now());
-
-        return ordersRepository.save(order);
+        return mapToDTO(orderRepository.save(order));
     }
 
-    // READ ALL
+    // ✅ GET ALL
     @Override
-    public List<Orders> getAllOrders() {
-        return ordersRepository.findAll();
+    public List<OrderResponseDTO> getAllOrders() {
+        return orderRepository.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    // READ BY ID
+    // ✅ GET BY ID
     @Override
-    public Orders getOrderById(Integer orderNumber) {
-        return ordersRepository.findById(orderNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+    public OrderResponseDTO getOrderById(Integer orderNumber) {
+        Orders order = orderRepository.findById(orderNumber)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        return mapToDTO(order);
     }
 
-    // UPDATE
+    // ✅ UPDATE ORDER
     @Override
-    public Orders updateOrder(Integer orderNumber, Orders order) {
+    public OrderResponseDTO updateOrder(Integer orderNumber, OrderRequestDTO request) {
 
-        Orders existing = getOrderById(orderNumber);
+        Orders order = orderRepository.findById(orderNumber)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        existing.setRequiredDate(order.getRequiredDate());
-        existing.setShippedDate(order.getShippedDate());
-        existing.setComments(order.getComments());
+        order.setOrderDate(request.getOrderDate());
+        order.setRequiredDate(request.getRequiredDate());
+        order.setShippedDate(request.getShippedDate());
+        order.setStatus(request.getStatus());
+        order.setComments(request.getComments());
 
-        return ordersRepository.save(existing);
+        return mapToDTO(orderRepository.save(order));
     }
 
-    // UPDATE STATUS (PATCH)
+    // ✅ UPDATE STATUS
     @Override
-    public Orders updateOrderStatus(Integer orderNumber, String status) {
+    public OrderResponseDTO updateOrderStatus(Integer orderNumber, OrderRequestDTO request) {
 
-        Orders order = getOrderById(orderNumber);
+        Orders order = orderRepository.findById(orderNumber)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        order.setStatus(status);
-
-        return ordersRepository.save(order);
-    }
-
-    // GET ORDERS BY CUSTOMER
-    @Override
-    public List<Orders> getOrdersByCustomer(Integer customerNumber) {
-        return ordersRepository.findByCustomerCustomerNumber(customerNumber);
-    }
-
-    // SEARCH ORDERS
-    @Override
-    public List<Orders> searchOrders(String status, LocalDate fromDate, LocalDate toDate) {
-
-        if (status != null && fromDate != null && toDate != null) {
-            return ordersRepository.findByStatus(status)
-                    .stream()
-                    .filter(o -> !o.getOrderDate().isBefore(fromDate)
-                            && !o.getOrderDate().isAfter(toDate))
-                    .toList();
+        if (request.getStatus() != null) {
+            order.setStatus(request.getStatus());
         }
 
-        if (status != null) {
-            return ordersRepository.findByStatus(status);
+        return mapToDTO(orderRepository.save(order));
+    }
+
+    // ✅ GET ORDERS BY CUSTOMER
+    @Override
+    public List<OrderResponseDTO> getOrdersByCustomer(Integer customerNumber) {
+
+        return orderRepository.findByCustomerCustomerNumber(customerNumber)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // ✅ SEARCH ORDERS
+    @Override
+    public List<OrderResponseDTO> searchOrders(String status, LocalDate fromDate, LocalDate toDate) {
+
+        return orderRepository
+                .findByStatusAndOrderDateBetween(status, fromDate, toDate)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // ✅ ENTITY → DTO MAPPING
+    private OrderResponseDTO mapToDTO(Orders order) {
+
+        List<OrderDetailsResponseDTO> detailsDTO = new ArrayList<>();
+
+        if (order.getOrderDetails() != null) {
+            detailsDTO = order.getOrderDetails().stream()
+                    .map(d -> new OrderDetailsResponseDTO(
+                            d.getProduct().getProductCode(),
+                            d.getQuantityOrdered(),
+                            d.getPriceEach(),
+                            d.getOrderLineNumber()
+                    ))
+                    .collect(Collectors.toList());
         }
 
-        if (fromDate != null && toDate != null) {
-            return ordersRepository.findByOrderDateBetween(fromDate, toDate);
-        }
-
-        return ordersRepository.findAll();
+        return new OrderResponseDTO(
+                order.getOrderNumber(),
+                order.getCustomer().getCustomerNumber(),
+                order.getOrderDate(),
+                order.getRequiredDate(),
+                order.getShippedDate(),
+                order.getStatus(),
+                order.getComments(),
+                detailsDTO
+        );
     }
 }

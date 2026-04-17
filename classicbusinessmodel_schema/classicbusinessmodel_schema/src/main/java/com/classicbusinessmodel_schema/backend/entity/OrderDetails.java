@@ -2,18 +2,12 @@ package com.classicbusinessmodel_schema.backend.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "orderdetails")
 @IdClass(OrderDetailsId.class)
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class OrderDetails {
 
     @Id
@@ -26,13 +20,67 @@ public class OrderDetails {
     @JoinColumn(name = "productCode")
     private Product product;
 
-    @NotNull
+
     private Integer quantityOrdered;
 
-    @NotNull
-    @DecimalMin("0.0")
+
     private BigDecimal priceEach;
 
-    @NotNull
+
     private Integer orderLineNumber;
+
+
+    public OrderDetails() {
+    }
+
+    public OrderDetails(Orders order, Product product, Integer quantityOrdered,
+                        BigDecimal priceEach, Integer orderLineNumber) {
+        this.order = order;
+        this.product = product;
+        this.quantityOrdered = quantityOrdered;
+        this.priceEach = priceEach;
+        this.orderLineNumber = orderLineNumber;
+    }
+
+
+
+    public Orders getOrder() {
+        return order;
+    }
+
+    public void setOrder(Orders order) {
+        this.order = order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Integer getQuantityOrdered() {
+        return quantityOrdered;
+    }
+
+    public void setQuantityOrdered(Integer quantityOrdered) {
+        this.quantityOrdered = quantityOrdered;
+    }
+
+    public BigDecimal getPriceEach() {
+        return priceEach;
+    }
+
+    public void setPriceEach(BigDecimal priceEach) {
+        this.priceEach = priceEach;
+    }
+
+    public Integer getOrderLineNumber() {
+        return orderLineNumber;
+    }
+
+    public void setOrderLineNumber(Integer orderLineNumber) {
+        this.orderLineNumber = orderLineNumber;
+    }
 }

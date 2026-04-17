@@ -1,23 +1,25 @@
 package com.classicbusinessmodel_schema.backend.module.orders.service;
 
 import com.classicbusinessmodel_schema.backend.entity.Orders;
+import com.classicbusinessmodel_schema.backend.module.orders.dto.requestDto.OrderRequestDTO;
+import com.classicbusinessmodel_schema.backend.module.orders.dto.responseDto.OrderResponseDTO;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface OrdersService {
 
-    Orders createOrder(Orders order);
+    OrderResponseDTO createOrder(OrderRequestDTO request);
 
-    List<Orders> getAllOrders();
+    List<OrderResponseDTO> getAllOrders();
 
-    Orders getOrderById(Integer orderNumber);
+    OrderResponseDTO getOrderById(Integer orderNumber);
 
-    Orders updateOrder(Integer orderNumber, Orders order);
+    OrderResponseDTO updateOrder(Integer orderNumber, OrderRequestDTO request);
 
-    Orders updateOrderStatus(Integer orderNumber, String status);
+    OrderResponseDTO updateOrderStatus(Integer orderNumber, OrderRequestDTO request);
 
-    List<Orders> getOrdersByCustomer(Integer customerNumber);
+    List<OrderResponseDTO> getOrdersByCustomer(Integer customerNumber);
 
-    List<Orders> searchOrders(String status, LocalDate fromDate, LocalDate toDate);
+    List<OrderResponseDTO> searchOrders(String status, LocalDate fromDate, LocalDate toDate);
 }
