@@ -1,5 +1,6 @@
 package com.classicbusinessmodel_schema.backend.module.employee.service;
 
+import com.classicbusinessmodel_schema.backend.entity.Employee;
 import com.classicbusinessmodel_schema.backend.entity.Office;
 
 import java.util.List;
@@ -10,5 +11,5 @@ public interface OfficeService {
 
     Office getOfficeByCode(String officeCode);
 
-    List<?> getEmployeesByOffice(String officeCode);
+    List<Employee> getEmployeesByOffice(String officeCode);
 }
