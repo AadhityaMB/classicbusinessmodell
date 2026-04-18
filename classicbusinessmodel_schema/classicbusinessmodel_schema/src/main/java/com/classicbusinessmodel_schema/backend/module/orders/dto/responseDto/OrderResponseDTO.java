@@ -1,9 +1,6 @@
 package com.classicbusinessmodel_schema.backend.module.orders.dto.responseDto;
 
-import com.classicbusinessmodel_schema.backend.module.orders.dto.responseDto.OrderDetailsResponseDTO;
-
 import java.time.LocalDate;
-import java.util.List;
 
 public class OrderResponseDTO {
 
@@ -15,15 +12,12 @@ public class OrderResponseDTO {
     private String status;
     private String comments;
 
-    private List<OrderDetailsResponseDTO> orderDetails;
-
     public OrderResponseDTO() {}
 
     public OrderResponseDTO(Integer orderNumber, Integer customerNumber,
                             LocalDate orderDate, LocalDate requiredDate,
                             LocalDate shippedDate, String status,
-                            String comments,
-                            List<OrderDetailsResponseDTO> orderDetails) {
+                            String comments) {
         this.orderNumber = orderNumber;
         this.customerNumber = customerNumber;
         this.orderDate = orderDate;
@@ -31,7 +25,6 @@ public class OrderResponseDTO {
         this.shippedDate = shippedDate;
         this.status = status;
         this.comments = comments;
-        this.orderDetails = orderDetails;
     }
 
     public Integer getOrderNumber() { return orderNumber; }
@@ -54,7 +47,4 @@ public class OrderResponseDTO {
 
     public String getComments() { return comments; }
     public void setComments(String comments) { this.comments = comments; }
-
-    public List<OrderDetailsResponseDTO> getOrderDetails() { return orderDetails; }
-    public void setOrderDetails(List<OrderDetailsResponseDTO> orderDetails) { this.orderDetails = orderDetails; }
 }

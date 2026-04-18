@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class OrderRequestDTO {
 
@@ -26,22 +25,17 @@ public class OrderRequestDTO {
 
     private String comments;
 
-    // Child DTO list
-    private List<OrderDetailsRequestDTO> orderDetails;
-
     public OrderRequestDTO() {}
 
     public OrderRequestDTO(Integer customerNumber, LocalDate orderDate,
                            LocalDate requiredDate, LocalDate shippedDate,
-                           String status, String comments,
-                           List<OrderDetailsRequestDTO> orderDetails) {
+                           String status, String comments) {
         this.customerNumber = customerNumber;
         this.orderDate = orderDate;
         this.requiredDate = requiredDate;
         this.shippedDate = shippedDate;
         this.status = status;
         this.comments = comments;
-        this.orderDetails = orderDetails;
     }
 
     public Integer getCustomerNumber() { return customerNumber; }
@@ -61,7 +55,4 @@ public class OrderRequestDTO {
 
     public String getComments() { return comments; }
     public void setComments(String comments) { this.comments = comments; }
-
-    public List<OrderDetailsRequestDTO> getOrderDetails() { return orderDetails; }
-    public void setOrderDetails(List<OrderDetailsRequestDTO> orderDetails) { this.orderDetails = orderDetails; }
 }

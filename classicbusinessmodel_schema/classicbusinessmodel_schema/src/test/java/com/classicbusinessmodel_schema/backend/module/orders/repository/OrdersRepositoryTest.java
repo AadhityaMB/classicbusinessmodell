@@ -1,14 +1,14 @@
 package com.classicbusinessmodel_schema.backend.module.orders.repository;
 
-import com.classicbusinessmodel_schema.backend.entity.*;
-import com.classicbusinessmodel_schema.backend.module.orders.repository.OrdersRepository;
+import com.classicbusinessmodel_schema.backend.entity.Customer;
+import com.classicbusinessmodel_schema.backend.entity.Orders;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,83 +21,97 @@ class OrdersRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
-    // Helper method
-    private Orders createOrder(String status, LocalDate orderDate, LocalDate shippedDate) {
-
+    // Helper method to create customer
+    private Customer createCustomer() {
         Customer customer = new Customer();
-        customer.setCustomerNumber((int)(Math.random() * 1000));
+        customer.setCustomerNumber((int) (Math.random() * 100000));
         customer.setCustomerName("Test Customer");
-
         customer.setContactFirstName("John");
         customer.setContactLastName("Doe");
 
-        entityManager.persist(customer);
-
-        Orders order = Orders.builder()
-                .orderNumber((int) (Math.random() * 10000))
-                .orderDate(orderDate)
-                .requiredDate(orderDate.plusDays(5))
-                .shippedDate(shippedDate)
-                .status(status)
-                .customer(customer)
-                .build();
-
-        return entityManager.persist(order);
+        return entityManager.persist(customer);
     }
 
-    // 1. Test find by status
-    @Test
-    void testFindByStatus() {
-        createOrder("Shipped", LocalDate.now(), LocalDate.now());
+    // Helper method to create order
+    private Orders createOrder(Customer customer) {
+        Orders order = new Orders();
+        order.setOrderNumber((int) (Math.random() * 100000));
+        order.setOrderDate(LocalDate.now());
+        order.setRequiredDate(LocalDate.now().plusDays(5));
+        order.setShippedDate(LocalDate.now());
+        order.setStatus("Shipped");
+        order.setComments("Test Order");
+        order.setCustomer(customer);
 
-        List<Orders> result = ordersRepository.findByStatus("Shipped");
-
-        assertFalse(result.isEmpty());
+        return ordersRepository.save(order);
     }
 
-    // 2. Test find by date range
+    // 1.  Positive - Create order
     @Test
-    void testFindByOrderDateBetween() {
-        createOrder("Pending", LocalDate.now(), null);
+    void testCreateOrder() {
+        Customer customer = createCustomer();
 
-        List<Orders> result = ordersRepository.findByOrderDateBetween(
-                LocalDate.now().minusDays(1),
-                LocalDate.now().plusDays(1)
-        );
+        Orders order = new Orders();
+        order.setOrderNumber((int) (Math.random() * 100000));
+        order.setOrderDate(LocalDate.now());
+        order.setRequiredDate(LocalDate.now().plusDays(5));
+        order.setShippedDate(LocalDate.now());
+        order.setStatus("Shipped");
+        order.setComments("Created Order");
+        order.setCustomer(customer);
 
-        assertTrue(result.size() > 0);
+        Orders savedOrder = ordersRepository.save(order);
+
+        assertNotNull(savedOrder);
+        assertNotNull(savedOrder.getOrderNumber());
+        assertEquals("Shipped", savedOrder.getStatus());
     }
 
-    // 3. Test unshipped orders
+    // 2. Positive - Read order by ID
     @Test
-    void testFindUnshippedOrders() {
-        createOrder("Pending", LocalDate.now(), null);
+    void testReadOrderById() {
+        Customer customer = createCustomer();
+        Orders savedOrder = createOrder(customer);
 
-        List<Orders> result = ordersRepository.findUnshippedOrders();
+        Optional<Orders> foundOrder = ordersRepository.findById(savedOrder.getOrderNumber());
 
-        assertEquals(1, result.size());
+        assertTrue(foundOrder.isPresent());
+        assertEquals(savedOrder.getOrderNumber(), foundOrder.get().getOrderNumber());
     }
 
-    // 4. Test orders after date
+    // 3.  Positive - Update order
     @Test
-    void testFindOrdersAfterDate() {
-        createOrder("Shipped", LocalDate.now(), LocalDate.now());
+    void testUpdateOrder() {
+        Customer customer = createCustomer();
+        Orders savedOrder = createOrder(customer);
 
-        List<Orders> result = ordersRepository.findOrdersAfterDate(
-                LocalDate.now().minusDays(1)
-        );
+        savedOrder.setStatus("Cancelled");
+        savedOrder.setComments("Updated Order");
 
-        assertFalse(result.isEmpty());
+        Orders updatedOrder = ordersRepository.save(savedOrder);
+
+        assertEquals("Cancelled", updatedOrder.getStatus());
+        assertEquals("Updated Order", updatedOrder.getComments());
     }
 
-    // 5. Test count by status
+    // 4.  Positive - Delete order
     @Test
-    void testCountByStatus() {
-        createOrder("Shipped", LocalDate.now(), LocalDate.now());
+    void testDeleteOrder() {
+        Customer customer = createCustomer();
+        Orders savedOrder = createOrder(customer);
 
-        long count = ordersRepository.countByStatus("Shipped");
+        ordersRepository.deleteById(savedOrder.getOrderNumber());
 
-        assertEquals(1, count);
+        Optional<Orders> deletedOrder = ordersRepository.findById(savedOrder.getOrderNumber());
+
+        assertFalse(deletedOrder.isPresent());
+    }
+
+    // 5.  Negative - Read order by invalid ID
+    @Test
+    void testReadOrderByInvalidId() {
+        Optional<Orders> foundOrder = ordersRepository.findById(999999);
+
+        assertFalse(foundOrder.isPresent());
     }
 }
-
