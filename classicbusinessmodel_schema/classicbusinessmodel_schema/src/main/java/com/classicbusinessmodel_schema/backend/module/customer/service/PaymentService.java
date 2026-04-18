@@ -9,6 +9,9 @@ import java.util.List;
 
 public interface PaymentService {
 
+    Payment getPayment(Integer customerNumber, String checkNumber);
+
+    Payment createPayment(Payment payment);
     // Get payments by customer
     List<Payment> getPaymentsByCustomer(Integer customerNumber);
 

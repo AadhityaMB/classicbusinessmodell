@@ -15,28 +15,31 @@ import java.util.List;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, PaymentId> {
 
-    // ── SELECT ──
-
-    // Get payments for a customer
+    // 1. Get payments for a customer
     List<Payment> findByCustomerCustomerNumber(Integer customerNumber);
 
-    // Get payments between dates
+    // 2. Get payments between dates
     List<Payment> findByPaymentDateBetween(LocalDate startDate, LocalDate endDate);
 
+    //3.READ – Get payments by customer
+    @Query("SELECT p FROM Payment p WHERE p.customer.customerNumber = :customerNumber")
+    List<Payment> getPaymentsByCustomer(@Param("customerNumber") Integer customerNumber);
 
-    // ── UPDATE ──
+    //4.READ – Get single payment
+    @Query("SELECT p FROM Payment p WHERE p.id.customerNumber = :customerNumber AND p.id.checkNumber = :checkNumber")
+    Payment getPayment(@Param("customerNumber") Integer customerNumber,
+                       @Param("checkNumber") String checkNumber);
 
+    //5.UPDATE – Update payment amount
     @Modifying
-    @Query("UPDATE Payment p SET p.amount = :amount WHERE p.customer.customerNumber = :customerNumber AND p.checkNumber = :checkNumber")
+    @Query("UPDATE Payment p SET p.amount = :amount WHERE p.id.customerNumber = :customerNumber AND p.id.checkNumber = :checkNumber")
     int updatePaymentAmount(@Param("customerNumber") Integer customerNumber,
                             @Param("checkNumber") String checkNumber,
                             @Param("amount") BigDecimal amount);
 
-
-    // ── DELETE ──
-
+    //6.DELETE – Delete payment
     @Modifying
-    @Query("DELETE FROM Payment p WHERE p.customer.customerNumber = :customerNumber AND p.checkNumber = :checkNumber")
+    @Query("DELETE FROM Payment p WHERE p.id.customerNumber = :customerNumber AND p.id.checkNumber = :checkNumber")
     void deletePayment(@Param("customerNumber") Integer customerNumber,
                        @Param("checkNumber") String checkNumber);
 }
