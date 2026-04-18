@@ -22,10 +22,15 @@ public class ProductLine {
     @Column(name = "productLine")
     private String productLine;
 
+    @Column(name = "textdescription", length = 4000)
     private String textDescription;
 
+    @Lob
+    @Column(name = "htmldescription")
     private String htmlDescription;
 
+    @Lob
+    @Column(name = "image")
     private byte[] image;
 
     @JsonIgnore

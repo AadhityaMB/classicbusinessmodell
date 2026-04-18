@@ -14,12 +14,11 @@ public interface ProductLineRepository extends JpaRepository<ProductLine, String
     //Custom queries
     // Search by text description
     @Query("SELECT pl FROM ProductLine pl WHERE LOWER(pl.textDescription) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    List<ProductLine> findByTextDescriptionContainingIgnoreCase(@Param("keyword") String keyword);
+    List<ProductLine> findByTextDescriptionContaining(@Param("keyword") String keyword);
 
     // Search by HTML description
-    @Query("SELECT pl FROM ProductLine pl WHERE LOWER(pl.htmlDescription) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    List<ProductLine> findByHtmlDescriptionContainingIgnoreCase(@Param("keyword") String keyword);
-
+    @Query("SELECT p FROM ProductLine p WHERE p.htmlDescription LIKE %:keyword%")
+    List<ProductLine> searchHtml(@Param("keyword") String keyword);
     // Check existence
     @Query("SELECT COUNT(pl) > 0 FROM ProductLine pl WHERE pl.productLine = :productLine")
     boolean existsByProductLine(@Param("productLine") String productLine);
