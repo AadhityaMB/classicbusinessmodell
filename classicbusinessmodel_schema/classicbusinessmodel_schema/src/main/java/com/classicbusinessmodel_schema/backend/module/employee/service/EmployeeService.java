@@ -1,20 +1,21 @@
 package com.classicbusinessmodel_schema.backend.module.employee.service;
 
-import com.classicbusinessmodel_schema.backend.entity.Employee;
+import com.classicbusinessmodel_schema.backend.module.employee.dto.requestDto.EmployeeRequestDTO;
+import com.classicbusinessmodel_schema.backend.module.employee.dto.responseDto.EmployeeResponseDTO;
 
 import java.util.List;
 
 public interface EmployeeService {
 
-    Employee createEmployee(Employee employee);
+    EmployeeResponseDTO createEmployee(EmployeeRequestDTO dto);
 
-    List<Employee> getAllEmployees();
+    List<EmployeeResponseDTO> getAllEmployees();
 
-    Employee getEmployeeById(Integer id);
+    EmployeeResponseDTO getEmployeeById(Integer id);
 
-    Employee updateEmployee(Integer id, Employee employee);
+    EmployeeResponseDTO updateEmployee(Integer id, EmployeeRequestDTO dto);
 
-    List<Employee> getSubordinates(Integer managerId);
+    List<EmployeeResponseDTO> getSubordinates(Integer managerId);
 
-    Employee getManager(Integer employeeId);
+    EmployeeResponseDTO getManager(Integer employeeId);
 }

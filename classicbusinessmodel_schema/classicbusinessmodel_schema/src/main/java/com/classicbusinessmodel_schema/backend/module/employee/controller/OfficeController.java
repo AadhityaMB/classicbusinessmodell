@@ -1,61 +1,89 @@
 package com.classicbusinessmodel_schema.backend.module.employee.controller;
 
-import com.classicbusinessmodel_schema.backend.entity.Employee;
-import com.classicbusinessmodel_schema.backend.entity.Office;
-import com.classicbusinessmodel_schema.backend.module.employee.dto.employeeDto.responseDto.EmployeeSimpleDTO;
-import com.classicbusinessmodel_schema.backend.module.employee.dto.officedto.OfficeResponseDTO;
+import com.classicbusinessmodel_schema.backend.common.ApiResponse;
+import com.classicbusinessmodel_schema.backend.module.employee.dto.requestDto.OfficeRequestDTO;
+import com.classicbusinessmodel_schema.backend.module.employee.dto.responseDto.EmployeeResponseDTO;
+import com.classicbusinessmodel_schema.backend.module.employee.dto.responseDto.OfficeResponseDTO;
 import com.classicbusinessmodel_schema.backend.module.employee.service.OfficeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Tag(name = "Office", description = "APIs for managing offices")
 @RestController
 @RequestMapping("/api/offices")
 public class OfficeController {
 
-    private final OfficeService service;
+    @Autowired
+    private OfficeService officeService;
 
-    public OfficeController(OfficeService service) {
-        this.service = service;
+    @Operation(summary = "Create a new office", description = "Adds a new office record to the system")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Office created successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
+    @PostMapping
+    public ApiResponse<OfficeResponseDTO> createOffice(@Valid @RequestBody OfficeRequestDTO dto) {
+        return new ApiResponse<>(
+                LocalDateTime.now(),
+                201,
+                "Office created successfully",
+                officeService.createOffice(dto)
+        );
     }
 
+    @Operation(summary = "Get all offices", description = "Retrieves a list of all offices")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Offices fetched successfully")
+    })
     @GetMapping
-    public List<OfficeResponseDTO> getAllOffices() {
-        return service.getAllOffices()
-                .stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public ApiResponse<List<OfficeResponseDTO>> getAllOffices() {
+        return new ApiResponse<>(
+                LocalDateTime.now(),
+                200,
+                "Offices fetched successfully",
+                officeService.getAllOffices()
+        );
     }
 
-    @GetMapping("/{code}")
-    public OfficeResponseDTO getOffice(@PathVariable String code) {
-        return mapToDTO(service.getOfficeByCode(code));
+    @Operation(summary = "Get office by code", description = "Retrieves a single office by its office code")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Office fetched successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Office not found")
+    })
+    @GetMapping("/{officeCode}")
+    public ApiResponse<OfficeResponseDTO> getOffice(
+            @Parameter(description = "Office code", required = true)
+            @PathVariable String officeCode) {
+        return new ApiResponse<>(
+                LocalDateTime.now(),
+                200,
+                "Office fetched successfully",
+                officeService.getOfficeByCode(officeCode)
+        );
     }
 
-    @GetMapping("/{code}/employees")
-    public List<EmployeeSimpleDTO> getEmployees(@PathVariable String code) {
-        List<Employee> employees = service.getEmployeesByOffice(code);
-
-        return employees.stream()
-                .map(this::mapToSimpleDTO)
-                .collect(Collectors.toList());
-    }
-
-    private OfficeResponseDTO mapToDTO(Office o) {
-        OfficeResponseDTO dto = new OfficeResponseDTO();
-        dto.setOfficeCode(o.getOfficeCode());
-        dto.setCity(o.getCity());
-        dto.setPhone(o.getPhone());
-        dto.setCountry(o.getCountry());
-        return dto;
-    }
-
-    private EmployeeSimpleDTO mapToSimpleDTO(Employee e) {
-        EmployeeSimpleDTO dto = new EmployeeSimpleDTO();
-        dto.setEmployeeNumber(e.getEmployeeNumber());
-        dto.setFirstName(e.getFirstName());
-        dto.setLastName(e.getLastName());
-        return dto;
+    @Operation(summary = "Get employees by office", description = "Retrieves all employees belonging to the specified office")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Employees fetched successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Office not found or no employees in office")
+    })
+    @GetMapping("/{officeCode}/employees")
+    public ApiResponse<List<EmployeeResponseDTO>> getEmployeesByOffice(
+            @Parameter(description = "Office code", required = true)
+            @PathVariable String officeCode) {
+        return new ApiResponse<>(
+                LocalDateTime.now(),
+                200,
+                "Employees in office fetched successfully",
+                officeService.getEmployeesByOffice(officeCode)
+        );
     }
 }

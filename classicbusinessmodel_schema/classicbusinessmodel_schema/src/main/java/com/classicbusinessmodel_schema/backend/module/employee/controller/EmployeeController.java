@@ -1,105 +1,124 @@
 package com.classicbusinessmodel_schema.backend.module.employee.controller;
 
-import com.classicbusinessmodel_schema.backend.entity.Employee;
-import com.classicbusinessmodel_schema.backend.module.employee.dto.employeeDto.responseDto.EmployeeResponseDTO;
-import com.classicbusinessmodel_schema.backend.module.employee.dto.employeeDto.responseDto.EmployeeSimpleDTO;
-import com.classicbusinessmodel_schema.backend.module.employee.dto.employeeDto.requestDTO.EmployeeRequestDTO;
+import com.classicbusinessmodel_schema.backend.common.ApiResponse;
+import com.classicbusinessmodel_schema.backend.module.employee.dto.requestDto.EmployeeRequestDTO;
+import com.classicbusinessmodel_schema.backend.module.employee.dto.responseDto.EmployeeResponseDTO;
 import com.classicbusinessmodel_schema.backend.module.employee.service.EmployeeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Tag(name = "Employee", description = "APIs for managing employees")
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
 
-    private final EmployeeService service;
+    @Autowired
+    private EmployeeService employeeService;
 
-    public EmployeeController(EmployeeService service) {
-        this.service = service;
-    }
-
+    @Operation(summary = "Create a new employee", description = "Adds a new employee record to the system")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Employee created successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PostMapping
-    public EmployeeResponseDTO createEmployee(@RequestBody EmployeeRequestDTO dto) {
-        Employee employee = mapToEntity(dto);
-        return mapToDTO(service.createEmployee(employee));
+    public ApiResponse<EmployeeResponseDTO> createEmployee(@Valid @RequestBody EmployeeRequestDTO dto) {
+        return new ApiResponse<>(
+                LocalDateTime.now(),
+                201,
+                "Employee created successfully",
+                employeeService.createEmployee(dto)
+        );
     }
 
+    @Operation(summary = "Get all employees", description = "Retrieves a list of all employees")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Employees fetched successfully")
+    })
     @GetMapping
-    public List<EmployeeResponseDTO> getAllEmployees() {
-        return service.getAllEmployees()
-                .stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public ApiResponse<List<EmployeeResponseDTO>> getAllEmployees() {
+        return new ApiResponse<>(
+                LocalDateTime.now(),
+                200,
+                "Employees fetched successfully",
+                employeeService.getAllEmployees()
+        );
     }
 
-    @GetMapping("/{id}")
-    public EmployeeResponseDTO getEmployee(@PathVariable Integer id) {
-        return mapToDTO(service.getEmployeeById(id));
+    @Operation(summary = "Get employee by ID", description = "Retrieves a single employee by their employee number")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Employee fetched successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Employee not found")
+    })
+    @GetMapping("/{employeeNumber}")
+    public ApiResponse<EmployeeResponseDTO> getEmployee(
+            @Parameter(description = "Employee number", required = true)
+            @PathVariable Integer employeeNumber) {
+        return new ApiResponse<>(
+                LocalDateTime.now(),
+                200,
+                "Employee fetched successfully",
+                employeeService.getEmployeeById(employeeNumber)
+        );
     }
 
-    @PutMapping("/{id}")
-    public EmployeeResponseDTO updateEmployee(@PathVariable Integer id,
-                                              @RequestBody EmployeeRequestDTO dto) {
-        Employee employee = mapToEntity(dto);
-        return mapToDTO(service.updateEmployee(id, employee));
+    @Operation(summary = "Update an employee", description = "Updates the details of an existing employee")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Employee updated successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Employee not found")
+    })
+    @PutMapping("/{employeeNumber}")
+    public ApiResponse<EmployeeResponseDTO> updateEmployee(
+            @Parameter(description = "Employee number", required = true)
+            @PathVariable Integer employeeNumber,
+            @Valid @RequestBody EmployeeRequestDTO dto) {
+        return new ApiResponse<>(
+                LocalDateTime.now(),
+                200,
+                "Employee updated successfully",
+                employeeService.updateEmployee(employeeNumber, dto)
+        );
     }
 
-    @GetMapping("/{id}/manager")
-    public EmployeeSimpleDTO getManager(@PathVariable Integer id) {
-        Employee manager = service.getManager(id);
-        return mapToSimpleDTO(manager);
+    @Operation(summary = "Get manager of an employee", description = "Retrieves the manager of the specified employee")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Manager fetched successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Employee or manager not found")
+    })
+    @GetMapping("/{employeeNumber}/manager")
+    public ApiResponse<EmployeeResponseDTO> getManager(
+            @Parameter(description = "Employee number", required = true)
+            @PathVariable Integer employeeNumber) {
+        return new ApiResponse<>(
+                LocalDateTime.now(),
+                200,
+                "Manager fetched successfully",
+                employeeService.getManager(employeeNumber)
+        );
     }
 
-    @GetMapping("/{id}/subordinates")
-    public List<EmployeeSimpleDTO> getSubordinates(@PathVariable Integer id) {
-        return service.getSubordinates(id)
-                .stream()
-                .map(this::mapToSimpleDTO)
-                .collect(Collectors.toList());
-    }
-
-    private Employee mapToEntity(EmployeeRequestDTO dto) {
-        Employee e = new Employee();
-        e.setEmployeeNumber(dto.getEmployeeNumber());
-        e.setFirstName(dto.getFirstName());
-        e.setLastName(dto.getLastName());
-        e.setEmail(dto.getEmail());
-        e.setExtension(dto.getExtension());
-        e.setJobTitle(dto.getJobTitle());
-
-        if (dto.getOfficeCode() != null) {
-            e.setOffice(new com.classicbusinessmodel_schema.backend.entity.Office());
-            e.getOffice().setOfficeCode(dto.getOfficeCode());
-        }
-
-        if (dto.getManagerId() != null) {
-            Employee manager = new Employee();
-            manager.setEmployeeNumber(dto.getManagerId());
-            e.setManager(manager);
-        }
-
-        return e;
-    }
-
-    private EmployeeResponseDTO mapToDTO(Employee e) {
-        EmployeeResponseDTO dto = new EmployeeResponseDTO();
-        dto.setEmployeeNumber(e.getEmployeeNumber());
-        dto.setFirstName(e.getFirstName());
-        dto.setLastName(e.getLastName());
-        dto.setEmail(e.getEmail());
-        dto.setJobTitle(e.getJobTitle());
-        dto.setOfficeCode(e.getOffice() != null ? e.getOffice().getOfficeCode() : null);
-        dto.setManagerId(e.getManager() != null ? e.getManager().getEmployeeNumber() : null);
-        return dto;
-    }
-
-    private EmployeeSimpleDTO mapToSimpleDTO(Employee e) {
-        EmployeeSimpleDTO dto = new EmployeeSimpleDTO();
-        dto.setEmployeeNumber(e.getEmployeeNumber());
-        dto.setFirstName(e.getFirstName());
-        dto.setLastName(e.getLastName());
-        return dto;
+    @Operation(summary = "Get subordinates of an employee", description = "Retrieves all employees who report to the specified employee")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Subordinates fetched successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "No subordinates found")
+    })
+    @GetMapping("/{employeeNumber}/subordinates")
+    public ApiResponse<List<EmployeeResponseDTO>> getSubordinates(
+            @Parameter(description = "Employee number", required = true)
+            @PathVariable Integer employeeNumber) {
+        return new ApiResponse<>(
+                LocalDateTime.now(),
+                200,
+                "Subordinates fetched successfully",
+                employeeService.getSubordinates(employeeNumber)
+        );
     }
 }
