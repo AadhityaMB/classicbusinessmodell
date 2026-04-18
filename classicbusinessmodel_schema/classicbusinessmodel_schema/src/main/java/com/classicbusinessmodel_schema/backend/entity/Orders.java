@@ -2,8 +2,6 @@ package com.classicbusinessmodel_schema.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.Builder;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,23 +9,16 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
-@Builder
 public class Orders {
 
     @Id
     @Column(name = "orderNumber")
     private Integer orderNumber;
 
-
     private LocalDate orderDate;
-
-
     private LocalDate requiredDate;
-
     private LocalDate shippedDate;
-
     private String status;
-
     private String comments;
 
     @JsonIgnore
@@ -39,10 +30,8 @@ public class Orders {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderDetails> orderDetails = new ArrayList<>();
 
-
     public Orders() {
     }
-
 
     public Orders(Integer orderNumber, LocalDate orderDate, LocalDate requiredDate,
                   LocalDate shippedDate, String status, String comments,
@@ -56,7 +45,6 @@ public class Orders {
         this.customer = customer;
         this.orderDetails = orderDetails;
     }
-
 
     public Integer getOrderNumber() {
         return orderNumber;
@@ -115,10 +103,12 @@ public class Orders {
     }
 
     public List<OrderDetails> getOrderDetails() {
+
         return orderDetails;
     }
 
     public void setOrderDetails(List<OrderDetails> orderDetails) {
+
         this.orderDetails = orderDetails;
     }
 }
