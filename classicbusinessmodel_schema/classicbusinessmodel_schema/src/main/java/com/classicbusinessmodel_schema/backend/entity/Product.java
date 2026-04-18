@@ -39,6 +39,7 @@ public class Product {
         private String productVendor;
 
         @NotBlank
+        @Column(name = "product_description", columnDefinition = "TEXT", nullable = false)
         private String productDescription;
 
         @NotNull

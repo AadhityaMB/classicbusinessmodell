@@ -1,20 +1,22 @@
 package com.classicbusinessmodel_schema.backend.module.report.service;
 
 
+import com.classicbusinessmodel_schema.backend.module.report.dto.response.*;
+
 import java.util.List;
 import java.util.Map;
 
 public interface ReportService {
 
-    List<Map<String, Object>> getCustomerExposure();
+    List<CustomerExposureResponseDTO> getCustomerExposure();
 
-    Double getOrderValue(Integer orderNumber);
+    OrderValueResponseDTO getOrderValue(Integer orderNumber);
 
-    List<Map<String, Object>> getSalesByCountry();
+    List<SalesByCountryResponseDTO> getSalesByCountry();
 
-    List<Map<String, Object>> getSalesByEmployee();
+    List<SalesByEmployeeResponseDTO> getSalesByEmployee();
 
-    List<Map<String, Object>> getMonthlyRevenue();
+    List<MonthlyRevenueResponseDTO> getMonthlyRevenue();
 
-    List<Map<String, Object>> getHighRiskCustomers();
+    List<HighRiskCustomerResponseDTO> getHighRiskCustomers();
 }

@@ -28,6 +28,7 @@ public class Orders {
 
     private String status;
 
+    @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
     @JsonIgnore
