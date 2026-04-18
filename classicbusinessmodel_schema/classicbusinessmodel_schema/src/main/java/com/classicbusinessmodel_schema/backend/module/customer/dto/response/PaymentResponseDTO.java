@@ -5,20 +5,28 @@ import java.time.LocalDate;
 
 public class PaymentResponseDTO {
 
-    private Integer customerNumber;
     private String checkNumber;
-    private LocalDate paymentDate;
+    private Integer customerNumber;
     private BigDecimal amount;
+    private LocalDate paymentDate;
 
     public PaymentResponseDTO() {
     }
 
-    public PaymentResponseDTO(Integer customerNumber, String checkNumber,
-                              LocalDate paymentDate, BigDecimal amount) {
-        this.customerNumber = customerNumber;
+    public PaymentResponseDTO(String checkNumber, Integer customerNumber, BigDecimal amount, LocalDate paymentDate) {
         this.checkNumber = checkNumber;
-        this.paymentDate = paymentDate;
+        this.customerNumber = customerNumber;
         this.amount = amount;
+        this.paymentDate = paymentDate;
+    }
+
+    // getters & setters
+    public String getCheckNumber() {
+        return checkNumber;
+    }
+
+    public void setCheckNumber(String checkNumber) {
+        this.checkNumber = checkNumber;
     }
 
     public Integer getCustomerNumber() {
@@ -29,12 +37,12 @@ public class PaymentResponseDTO {
         this.customerNumber = customerNumber;
     }
 
-    public String getCheckNumber() {
-        return checkNumber;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setCheckNumber(String checkNumber) {
-        this.checkNumber = checkNumber;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public LocalDate getPaymentDate() {
@@ -43,13 +51,5 @@ public class PaymentResponseDTO {
 
     public void setPaymentDate(LocalDate paymentDate) {
         this.paymentDate = paymentDate;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
     }
 }
