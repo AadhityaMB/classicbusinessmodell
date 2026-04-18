@@ -19,6 +19,8 @@ public class Orders {
     private LocalDate requiredDate;
     private LocalDate shippedDate;
     private String status;
+
+    @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
     @JsonIgnore

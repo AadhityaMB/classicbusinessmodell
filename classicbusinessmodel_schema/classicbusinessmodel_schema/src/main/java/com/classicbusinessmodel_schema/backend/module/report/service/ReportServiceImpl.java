@@ -8,61 +8,195 @@ import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundExcepti
 import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;
 import com.classicbusinessmodel_schema.backend.module.orders.repository.OrdersRepository;
 import com.classicbusinessmodel_schema.backend.module.product.repository.OrderDetailRepository;
+import com.classicbusinessmodel_schema.backend.module.report.dto.response.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
 
     private final CustomerRepository customerRepository;
     private final OrdersRepository ordersRepository;
     private final OrderDetailRepository orderDetailRepository;
 
-    public ReportServiceImpl(CustomerRepository customerRepository,
-                             OrdersRepository ordersRepository,
-                             OrderDetailRepository orderDetailRepository) {
-        this.customerRepository = customerRepository;
-        this.ordersRepository = ordersRepository;
-        this.orderDetailRepository = orderDetailRepository;
-    }
-
     // 1. CUSTOMER EXPOSURE
     @Override
-    public List<Map<String, Object>> getCustomerExposure() {
+    public List<CustomerExposureResponseDTO> getCustomerExposure() {
 
         List<Customer> customers = customerRepository.findAll();
-        List<Map<String, Object>> result = new ArrayList<>();
 
-        for (Customer customer : customers) {
+        return customers.stream().map(customer -> {
 
-            List<Orders> orders = ordersRepository
-                    .findByCustomerCustomerNumber(customer.getCustomerNumber());
+            List<Orders> orders =
+                    ordersRepository.findByCustomerCustomerNumber(customer.getCustomerNumber());
 
-            double totalOrderValue = 0;
+            double totalOrderValue = orders.stream()
+                    .mapToDouble(order -> calculateOrderValue(order.getOrderNumber()))
+                    .sum();
 
-            for (Orders order : orders) {
-                totalOrderValue += getOrderValue(order.getOrderNumber());
-            }
+            BigDecimal credit = customer.getCreditLimit() != null
+                    ? customer.getCreditLimit()
+                    : BigDecimal.ZERO;
 
-            Map<String, Object> data = new HashMap<>();
-            data.put("customerId", customer.getCustomerNumber());
-            data.put("customerName", customer.getCustomerName());
-            data.put("creditLimit", customer.getCreditLimit());
-            data.put("totalOrderValue", totalOrderValue);
+            BigDecimal total = BigDecimal.valueOf(totalOrderValue);
 
-            result.add(data);
-        }
+            return CustomerExposureResponseDTO.builder()
+                    .customerNumber(customer.getCustomerNumber())
+                    .customerName(customer.getCustomerName())
+                    .creditLimit(credit)
+                    .totalOrderValue(total)
+                    .remainingCredit(credit.subtract(total))
+                    .build();
 
-        return result;
+        }).toList();
     }
 
     // 2. ORDER VALUE
     @Override
-    public Double getOrderValue(Integer orderNumber) {
+    public OrderValueResponseDTO getOrderValue(Integer orderNumber) {
+
+        double total = calculateOrderValue(orderNumber);
+
+        return OrderValueResponseDTO.builder()
+                .orderNumber(orderNumber)
+                .totalValue(BigDecimal.valueOf(total))
+                .build();
+    }
+
+    // 3. SALES BY COUNTRY
+    @Override
+    public List<SalesByCountryResponseDTO> getSalesByCountry() {
+
+        Map<String, Double> map = new HashMap<>();
+
+        List<Customer> customers = customerRepository.findAll();
+
+        for (Customer c : customers) {
+
+            List<Orders> orders =
+                    ordersRepository.findByCustomerCustomerNumber(c.getCustomerNumber());
+
+            double total = orders.stream()
+                    .mapToDouble(o -> calculateOrderValue(o.getOrderNumber()))
+                    .sum();
+
+            map.merge(c.getCountry(), total, Double::sum);
+        }
+
+        return map.entrySet().stream()
+                .map(entry -> SalesByCountryResponseDTO.builder()
+                        .country(entry.getKey())
+                        .totalSales(BigDecimal.valueOf(entry.getValue()))
+                        .build())
+                .toList();
+    }
+
+    // 4. SALES BY EMPLOYEE
+    @Override
+    public List<SalesByEmployeeResponseDTO> getSalesByEmployee() {
+
+        Map<Integer, Double> map = new HashMap<>();
+        Map<Integer, String> employeeNames = new HashMap<>();
+
+        List<Customer> customers = customerRepository.findAll();
+
+        for (Customer c : customers) {
+
+            if (c.getSalesRep() == null) continue;
+
+            Integer empId = c.getSalesRep().getEmployeeNumber();
+            String empName = c.getSalesRep().getFirstName() + " " + c.getSalesRep().getLastName();
+
+            employeeNames.put(empId, empName);
+
+            List<Orders> orders =
+                    ordersRepository.findByCustomerCustomerNumber(c.getCustomerNumber());
+
+            double total = orders.stream()
+                    .mapToDouble(o -> calculateOrderValue(o.getOrderNumber()))
+                    .sum();
+
+            map.merge(empId, total, Double::sum);
+        }
+
+        return map.entrySet().stream()
+                .map(entry -> SalesByEmployeeResponseDTO.builder()
+                        .employeeNumber(entry.getKey())
+                        .employeeName(employeeNames.get(entry.getKey()))
+                        .totalSales(BigDecimal.valueOf(entry.getValue()))
+                        .build())
+                .toList();
+    }
+
+    // 5. MONTHLY REVENUE
+    @Override
+    public List<MonthlyRevenueResponseDTO> getMonthlyRevenue() {
+
+        Map<String, Double> map = new HashMap<>();
+
+        List<Orders> orders = ordersRepository.findAll();
+
+        for (Orders o : orders) {
+
+            if (o.getOrderDate() == null) continue;
+
+            String key = o.getOrderDate().getYear() + "-" + o.getOrderDate().getMonthValue();
+
+            double value = calculateOrderValue(o.getOrderNumber());
+
+            map.merge(key, value, Double::sum);
+        }
+
+        return map.entrySet().stream()
+                .map(entry -> {
+                    String[] parts = entry.getKey().split("-");
+                    return MonthlyRevenueResponseDTO.builder()
+                            .year(Integer.parseInt(parts[0]))
+                            .month(Integer.parseInt(parts[1]))
+                            .revenue(BigDecimal.valueOf(entry.getValue()))
+                            .build();
+                })
+                .toList();
+    }
+
+    // 6. HIGH RISK CUSTOMERS
+    @Override
+    public List<HighRiskCustomerResponseDTO> getHighRiskCustomers() {
+
+        return getCustomerExposure().stream()
+                .filter(c -> c.getCreditLimit() != null &&
+                        c.getCreditLimit().compareTo(BigDecimal.ZERO) > 0)
+                .filter(c -> c.getTotalOrderValue().compareTo(c.getCreditLimit()) > 0)
+                .map(c -> {
+
+                    BigDecimal excess = c.getTotalOrderValue().subtract(c.getCreditLimit());
+
+                    BigDecimal riskPercentage = excess
+                            .multiply(BigDecimal.valueOf(100))
+                            .divide(c.getCreditLimit(), 2, RoundingMode.HALF_UP);
+
+                    return HighRiskCustomerResponseDTO.builder()
+                            .customerNumber(c.getCustomerNumber())
+                            .customerName(c.getCustomerName())
+                            .creditLimit(c.getCreditLimit())
+                            .totalOrderValue(c.getTotalOrderValue())
+                            .riskPercentage(riskPercentage)
+                            .build();
+                })
+                .toList();
+    }
+
+    // 🔧 HELPER METHOD
+    private double calculateOrderValue(Integer orderNumber) {
 
         List<OrderDetails> items =
                 orderDetailRepository.findByOrderOrderNumber(orderNumber);
@@ -74,107 +208,5 @@ public class ReportServiceImpl implements ReportService {
         return items.stream()
                 .mapToDouble(i -> i.getQuantityOrdered() * i.getPriceEach().doubleValue())
                 .sum();
-    }
-
-    // 3. SALES BY COUNTRY
-    @Override
-    public List<Map<String, Object>> getSalesByCountry() {
-
-        List<Customer> customers = customerRepository.findAll();
-        Map<String, Double> map = new HashMap<>();
-
-        for (Customer c : customers) {
-
-            List<Orders> orders =
-                    ordersRepository.findByCustomerCustomerNumber(c.getCustomerNumber());
-
-            double total = 0;
-            for (Orders o : orders) {
-                total += getOrderValue(o.getOrderNumber());
-            }
-
-            map.merge(c.getCountry(), total, Double::sum);
-        }
-
-        return convertMap(map);
-    }
-
-    // 4. SALES BY EMPLOYEE
-    @Override
-    public List<Map<String, Object>> getSalesByEmployee() {
-
-        Map<Integer, Double> map = new HashMap<>();
-
-        List<Customer> customers = customerRepository.findAll();
-
-        for (Customer c : customers) {
-
-            if (c.getSalesRep() == null) continue;
-
-            Integer empId = c.getSalesRep().getEmployeeNumber();
-
-            List<Orders> orders =
-                    ordersRepository.findByCustomerCustomerNumber(c.getCustomerNumber());
-
-            double total = 0;
-            for (Orders o : orders) {
-                total += getOrderValue(o.getOrderNumber());
-            }
-
-            map.merge(empId, total, Double::sum);
-        }
-
-        return convertMap(map);
-    }
-
-    // 5. MONTHLY REVENUE
-    @Override
-    public List<Map<String, Object>> getMonthlyRevenue() {
-
-        List<Orders> orders = ordersRepository.findAll();
-        Map<String, Double> map = new HashMap<>();
-
-        for (Orders o : orders) {
-
-            if (o.getOrderDate() == null) continue;
-
-            String month = o.getOrderDate().getMonth().toString();
-
-            double value = getOrderValue(o.getOrderNumber());
-
-            map.merge(month, value, Double::sum);
-        }
-
-        return convertMap(map);
-    }
-
-    // 6. HIGH RISK CUSTOMERS
-    @Override
-    public List<Map<String, Object>> getHighRiskCustomers() {
-
-        List<Map<String, Object>> exposure = getCustomerExposure();
-
-        return exposure.stream()
-                .filter(c -> {
-                    Double total = ((Number) c.get("totalOrderValue")).doubleValue();
-                    Double credit = ((Number) c.get("creditLimit")).doubleValue();
-                    return total >= credit;
-                })
-                .toList();
-    }
-
-    // 🔧 HELPER
-    private List<Map<String, Object>> convertMap(Map<?, Double> map) {
-
-        List<Map<String, Object>> result = new ArrayList<>();
-
-        for (Map.Entry<?, Double> entry : map.entrySet()) {
-            Map<String, Object> data = new HashMap<>();
-            data.put("key", entry.getKey());
-            data.put("value", entry.getValue());
-            result.add(data);
-        }
-
-        return result;
     }
 }

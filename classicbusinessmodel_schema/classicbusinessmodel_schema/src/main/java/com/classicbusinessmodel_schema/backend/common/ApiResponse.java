@@ -1,7 +1,9 @@
 package com.classicbusinessmodel_schema.backend.common;
 
-import java.time.LocalDateTime;
+import lombok.Builder;
 
+import java.time.LocalDateTime;
+@Builder
 public class ApiResponse<T> {
 
     private LocalDateTime timestamp;
