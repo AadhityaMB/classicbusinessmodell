@@ -3,7 +3,6 @@ package com.classicbusinessmodel_schema.backend.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,43 +10,45 @@ import java.util.List;
 public class Office {
 
         @Id
-        @Column(name = "officeCode")
+        @Column(name = "office_code")
         private String officeCode;
 
-        @Column(length = 50)
+        @Column(name = "city", nullable = false, length = 50)
         private String city;
 
-        @Column(length = 50)
+        @Column(name = "phone", nullable = false, length = 50)
         private String phone;
 
-        @Column(length = 50)
+        @Column(name = "address_line1", nullable = false, length = 50)
         private String addressLine1;
 
-        @Column(length = 50)
+        @Column(name = "address_line2", length = 50)
         private String addressLine2;
 
-        @Column(length = 50)
+        @Column(name = "state", length = 50)
         private String state;
 
-        @Column(length = 50)
+        @Column(name = "country", nullable = false, length = 50)
         private String country;
 
-        @Column(length = 15)
+        @Column(name = "postal_code", nullable = false, length = 15)
         private String postalCode;
 
-        @Column(length = 10)
+        @Column(name = "territory", nullable = false, length = 10)
         private String territory;
 
+        @OneToMany(mappedBy = "office")
         @JsonIgnore
-        @OneToMany(mappedBy = "office", fetch = FetchType.LAZY)
-        private List<Employee> employees = new ArrayList<>();
+        private List<Employee> employees;
 
         public Office() {
         }
 
-        public Office(String officeCode, String city, String phone, String addressLine1,
-                      String addressLine2, String state, String country,
-                      String postalCode, String territory, List<Employee> employees) {
+        public Office(String officeCode, String city, String phone,
+                      String addressLine1, String addressLine2,
+                      String state, String country,
+                      String postalCode, String territory,
+                      List<Employee> employees) {
                 this.officeCode = officeCode;
                 this.city = city;
                 this.phone = phone;
@@ -138,15 +139,5 @@ public class Office {
 
         public void setEmployees(List<Employee> employees) {
                 this.employees = employees;
-        }
-
-        @Override
-        public String toString() {
-                return "Office{" +
-                        "officeCode='" + officeCode + '\'' +
-                        ", city='" + city + '\'' +
-                        ", phone='" + phone + '\'' +
-                        ", country='" + country + '\'' +
-                        '}';
         }
 }

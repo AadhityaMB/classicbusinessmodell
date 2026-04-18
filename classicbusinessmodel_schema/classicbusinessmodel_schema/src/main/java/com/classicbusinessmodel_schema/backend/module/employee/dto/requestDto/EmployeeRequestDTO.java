@@ -1,4 +1,4 @@
-package com.classicbusinessmodel_schema.backend.module.employee.dto.employeeDto.requestDTO;
+package com.classicbusinessmodel_schema.backend.module.employee.dto.requestDto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -114,19 +114,5 @@ public class EmployeeRequestDTO {
 
     public void setJobTitle(String jobTitle) {
         this.jobTitle = jobTitle;
-    }
-
-    @Override
-    public String toString() {
-        return "EmployeeRequestDTO{" +
-                "employeeNumber=" + employeeNumber +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", extension='" + extension + '\'' +
-                ", email='" + email + '\'' +
-                ", officeCode='" + officeCode + '\'' +
-                ", managerId=" + managerId +
-                ", jobTitle='" + jobTitle + '\'' +
-                '}';
     }
 }

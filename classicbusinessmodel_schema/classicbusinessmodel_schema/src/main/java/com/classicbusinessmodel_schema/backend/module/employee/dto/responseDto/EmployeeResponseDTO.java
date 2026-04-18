@@ -1,10 +1,11 @@
-package com.classicbusinessmodel_schema.backend.module.employee.dto.employeeDto.responseDto;
+package com.classicbusinessmodel_schema.backend.module.employee.dto.responseDto;
 
 public class EmployeeResponseDTO {
 
     private Integer employeeNumber;
     private String firstName;
     private String lastName;
+    private String extension;
     private String email;
     private String jobTitle;
     private String officeCode;
@@ -14,10 +15,12 @@ public class EmployeeResponseDTO {
     }
 
     public EmployeeResponseDTO(Integer employeeNumber, String firstName, String lastName,
-                               String email, String jobTitle, String officeCode, Integer managerId) {
+                               String extension, String email, String jobTitle,
+                               String officeCode, Integer managerId) {
         this.employeeNumber = employeeNumber;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.extension = extension;
         this.email = email;
         this.jobTitle = jobTitle;
         this.officeCode = officeCode;
@@ -46,6 +49,14 @@ public class EmployeeResponseDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     public String getEmail() {
@@ -78,18 +89,5 @@ public class EmployeeResponseDTO {
 
     public void setManagerId(Integer managerId) {
         this.managerId = managerId;
-    }
-
-    @Override
-    public String toString() {
-        return "EmployeeResponseDTO{" +
-                "employeeNumber=" + employeeNumber +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", jobTitle='" + jobTitle + '\'' +
-                ", officeCode='" + officeCode + '\'' +
-                ", managerId=" + managerId +
-                '}';
     }
 }

@@ -13,44 +13,41 @@ public class Employee {
     @Column(name = "employeeNumber")
     private Integer employeeNumber;
 
-    @Column(length = 50)
+    @Column(name = "lastName", nullable = false, length = 50)
     private String lastName;
 
-    @Column(length = 50)
+    @Column(name = "firstName", nullable = false, length = 50)
     private String firstName;
 
-    @Column(length = 10)
+    @Column(name = "extension", nullable = false, length = 10)
     private String extension;
 
-    @Column(length = 100)
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "officeCode", nullable = false)
     private Office office;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "reportsTo")
     private Employee manager;
 
+    @OneToMany(mappedBy = "manager")
     @JsonIgnore
-    @OneToMany(mappedBy = "manager", fetch = FetchType.LAZY)
     private List<Employee> subordinates;
 
-    @Column(length = 50)
+    @Column(name = "jobTitle", nullable = false, length = 50)
     private String jobTitle;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "salesRep", fetch = FetchType.LAZY)
-    private List<Customer> customers;
-
+    // ===== Constructors =====
     public Employee() {
     }
 
     public Employee(Integer employeeNumber, String lastName, String firstName,
                     String extension, String email, Office office,
                     Employee manager, List<Employee> subordinates,
-                    String jobTitle, List<Customer> customers) {
+                    String jobTitle) {
         this.employeeNumber = employeeNumber;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -60,8 +57,9 @@ public class Employee {
         this.manager = manager;
         this.subordinates = subordinates;
         this.jobTitle = jobTitle;
-        this.customers = customers;
     }
+
+    // ===== Getters and Setters =====
 
     public Integer getEmployeeNumber() {
         return employeeNumber;
@@ -133,24 +131,5 @@ public class Employee {
 
     public void setJobTitle(String jobTitle) {
         this.jobTitle = jobTitle;
-    }
-
-    public List<Customer> getCustomers() {
-        return customers;
-    }
-
-    public void setCustomers(List<Customer> customers) {
-        this.customers = customers;
-    }
-
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "employeeNumber=" + employeeNumber +
-                ", lastName='" + lastName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", email='" + email + '\'' +
-                ", jobTitle='" + jobTitle + '\'' +
-                '}';
     }
 }

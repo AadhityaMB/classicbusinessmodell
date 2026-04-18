@@ -4,9 +4,8 @@ import com.classicbusinessmodel_schema.backend.entity.Office;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,50 +15,47 @@ class OfficeRepositoryTest {
     @Autowired
     private OfficeRepository repository;
 
-    @Autowired
-    private TestEntityManager entityManager;
-
     private Office createOffice(String code) {
-        Office office = new Office();
-        office.setOfficeCode(code);
-        office.setCity("Chennai");
-        office.setPhone("1234567890");
-        office.setAddressLine1("Street 1");
-        office.setCountry("India");
-        office.setPostalCode("600001");
-        office.setTerritory("APAC");
-        return office;
+        Office o = new Office();
+        o.setOfficeCode(code);
+        o.setCity("Chennai");
+        o.setPhone("123");
+        o.setAddressLine1("Street");
+        o.setCountry("India");
+        o.setPostalCode("600001");
+        o.setTerritory("APAC");
+        return repository.save(o);
     }
 
-    // 1️⃣ Find by City
     @Test
-    void testFindByCityCustom() {
-        Office office = createOffice("1");
-        entityManager.persist(office);
-
-        List<Office> result = repository.findByCityCustom("Chennai");
-
-        assertEquals(1, result.size());
+    void testFindOfficeByCodeCustom() {
+        createOffice("1");
+        Optional<Office> office = repository.findOfficeByCodeCustom("1");
+        assertTrue(office.isPresent());
     }
 
-    // 2️⃣ Find by Country
     @Test
-    void testFindByCountryCustom() {
-        Office office = createOffice("2");
-        entityManager.persist(office);
-
-        List<Office> result = repository.findByCountryCustom("India");
-
-        assertEquals(1, result.size());
+    void testFindAllOfficesCustom() {
+        createOffice("2");
+        assertFalse(repository.findAllOfficesCustom().isEmpty());
     }
 
-    // 3️⃣ Get All Cities
     @Test
-    void testFindAllCities() {
-        entityManager.persist(createOffice("3"));
+    void testUpdateOfficeCity() {
+        createOffice("3");
+        int updated = repository.updateOfficeCity("3", "Delhi");
+        assertEquals(1, updated);
+    }
 
-        List<String> cities = repository.findAllCities();
+    @Test
+    void testDeleteOfficeByCodeCustom() {
+        createOffice("4");
+        int deleted = repository.deleteOfficeByCodeCustom("4");
+        assertEquals(1, deleted);
+    }
 
-        assertTrue(cities.contains("Chennai"));
+    @Test
+    void testFindOfficeByCodeCustomNegative() {
+        assertTrue(repository.findOfficeByCodeCustom("999").isEmpty());
     }
 }
