@@ -9,28 +9,22 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 
 @Entity
 @Table(name = "payments")
-@IdClass(PaymentId.class)
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+//@IdClass(PaymentId.class)
+//@Builder
 public class Payment {
 
-        @Id
+        @EmbeddedId
+        private PaymentId id;
+
+        @MapsId("customerNumber")
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "customerNumber")
+        @JoinColumn(name = "customer_number")
         private Customer customer;
 
-        @Id
-        @NotBlank
-        @Size(max = 50)
-        private String checkNumber;
 
         @NotNull
         private LocalDate paymentDate;
@@ -38,4 +32,46 @@ public class Payment {
         @NotNull
         @DecimalMin("0.0")
         private BigDecimal amount;
+
+
+        public Payment(PaymentId id, Customer customer, LocalDate paymentDate, BigDecimal amount) {
+                this.id = id;
+                this.customer = customer;
+                this.paymentDate = paymentDate;
+                this.amount = amount;
+        }
+        public Payment() {
+        }
+
+        public PaymentId getId() {
+                return id;
+        }
+
+        public void setId(PaymentId id) {
+                this.id = id;
+        }
+
+        public Customer getCustomer() {
+                return customer;
+        }
+
+        public void setCustomer(Customer customer) {
+                this.customer = customer;
+        }
+
+        public LocalDate getPaymentDate() {
+                return paymentDate;
+        }
+
+        public void setPaymentDate(LocalDate paymentDate) {
+                this.paymentDate = paymentDate;
+        }
+
+        public BigDecimal getAmount() {
+                return amount;
+        }
+
+        public void setAmount(BigDecimal amount) {
+                this.amount = amount;
+        }
 }
