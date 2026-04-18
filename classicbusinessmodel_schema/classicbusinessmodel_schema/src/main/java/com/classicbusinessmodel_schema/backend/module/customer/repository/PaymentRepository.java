@@ -9,8 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, PaymentId> {
@@ -18,9 +18,8 @@ public interface PaymentRepository extends JpaRepository<Payment, PaymentId> {
     // 1. Get payments for a customer
     List<Payment> findByCustomerCustomerNumber(Integer customerNumber);
 
-    // 2. Get payments between dates
-    List<Payment> findByPaymentDateBetween(LocalDate startDate, LocalDate endDate);
-
+    // 2. Get payment by check number
+    Optional<Payment> findByIdCheckNumber(String checkNumber);
     //3.READ – Get payments by customer
     @Query("SELECT p FROM Payment p WHERE p.customer.customerNumber = :customerNumber")
     List<Payment> getPaymentsByCustomer(@Param("customerNumber") Integer customerNumber);
