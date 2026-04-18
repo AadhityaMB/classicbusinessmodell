@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 public class CreateProductRequest {
 
-    @NotBlank
+    @NotBlank(message = "Product code cannot be empty")
     @Size(max = 15)
     private String productCode;
 
@@ -28,12 +28,12 @@ public class CreateProductRequest {
     @NotBlank
     private String productDescription;
 
-    @NotNull
-    @Min(0)
+    @NotNull(message = "Stock is required")
+    @Min(value = 0, message = "Stock cannot be negative")
     private Integer quantityInStock;
 
-    @NotNull
-    @DecimalMin("0.01")
+    @NotNull(message = "Buy price is required")
+    @DecimalMin(value = "0.01", message = "Buy price must be greater than 0")
     private BigDecimal buyPrice;
 
     @NotNull

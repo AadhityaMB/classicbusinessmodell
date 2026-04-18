@@ -5,15 +5,14 @@ import java.math.BigDecimal;
 
 public class OrderDetailRequest {
 
-    @NotNull
     private Integer orderNumber;
 
-    @NotBlank
+    @NotBlank(message = "Product code cannot be empty")
     @Size(max = 15)
     private String productCode;
 
-    @NotNull
-    @Min(1)
+    @NotNull(message = "Quantity is required")
+    @Min(value = 1, message = "Quantity must be at least 1")
     private Integer quantityOrdered;
 
     @NotNull

@@ -10,12 +10,10 @@ import com.classicbusinessmodel_schema.backend.module.orders.repository.OrdersRe
 import com.classicbusinessmodel_schema.backend.module.product.repository.OrderDetailRepository;
 import com.classicbusinessmodel_schema.backend.module.report.dto.response.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

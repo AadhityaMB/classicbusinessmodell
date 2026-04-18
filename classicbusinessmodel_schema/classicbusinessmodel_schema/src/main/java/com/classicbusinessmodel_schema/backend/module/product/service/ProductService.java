@@ -3,7 +3,6 @@ package com.classicbusinessmodel_schema.backend.module.product.service;
 import com.classicbusinessmodel_schema.backend.module.product.dto.request.CreateProductRequest;
 import com.classicbusinessmodel_schema.backend.module.product.dto.request.UpdateProductRequest;
 import com.classicbusinessmodel_schema.backend.module.product.dto.response.ProductResponse;
-
 import java.util.List;
 
 public interface ProductService {

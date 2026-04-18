@@ -2,7 +2,6 @@ package com.classicbusinessmodel_schema.backend.module.product.service;
 
 import com.classicbusinessmodel_schema.backend.module.product.dto.request.OrderDetailRequest;
 import com.classicbusinessmodel_schema.backend.module.product.dto.response.OrderDetailResponse;
-
 import java.util.List;
 
 public interface OrderDetailService {

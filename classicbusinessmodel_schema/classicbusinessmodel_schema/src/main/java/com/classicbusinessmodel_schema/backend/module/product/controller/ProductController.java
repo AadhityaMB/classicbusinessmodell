@@ -1,17 +1,19 @@
 package com.classicbusinessmodel_schema.backend.module.product.controller;
 
+import com.classicbusinessmodel_schema.backend.common.ApiResponse;
 import com.classicbusinessmodel_schema.backend.module.product.dto.request.CreateProductRequest;
 import com.classicbusinessmodel_schema.backend.module.product.dto.request.UpdateProductRequest;
 import com.classicbusinessmodel_schema.backend.module.product.dto.response.ProductResponse;
 import com.classicbusinessmodel_schema.backend.module.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -19,56 +21,100 @@ import java.util.List;
 @Tag(name = "Products", description = "Product management APIs")
 public class ProductController {
 
-    private final ProductService productService;
+    @Autowired
+    private ProductService productService;
 
-    // Manual constructor injection (replaces @RequiredArgsConstructor)
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
-
+    // CREATE PRODUCT
     @PostMapping
     @Operation(summary = "Create new product")
-    public ResponseEntity<ProductResponse> createProduct(
+    public ResponseEntity<ApiResponse<ProductResponse>> createProduct(
             @Valid @RequestBody CreateProductRequest request) {
 
+        ProductResponse response = productService.createProduct(request);
+
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(productService.createProduct(request));
+                .body(
+                        new ApiResponse<>(
+                                LocalDateTime.now(),
+                                201,
+                                "Product created successfully",
+                                response
+                        )
+                );
     }
 
+    // UPDATE PRODUCT
     @PutMapping("/{productCode}")
     @Operation(summary = "Update product")
-    public ResponseEntity<ProductResponse> updateProduct(
-            @PathVariable("productCode") String productCode,
+    public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(
+            @PathVariable String productCode,
             @Valid @RequestBody UpdateProductRequest request) {
 
+        ProductResponse response =
+                productService.updateProduct(productCode, request);
+
         return ResponseEntity.ok(
-                productService.updateProduct(productCode, request)
+                new ApiResponse<>(
+                        LocalDateTime.now(),
+                        200,
+                        "Product updated successfully",
+                        response
+                )
         );
     }
 
+    // DELETE PRODUCT
     @DeleteMapping("/{productCode}")
     @Operation(summary = "Delete product")
-    public ResponseEntity<Void> deleteProduct(
-            @PathVariable("productCode") String productCode) {
+    public ResponseEntity<ApiResponse<Void>> deleteProduct(
+            @PathVariable String productCode) {
 
         productService.deleteProduct(productCode);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        LocalDateTime.now(),
+                        200,
+                        "Product deleted successfully",
+                        null
+                )
+        );
     }
 
+    // GET ALL PRODUCTS
     @GetMapping
     @Operation(summary = "Get all products")
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
-    }
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts() {
 
-    @GetMapping("/{productCode}")
-    @Operation(summary = "Get product by product code")
-    public ResponseEntity<ProductResponse> getProductById(
-            @PathVariable String productCode) {
+        List<ProductResponse> response =
+                productService.getAllProducts();
 
         return ResponseEntity.ok(
-                productService.getProductById(productCode)
+                new ApiResponse<>(
+                        LocalDateTime.now(),
+                        200,
+                        "Products fetched successfully",
+                        response
+                )
+        );
+    }
+
+    // GET PRODUCT BY ID
+    @GetMapping("/{productCode}")
+    @Operation(summary = "Get product by product code")
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(
+            @PathVariable String productCode) {
+
+        ProductResponse response =
+                productService.getProductById(productCode);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        LocalDateTime.now(),
+                        200,
+                        "Product fetched successfully",
+                        response
+                )
         );
     }
 }

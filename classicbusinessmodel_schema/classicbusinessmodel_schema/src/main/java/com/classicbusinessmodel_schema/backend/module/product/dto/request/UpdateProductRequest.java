@@ -21,10 +21,10 @@ public class UpdateProductRequest {
 
     private String productDescription;
 
-    @Min(0)
+    @Min(value = 0, message = "Stock cannot be negative")
     private Integer quantityInStock;
 
-    @DecimalMin("0.01")
+    @DecimalMin(value = "0.01", message = "Price must be greater than 0")
     private BigDecimal buyPrice;
 
     @DecimalMin("0.01")
@@ -108,4 +108,3 @@ public class UpdateProductRequest {
         this.msrp = msrp;
     }
 }
-
