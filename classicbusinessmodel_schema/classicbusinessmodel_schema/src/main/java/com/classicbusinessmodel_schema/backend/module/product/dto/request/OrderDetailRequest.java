@@ -2,7 +2,6 @@ package com.classicbusinessmodel_schema.backend.module.product.dto.request;
 
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
-
 public class OrderDetailRequest {
 
     @NotNull

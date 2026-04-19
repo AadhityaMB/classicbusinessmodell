@@ -26,7 +26,6 @@ public class PaymentController {
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
-                        LocalDateTime.now(),
                         HttpStatus.OK.value(),
                         "All payments fetched",
                         payments
@@ -42,7 +41,6 @@ public class PaymentController {
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
-                        LocalDateTime.now(),
                         HttpStatus.OK.value(),
                         "Payments fetched by customer",
                         payments
@@ -58,7 +56,6 @@ public class PaymentController {
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
-                        LocalDateTime.now(),
                         HttpStatus.OK.value(),
                         "Payment fetched",
                         payment

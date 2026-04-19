@@ -15,10 +15,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/reports")
-@RequiredArgsConstructor
 public class ReportController {
 
     private final ReportService reportService;
+
+    public ReportController(ReportService reportService) {
+        this.reportService = reportService;
+    }
 
     // 1. Customer Exposure
     @GetMapping("/customer-exposure")
@@ -27,12 +30,11 @@ public class ReportController {
         List<CustomerExposureResponseDTO> data = reportService.getCustomerExposure();
 
         return ResponseEntity.ok(
-                ApiResponse.<List<CustomerExposureResponseDTO>>builder()
-                        .message("Customer exposure report fetched successfully")
-                        .status(200)
-                        .data(data)
-                        .timestamp(LocalDateTime.now())
-                        .build()
+                new ApiResponse<>(
+                        200,
+                        "Customer exposure report fetched successfully",
+                        data
+                )
         );
     }
 
@@ -44,12 +46,11 @@ public class ReportController {
         OrderValueResponseDTO data = reportService.getOrderValue(orderNumber);
 
         return ResponseEntity.ok(
-                ApiResponse.<OrderValueResponseDTO>builder()
-                        .message("Order value fetched successfully")
-                        .status(200)
-                        .data(data)
-                        .timestamp(LocalDateTime.now())
-                        .build()
+                new ApiResponse<>(
+                        200,
+                        "Order value fetched successfully",
+                        data
+                )
         );
     }
 
@@ -60,12 +61,11 @@ public class ReportController {
         List<SalesByCountryResponseDTO> data = reportService.getSalesByCountry();
 
         return ResponseEntity.ok(
-                ApiResponse.<List<SalesByCountryResponseDTO>>builder()
-                        .message("Sales by country fetched successfully")
-                        .status(200)
-                        .data(data)
-                        .timestamp(LocalDateTime.now())
-                        .build()
+                new ApiResponse<>(
+                        200,
+                        "Sales by country fetched successfully",
+                        data
+                )
         );
     }
 
@@ -76,12 +76,11 @@ public class ReportController {
         List<SalesByEmployeeResponseDTO> data = reportService.getSalesByEmployee();
 
         return ResponseEntity.ok(
-                ApiResponse.<List<SalesByEmployeeResponseDTO>>builder()
-                        .message("Sales by employee fetched successfully")
-                        .status(200)
-                        .data(data)
-                        .timestamp(LocalDateTime.now())
-                        .build()
+                new ApiResponse<>(
+                        200,
+                        "Sales by employee fetched successfully",
+                        data
+                )
         );
     }
 
@@ -92,12 +91,11 @@ public class ReportController {
         List<MonthlyRevenueResponseDTO> data = reportService.getMonthlyRevenue();
 
         return ResponseEntity.ok(
-                ApiResponse.<List<MonthlyRevenueResponseDTO>>builder()
-                        .message("Monthly revenue fetched successfully")
-                        .status(200)
-                        .data(data)
-                        .timestamp(LocalDateTime.now())
-                        .build()
+                new ApiResponse<>(
+                        200,
+                        "Monthly revenue fetched successfully",
+                        data
+                )
         );
     }
 
@@ -108,12 +106,11 @@ public class ReportController {
         List<HighRiskCustomerResponseDTO> data = reportService.getHighRiskCustomers();
 
         return ResponseEntity.ok(
-                ApiResponse.<List<HighRiskCustomerResponseDTO>>builder()
-                        .message("High risk customers fetched successfully")
-                        .status(200)
-                        .data(data)
-                        .timestamp(LocalDateTime.now())
-                        .build()
+                new ApiResponse<>(
+                        200,
+                        "High risk customers fetched successfully",
+                        data
+                )
         );
     }
 }
