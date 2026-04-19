@@ -34,7 +34,6 @@ public class CustomerController {
         // return standard API response
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(
-                        LocalDateTime.now(),
                         HttpStatus.CREATED.value(),
                         "Customer created successfully",
                         response
@@ -57,7 +56,6 @@ public class CustomerController {
         // return response
         return ResponseEntity.ok(
                 new ApiResponse<>(
-                        LocalDateTime.now(),
                         HttpStatus.OK.value(),
                         "Customers fetched successfully",
                         result
@@ -70,20 +68,18 @@ public class CustomerController {
     public ResponseEntity<ApiResponse<CustomerResponseDTO>> getCustomerById(
             @PathVariable Integer customerNumber) {
 
-        // fetch customer by id
         CustomerResponseDTO response =
                 customerService.getCustomerById(customerNumber);
 
-        return ResponseEntity.ok(
+        ApiResponse<CustomerResponseDTO> apiResponse =
                 new ApiResponse<>(
-                        LocalDateTime.now(),
                         HttpStatus.OK.value(),
                         "Customer fetched successfully",
                         response
-                )
-        );
-    }
+                );
 
+        return ResponseEntity.ok(apiResponse);
+    }
     // UPDATE CUSTOMER
     @PutMapping("/{customerNumber}")
     public ResponseEntity<ApiResponse<CustomerResponseDTO>> updateCustomer(
@@ -96,7 +92,6 @@ public class CustomerController {
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
-                        LocalDateTime.now(),
                         HttpStatus.OK.value(),
                         "Customer updated successfully",
                         response
@@ -114,7 +109,6 @@ public class CustomerController {
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
-                        LocalDateTime.now(),
                         HttpStatus.OK.value(),
                         "Customer deleted successfully",
                         null
@@ -132,7 +126,6 @@ public class CustomerController {
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
-                        LocalDateTime.now(),
                         HttpStatus.OK.value(),
                         "Credit limit fetched successfully",
                         creditLimit
@@ -152,7 +145,6 @@ public class CustomerController {
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
-                        LocalDateTime.now(),
                         HttpStatus.OK.value(),
                         "Credit limit updated successfully",
                         response
@@ -172,7 +164,6 @@ public class CustomerController {
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
-                        LocalDateTime.now(),
                         HttpStatus.OK.value(),
                         "Search completed successfully",
                         result

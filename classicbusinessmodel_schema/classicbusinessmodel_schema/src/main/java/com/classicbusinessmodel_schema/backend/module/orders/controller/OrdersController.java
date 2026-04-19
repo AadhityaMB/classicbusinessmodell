@@ -27,7 +27,6 @@ public class OrdersController {
         OrderResponseDTO response = orderService.createOrder(request);
 
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 201,
                 "Order created successfully",
                 response
@@ -39,7 +38,6 @@ public class OrdersController {
     public ApiResponse<List<OrderResponseDTO>> getAllOrders() {
 
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 200,
                 "Orders fetched successfully",
                 orderService.getAllOrders()
@@ -51,7 +49,6 @@ public class OrdersController {
     public ApiResponse<OrderResponseDTO> getOrder(@PathVariable Integer orderNumber) {
 
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 200,
                 "Order fetched successfully",
                 orderService.getOrderById(orderNumber)
@@ -65,7 +62,6 @@ public class OrdersController {
             @Valid @RequestBody OrderRequestDTO request) {
 
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 200,
                 "Order updated successfully",
                 orderService.updateOrder(orderNumber, request)
@@ -79,7 +75,6 @@ public class OrdersController {
             @RequestBody OrderRequestDTO request) {
 
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 200,
                 "Order status updated successfully",
                 orderService.updateOrderStatus(orderNumber, request)
@@ -92,7 +87,6 @@ public class OrdersController {
             @PathVariable Integer customerNumber) {
 
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 200,
                 "Customer orders fetched successfully",
                 orderService.getOrdersByCustomer(customerNumber)
@@ -107,7 +101,6 @@ public class OrdersController {
             @RequestParam LocalDate toDate) {
 
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 200,
                 "Filtered orders fetched successfully",
                 orderService.searchOrders(status, fromDate, toDate)

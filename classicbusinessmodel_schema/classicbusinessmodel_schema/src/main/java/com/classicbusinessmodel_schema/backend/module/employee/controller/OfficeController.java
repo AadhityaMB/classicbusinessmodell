@@ -32,7 +32,6 @@ public class OfficeController {
     @PostMapping
     public ApiResponse<OfficeResponseDTO> createOffice(@Valid @RequestBody OfficeRequestDTO dto) {
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 201,
                 "Office created successfully",
                 officeService.createOffice(dto)
@@ -46,7 +45,7 @@ public class OfficeController {
     @GetMapping
     public ApiResponse<List<OfficeResponseDTO>> getAllOffices() {
         return new ApiResponse<>(
-                LocalDateTime.now(),
+
                 200,
                 "Offices fetched successfully",
                 officeService.getAllOffices()
@@ -63,7 +62,7 @@ public class OfficeController {
             @Parameter(description = "Office code", required = true)
             @PathVariable String officeCode) {
         return new ApiResponse<>(
-                LocalDateTime.now(),
+
                 200,
                 "Office fetched successfully",
                 officeService.getOfficeByCode(officeCode)
@@ -80,7 +79,6 @@ public class OfficeController {
             @Parameter(description = "Office code", required = true)
             @PathVariable String officeCode) {
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 200,
                 "Employees in office fetched successfully",
                 officeService.getEmployeesByOffice(officeCode)

@@ -8,6 +8,7 @@ class ClassicbusinessmodelSchemaApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
 
 }

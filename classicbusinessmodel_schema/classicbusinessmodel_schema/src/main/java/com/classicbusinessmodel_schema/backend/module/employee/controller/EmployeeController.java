@@ -31,7 +31,7 @@ public class EmployeeController {
     @PostMapping
     public ApiResponse<EmployeeResponseDTO> createEmployee(@Valid @RequestBody EmployeeRequestDTO dto) {
         return new ApiResponse<>(
-                LocalDateTime.now(),
+
                 201,
                 "Employee created successfully",
                 employeeService.createEmployee(dto)
@@ -45,7 +45,6 @@ public class EmployeeController {
     @GetMapping
     public ApiResponse<List<EmployeeResponseDTO>> getAllEmployees() {
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 200,
                 "Employees fetched successfully",
                 employeeService.getAllEmployees()
@@ -62,7 +61,6 @@ public class EmployeeController {
             @Parameter(description = "Employee number", required = true)
             @PathVariable Integer employeeNumber) {
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 200,
                 "Employee fetched successfully",
                 employeeService.getEmployeeById(employeeNumber)
@@ -81,7 +79,6 @@ public class EmployeeController {
             @PathVariable Integer employeeNumber,
             @Valid @RequestBody EmployeeRequestDTO dto) {
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 200,
                 "Employee updated successfully",
                 employeeService.updateEmployee(employeeNumber, dto)
@@ -98,7 +95,6 @@ public class EmployeeController {
             @Parameter(description = "Employee number", required = true)
             @PathVariable Integer employeeNumber) {
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 200,
                 "Manager fetched successfully",
                 employeeService.getManager(employeeNumber)
@@ -115,7 +111,6 @@ public class EmployeeController {
             @Parameter(description = "Employee number", required = true)
             @PathVariable Integer employeeNumber) {
         return new ApiResponse<>(
-                LocalDateTime.now(),
                 200,
                 "Subordinates fetched successfully",
                 employeeService.getSubordinates(employeeNumber)

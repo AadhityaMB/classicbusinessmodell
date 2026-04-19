@@ -1,12 +1,11 @@
 package com.classicbusinessmodel_schema.backend.common;
 
-import lombok.Builder;
 
 import java.time.LocalDateTime;
-@Builder
+
 public class ApiResponse<T> {
 
-    private LocalDateTime timestamp;
+    private final LocalDateTime timestamp = LocalDateTime.now();
     private int status;
     private String message;
     private T data;
@@ -14,8 +13,7 @@ public class ApiResponse<T> {
     public ApiResponse() {
     }
 
-    public ApiResponse(LocalDateTime timestamp, int status, String message, T data) {
-        this.timestamp = timestamp;
+    public ApiResponse( int status, String message, T data) {
         this.status = status;
         this.message = message;
         this.data = data;
@@ -25,31 +23,16 @@ public class ApiResponse<T> {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
     public int getStatus() {
         return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public T getData() {
         return data;
     }
 
-    public void setData(T data) {
-        this.data = data;
-    }
 }
