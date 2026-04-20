@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class ProductController {
 
     // CREATE PRODUCT
     @PostMapping
-    @Operation(summary = "Create new product")
+    @Operation(summary = "Create new product", description = "Adds a new product to the system")
     public ResponseEntity<ApiResponse<ProductResponse>> createProduct(
             @Valid @RequestBody CreateProductRequest request) {
 
@@ -42,7 +43,7 @@ public class ProductController {
 
     // UPDATE PRODUCT
     @PutMapping("/{productCode}")
-    @Operation(summary = "Update product")
+    @Operation(summary = "Update product", description = "Updates details of an existing product")
     public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(
             @PathVariable String productCode,
             @Valid @RequestBody UpdateProductRequest request) {
@@ -61,7 +62,7 @@ public class ProductController {
 
     // DELETE PRODUCT
     @DeleteMapping("/{productCode}")
-    @Operation(summary = "Delete product")
+    @Operation(summary = "Delete product", description = "Removes a product from the system")
     public ResponseEntity<ApiResponse<Void>> deleteProduct(
             @PathVariable String productCode) {
 
@@ -78,11 +79,14 @@ public class ProductController {
 
     // GET ALL PRODUCTS
     @GetMapping
-    @Operation(summary = "Get all products")
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts() {
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "productName") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
 
         List<ProductResponse> response =
-                productService.getAllProducts();
+                productService.getAllProducts(page, size, sortBy, direction);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -95,7 +99,7 @@ public class ProductController {
 
     // GET PRODUCT BY ID
     @GetMapping("/{productCode}")
-    @Operation(summary = "Get product by product code")
+    @Operation(summary = "Get product by product code", description = "Fetches details of a specific product using its code")
     public ResponseEntity<ApiResponse<ProductResponse>> getProductById(
             @PathVariable String productCode) {
 

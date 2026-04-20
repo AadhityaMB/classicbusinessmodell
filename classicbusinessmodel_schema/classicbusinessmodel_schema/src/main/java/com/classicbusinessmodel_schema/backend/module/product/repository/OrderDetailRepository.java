@@ -2,6 +2,8 @@ package com.classicbusinessmodel_schema.backend.module.product.repository;
 
 import com.classicbusinessmodel_schema.backend.entity.OrderDetails;
 import com.classicbusinessmodel_schema.backend.entity.OrderDetailsId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,9 +15,9 @@ import java.util.List;
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetails, OrderDetailsId> {
 
-    // Get all items for a specific order
-    @Query("SELECT od FROM OrderDetails od WHERE od.order.orderNumber = :orderNumber")
-    List<OrderDetails> findByOrderOrderNumber(@Param("orderNumber") Integer orderNumber);
+    Page<OrderDetails> findByOrder_OrderNumber(Integer orderNumber, Pageable pageable);
+
+    List<OrderDetails> findByOrderOrderNumber(Integer orderNumber);
 
     // Get all items for a specific product
     @Query("SELECT od FROM OrderDetails od WHERE od.product.productCode = :productCode")

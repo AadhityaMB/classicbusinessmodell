@@ -11,6 +11,10 @@ import com.classicbusinessmodel_schema.backend.module.product.dto.response.Order
 import com.classicbusinessmodel_schema.backend.module.product.repository.OrderDetailRepository;
 import com.classicbusinessmodel_schema.backend.module.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -66,21 +70,26 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     }
 
     @Override
-    public List<OrderDetailResponse> getItemsByOrder(Integer orderNumber) {
+    public List<OrderDetailResponse> getItemsByOrder(Integer orderNumber, int page, int size, String sortBy, String direction) {
 
         if (orderNumber == null) {
             throw new BadRequestException("Order number cannot be null");
         }
 
-        List<OrderDetails> items = repository.findByOrderOrderNumber(orderNumber);
+        Sort sort = direction.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
 
-        if (items.isEmpty()) {
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<OrderDetails> itemsPage =
+                repository.findByOrder_OrderNumber(orderNumber, pageable);
+
+        if (itemsPage.isEmpty()) {
             throw new ResourceNotFoundException("No items found for this order");
         }
 
-        return items.stream()
-                .map(this::mapToResponse)
-                .toList();
+        return itemsPage.map(this::mapToResponse).getContent();
     }
 
     @Override

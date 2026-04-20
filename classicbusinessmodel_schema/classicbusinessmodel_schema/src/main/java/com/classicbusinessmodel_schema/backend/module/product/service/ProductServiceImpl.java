@@ -12,6 +12,10 @@ import com.classicbusinessmodel_schema.backend.module.product.dto.response.Produ
 import com.classicbusinessmodel_schema.backend.module.product.repository.ProductLineRepository;
 import com.classicbusinessmodel_schema.backend.module.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -119,17 +123,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> getAllProducts() {
+    public List<ProductResponse> getAllProducts(int page, int size, String sortBy, String direction) {
 
-        List<Product> products = productRepository.findAll();
+        Sort sort = direction.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
 
-        if (products.isEmpty()) {
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Product> productPage = productRepository.findAll(pageable);
+
+        if (productPage.isEmpty()) {
             throw new ResourceNotFoundException("No products found");
         }
 
-        return products.stream()
-                .map(this::mapToResponse)
-                .toList();
+        return productPage.map(this::mapToResponse).getContent();
     }
 
     @Override

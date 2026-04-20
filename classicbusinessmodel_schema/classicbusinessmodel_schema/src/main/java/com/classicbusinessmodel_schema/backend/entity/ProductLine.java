@@ -12,8 +12,10 @@ public class ProductLine {
     @Column(name = "productLine")
     private String productLine;
 
+    @Column(columnDefinition = "TEXT")
     private String textDescription;
 
+    @Column(columnDefinition = "TEXT")
     private String htmlDescription;
 
     private byte[] image;
