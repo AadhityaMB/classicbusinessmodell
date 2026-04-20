@@ -9,6 +9,7 @@ import com.classicbusinessmodel_schema.backend.module.customer.repository.Custom
 import com.classicbusinessmodel_schema.backend.module.orders.repository.OrdersRepository;
 import com.classicbusinessmodel_schema.backend.module.product.repository.OrderDetailRepository;
 import com.classicbusinessmodel_schema.backend.module.report.dto.response.*;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Builder
 public class ReportServiceImpl implements ReportService {
 
     private final CustomerRepository customerRepository;
