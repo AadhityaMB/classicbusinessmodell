@@ -4,13 +4,16 @@ import com.classicbusinessmodel_schema.backend.common.ApiResponse;
 import com.classicbusinessmodel_schema.backend.module.orders.dto.requestDto.OrderRequestDTO;
 import com.classicbusinessmodel_schema.backend.module.orders.dto.responseDto.OrderResponseDTO;
 import com.classicbusinessmodel_schema.backend.module.orders.service.OrdersService;
-
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -20,7 +23,11 @@ public class OrdersController {
     @Autowired
     private OrdersService orderService;
 
-    //  CREATE ORDER
+    // CREATE ORDER
+    @Operation(
+            summary = "Create a new order",
+            description = "Creates a new order for an existing customer"
+    )
     @PostMapping("/orders")
     public ApiResponse<OrderResponseDTO> createOrder(@Valid @RequestBody OrderRequestDTO request) {
 
@@ -33,18 +40,33 @@ public class OrdersController {
         );
     }
 
-    //  GET ALL ORDERS
+    // GET ALL ORDERS WITH PAGINATION
+    @Operation(
+            summary = "Get all orders",
+            description = "Fetches all orders with pagination and sorting"
+    )
     @GetMapping("/orders")
-    public ApiResponse<List<OrderResponseDTO>> getAllOrders() {
+    public ApiResponse<Page<OrderResponseDTO>> getAllOrders(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "orderNumber") String sortBy) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+
+        Page<OrderResponseDTO> result = orderService.getAllOrders(pageable);
 
         return new ApiResponse<>(
                 200,
                 "Orders fetched successfully",
-                orderService.getAllOrders()
+                result
         );
     }
 
     // GET ORDER BY ID
+    @Operation(
+            summary = "Get order by ID",
+            description = "Retrieves a specific order using order number"
+    )
     @GetMapping("/orders/{orderNumber}")
     public ApiResponse<OrderResponseDTO> getOrder(@PathVariable Integer orderNumber) {
 
@@ -56,6 +78,10 @@ public class OrdersController {
     }
 
     // UPDATE FULL ORDER
+    @Operation(
+            summary = "Update an order",
+            description = "Updates all details of an existing order"
+    )
     @PutMapping("/orders/{orderNumber}")
     public ApiResponse<OrderResponseDTO> updateOrder(
             @PathVariable Integer orderNumber,
@@ -69,6 +95,10 @@ public class OrdersController {
     }
 
     // UPDATE STATUS ONLY
+    @Operation(
+            summary = "Update order status",
+            description = "Updates only the status of an existing order"
+    )
     @PatchMapping("/orders/{orderNumber}/status")
     public ApiResponse<OrderResponseDTO> updateStatus(
             @PathVariable Integer orderNumber,
@@ -81,7 +111,11 @@ public class OrdersController {
         );
     }
 
-    //  GET ORDERS BY CUSTOMER
+    // GET ORDERS BY CUSTOMER
+    @Operation(
+            summary = "Get orders by customer number",
+            description = "Fetches all orders belonging to a specific customer"
+    )
     @GetMapping("/customers/{customerNumber}/orders")
     public ApiResponse<List<OrderResponseDTO>> getOrdersByCustomer(
             @PathVariable Integer customerNumber) {
@@ -94,6 +128,10 @@ public class OrdersController {
     }
 
     // SEARCH ORDERS
+    @Operation(
+            summary = "Search orders",
+            description = "Fetches orders filtered by status and date range"
+    )
     @GetMapping("/orders/search")
     public ApiResponse<List<OrderResponseDTO>> searchOrders(
             @RequestParam String status,

@@ -7,6 +7,8 @@ import com.classicbusinessmodel_schema.backend.module.orders.dto.responseDto.Ord
 import com.classicbusinessmodel_schema.backend.module.orders.repository.OrdersRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -41,11 +43,9 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public List<OrderResponseDTO> getAllOrders() {
-        return orderRepository.findAll()
-                .stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public Page<OrderResponseDTO> getAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable)
+                .map(this::mapToDTO);
     }
 
     @Override
