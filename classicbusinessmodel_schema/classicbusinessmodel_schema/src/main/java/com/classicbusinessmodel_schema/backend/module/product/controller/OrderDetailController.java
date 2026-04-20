@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -22,12 +21,14 @@ public class OrderDetailController {
     @Autowired
     private OrderDetailService orderDetailService;
 
+    // GET ALL ITEMS FOR ORDER
     @GetMapping
     @Operation(summary = "Get all items for a specific order")
     public ResponseEntity<ApiResponse<List<OrderDetailResponse>>> getOrderItems(
             @PathVariable Integer orderNumber) {
 
-        List<OrderDetailResponse> response = orderDetailService.getItemsByOrder(orderNumber);
+        List<OrderDetailResponse> response =
+                orderDetailService.getItemsByOrder(orderNumber);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -38,15 +39,18 @@ public class OrderDetailController {
         );
     }
 
+    // ADD ITEM TO ORDER
     @PostMapping
     @Operation(summary = "Add product to an order")
     public ResponseEntity<ApiResponse<OrderDetailResponse>> addItem(
             @PathVariable Integer orderNumber,
             @Valid @RequestBody OrderDetailRequest request) {
 
+        // Inject path variable into request
         request.setOrderNumber(orderNumber);
 
-        OrderDetailResponse response = orderDetailService.addItem(request);
+        OrderDetailResponse response =
+                orderDetailService.addItem(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
@@ -58,6 +62,7 @@ public class OrderDetailController {
                 );
     }
 
+    // UPDATE ORDER ITEM
     @PutMapping("/{productCode}")
     @Operation(summary = "Update order item details")
     public ResponseEntity<ApiResponse<OrderDetailResponse>> updateItem(
@@ -77,6 +82,7 @@ public class OrderDetailController {
         );
     }
 
+    // DELETE ORDER ITEM
     @DeleteMapping("/{productCode}")
     @Operation(summary = "Delete item from an order")
     public ResponseEntity<ApiResponse<Void>> deleteItem(

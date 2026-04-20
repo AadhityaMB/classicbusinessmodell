@@ -6,15 +6,14 @@ import com.classicbusinessmodel_schema.backend.module.product.dto.request.Update
 import com.classicbusinessmodel_schema.backend.module.product.dto.response.ProductResponse;
 import com.classicbusinessmodel_schema.backend.module.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/products")
 @Tag(name = "Products", description = "Product management APIs")
@@ -23,6 +22,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    // CREATE PRODUCT
     @PostMapping
     @Operation(summary = "Create new product")
     public ResponseEntity<ApiResponse<ProductResponse>> createProduct(
@@ -31,20 +31,24 @@ public class ProductController {
         ProductResponse response = productService.createProduct(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(
-                        201,
-                        "Product created successfully",
-                        response
-                ));
+                .body(
+                        new ApiResponse<>(
+                                201,
+                                "Product created successfully",
+                                response
+                        )
+                );
     }
 
+    // UPDATE PRODUCT
     @PutMapping("/{productCode}")
     @Operation(summary = "Update product")
     public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(
-            @PathVariable("productCode") String productCode,
+            @PathVariable String productCode,
             @Valid @RequestBody UpdateProductRequest request) {
 
-        ProductResponse response = productService.updateProduct(productCode, request);
+        ProductResponse response =
+                productService.updateProduct(productCode, request);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -55,10 +59,11 @@ public class ProductController {
         );
     }
 
+    // DELETE PRODUCT
     @DeleteMapping("/{productCode}")
     @Operation(summary = "Delete product")
     public ResponseEntity<ApiResponse<Void>> deleteProduct(
-            @PathVariable("productCode") String productCode) {
+            @PathVariable String productCode) {
 
         productService.deleteProduct(productCode);
 
@@ -71,11 +76,13 @@ public class ProductController {
         );
     }
 
+    // GET ALL PRODUCTS
     @GetMapping
     @Operation(summary = "Get all products")
     public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts() {
 
-        List<ProductResponse> response = productService.getAllProducts();
+        List<ProductResponse> response =
+                productService.getAllProducts();
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -86,12 +93,14 @@ public class ProductController {
         );
     }
 
+    // GET PRODUCT BY ID
     @GetMapping("/{productCode}")
     @Operation(summary = "Get product by product code")
     public ResponseEntity<ApiResponse<ProductResponse>> getProductById(
             @PathVariable String productCode) {
 
-        ProductResponse response = productService.getProductById(productCode);
+        ProductResponse response =
+                productService.getProductById(productCode);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(

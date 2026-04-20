@@ -11,22 +11,20 @@ import com.classicbusinessmodel_schema.backend.module.product.dto.response.Produ
 import com.classicbusinessmodel_schema.backend.module.product.dto.response.ProductResponse;
 import com.classicbusinessmodel_schema.backend.module.product.repository.ProductLineRepository;
 import com.classicbusinessmodel_schema.backend.module.product.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class ProductLineServiceImpl implements ProductLineService {
 
-    private final ProductRepository productRepository;
-    private final ProductLineRepository productLineRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
-    // Constructor injection
-    public ProductLineServiceImpl(ProductRepository productRepository,
-                                  ProductLineRepository productLineRepository) {
-        this.productRepository = productRepository;
-        this.productLineRepository = productLineRepository;
-    }
+    @Autowired
+    private ProductLineRepository productLineRepository;
 
     @Override
     public ProductLineResponse createProductLine(ProductLineRequest request) {
@@ -115,7 +113,6 @@ public class ProductLineServiceImpl implements ProductLineService {
                 .toList();
     }
 
-    // NO BUILDER
     private ProductLineResponse mapToResponse(ProductLine pl) {
         return new ProductLineResponse(
                 pl.getProductLine(),
