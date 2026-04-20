@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,12 +44,16 @@ public class EmployeeController {
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Employees fetched successfully")
     })
+
     @GetMapping
-    public ApiResponse<List<EmployeeResponseDTO>> getAllEmployees() {
+    public ApiResponse<Page<EmployeeResponseDTO>> getAllEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
         return new ApiResponse<>(
                 200,
                 "Employees fetched successfully",
-                employeeService.getAllEmployees()
+                employeeService.getAllEmployees(page, size)
         );
     }
 

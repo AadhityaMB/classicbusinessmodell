@@ -9,6 +9,9 @@ import com.classicbusinessmodel_schema.backend.module.employee.repository.Employ
 import com.classicbusinessmodel_schema.backend.module.employee.repository.OfficeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,11 +36,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeResponseDTO> getAllEmployees() {
-        return employeeRepository.findAll()
-                .stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+    public Page<EmployeeResponseDTO> getAllEmployees(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return employeeRepository.findAll(pageable)
+                .map(this::mapToDTO);
     }
 
     @Override
