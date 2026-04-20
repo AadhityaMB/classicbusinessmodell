@@ -11,21 +11,20 @@ import com.classicbusinessmodel_schema.backend.module.product.dto.request.Update
 import com.classicbusinessmodel_schema.backend.module.product.dto.response.ProductResponse;
 import com.classicbusinessmodel_schema.backend.module.product.repository.ProductLineRepository;
 import com.classicbusinessmodel_schema.backend.module.product.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository repository;
-    private final ProductLineRepository productLineRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
-    // MANUAL CONSTRUCTOR (replaces @RequiredArgsConstructor)
-    public ProductServiceImpl(ProductRepository repository,
-                              ProductLineRepository productLineRepository) {
-        this.repository = repository;
-        this.productLineRepository = productLineRepository;
-    }
+    @Autowired
+    private ProductLineRepository productLineRepository;
 
     @Override
     public ProductResponse createProduct(CreateProductRequest request) {
@@ -34,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BadRequestException("Product code cannot be empty");
         }
 
-        if (repository.existsById(request.getProductCode())) {
+        if (productRepository.existsById(request.getProductCode())) {
             throw new ResourceAlreadyExistsException("Product already exists");
         }
 
@@ -52,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
         product.setBuyPrice(request.getBuyPrice());
         product.setMSRP(request.getMsrp());
 
-        return mapToResponse(repository.save(product));
+        return mapToResponse(productRepository.save(product));
     }
 
     @Override
@@ -62,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BadRequestException("Product code cannot be empty");
         }
 
-        Product product = repository.findById(productCode)
+        Product product = productRepository.findById(productCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         if (request.getProductName() != null) {
@@ -99,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
             product.setMSRP(request.getMsrp());
         }
 
-        return mapToResponse(repository.save(product));
+        return mapToResponse(productRepository.save(product));
     }
 
     @Override
@@ -109,11 +108,11 @@ public class ProductServiceImpl implements ProductService {
             throw new BadRequestException("Product code cannot be empty");
         }
 
-        Product product = repository.findById(productCode)
+        Product product = productRepository.findById(productCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         try {
-            repository.delete(product);
+            productRepository.delete(product);
         } catch (Exception e) {
             throw new DatabaseException("Failed to delete product (possible FK constraint)");
         }
@@ -122,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponse> getAllProducts() {
 
-        List<Product> products = repository.findAll();
+        List<Product> products = productRepository.findAll();
 
         if (products.isEmpty()) {
             throw new ResourceNotFoundException("No products found");
@@ -140,7 +139,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BadRequestException("Product code cannot be null or empty");
         }
 
-        Product product = repository.findById(productCode)
+        Product product = productRepository.findById(productCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         return mapToResponse(product);
@@ -157,7 +156,7 @@ public class ProductServiceImpl implements ProductService {
             throw new ResourceNotFoundException("Product line not found");
         }
 
-        List<Product> products = repository.findByProductLineProductLine(productLine);
+        List<Product> products = productRepository.findByProductLineProductLine(productLine);
 
         if (products.isEmpty()) {
             throw new ResourceNotFoundException("No products found for this product line");

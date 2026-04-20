@@ -1,7 +1,5 @@
 package com.classicbusinessmodel_schema.backend.module.product.service;
 
-
-
 import com.classicbusinessmodel_schema.backend.entity.Product;
 import com.classicbusinessmodel_schema.backend.entity.ProductLine;
 import com.classicbusinessmodel_schema.backend.exception.DatabaseException;
@@ -20,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
-        import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

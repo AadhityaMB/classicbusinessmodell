@@ -5,40 +5,34 @@ import com.classicbusinessmodel_schema.backend.entity.OrderDetailsId;
 import com.classicbusinessmodel_schema.backend.entity.Orders;
 import com.classicbusinessmodel_schema.backend.entity.Product;
 import com.classicbusinessmodel_schema.backend.exception.*;
+import com.classicbusinessmodel_schema.backend.module.orders.repository.OrdersRepository;
 import com.classicbusinessmodel_schema.backend.module.product.dto.request.OrderDetailRequest;
 import com.classicbusinessmodel_schema.backend.module.product.dto.response.OrderDetailResponse;
 import com.classicbusinessmodel_schema.backend.module.product.repository.OrderDetailRepository;
 import com.classicbusinessmodel_schema.backend.module.product.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class OrderDetailServiceImpl implements OrderDetailService {
 
-    private final OrderDetailRepository repository;
-    private final ProductRepository productRepository;
+    @Autowired
+    private OrdersRepository orderRepository;
 
-    // Manual constructor injection
-    public OrderDetailServiceImpl(OrderDetailRepository repository,
-                                  ProductRepository productRepository) {
-        this.repository = repository;
-        this.productRepository = productRepository;
-    }
+    @Autowired
+    private OrderDetailRepository repository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public OrderDetailResponse addItem(OrderDetailRequest request) {
 
         if (request.getOrderNumber() == null || request.getProductCode() == null) {
             throw new BadRequestException("Order number and product code are required");
-        }
-
-        if (request.getQuantityOrdered() == null || request.getQuantityOrdered() <= 0) {
-            throw new InvalidDataException("Quantity must be greater than 0");
-        }
-
-        if (request.getPriceEach() == null || request.getPriceEach().doubleValue() <= 0) {
-            throw new InvalidDataException("Price must be greater than 0");
         }
 
         Product product = productRepository.findById(request.getProductCode())
@@ -59,8 +53,8 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
         OrderDetails od = new OrderDetails();
 
-        Orders order = new Orders();
-        order.setOrderNumber(request.getOrderNumber());
+        Orders order = orderRepository.findById(request.getOrderNumber())
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
         od.setOrder(order);
         od.setProduct(product);
@@ -110,6 +104,13 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         }
 
         if (request.getQuantityOrdered() != null) {
+
+            Product product = existing.getProduct(); // already linked
+
+            if (request.getQuantityOrdered() > product.getQuantityInStock()) {
+                throw new InsufficientStockException("Not enough stock available");
+            }
+
             existing.setQuantityOrdered(request.getQuantityOrdered());
         }
 
