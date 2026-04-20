@@ -62,10 +62,15 @@ public class CustomerServiceImpl implements CustomerService {
     // DELETE CUSTOMER
     @Override
     public void deleteCustomer(Integer id) {
-        if (!customerRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Customer not found");
-        }
-        customerRepository.deleteByCustomerNumber(id);
+
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        // remove child relations
+        customer.getOrders().clear();
+        customer.getPayments().clear();
+
+        customerRepository.delete(customer);
     }
 
     // GET CREDIT LIMIT ONLY

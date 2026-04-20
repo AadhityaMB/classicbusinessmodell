@@ -6,6 +6,8 @@ import com.classicbusinessmodel_schema.backend.module.customer.dto.response.Paym
 import com.classicbusinessmodel_schema.backend.module.customer.repository.PaymentRepository;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,11 +45,9 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<PaymentResponseDTO> getAllPayments() {
-        return paymentRepository.findAll()
-                .stream()
-                .map(this::mapToDTO)
-                .toList();
+    public Page<PaymentResponseDTO> getAllPayments(Pageable pageable) {
+        return paymentRepository.findAll(pageable)
+                .map(this::mapToDTO);
     }
 
     @Override

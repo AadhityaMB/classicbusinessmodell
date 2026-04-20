@@ -11,6 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -52,13 +56,14 @@ class PaymentServiceTest {
     @Test
     void testGetAllPayments() {
 
-        when(paymentRepository.findAll())
-                .thenReturn(List.of(getPayment()));
+        when(paymentRepository.findAll(any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(getPayment())));
 
-        List<PaymentResponseDTO> result = paymentService.getAllPayments();
+        Page<PaymentResponseDTO> result =
+                paymentService.getAllPayments(PageRequest.of(0, 10));
 
-        assertEquals(1, result.size());
-        assertEquals("CHK1", result.get(0).getCheckNumber());
+        assertEquals(1, result.getContent().size());
+        assertEquals("CHK1", result.getContent().get(0).getCheckNumber());
     }
 
     // 2. GET BY CUSTOMER
