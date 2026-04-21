@@ -18,6 +18,8 @@ public class ProductLine {
     @Column(columnDefinition = "TEXT")
     private String htmlDescription;
 
+    @Lob
+    @Column(name = "image")
     private byte[] image;
 
     @JsonIgnore
@@ -27,7 +29,8 @@ public class ProductLine {
     public ProductLine() {
     }
 
-    public ProductLine(String productLine, String textDescription, String htmlDescription, byte[] image, List<Product> products) {
+    public ProductLine(String productLine, String textDescription, String htmlDescription, byte[] image,
+            List<Product> products) {
         this.productLine = productLine;
         this.textDescription = textDescription;
         this.htmlDescription = htmlDescription;

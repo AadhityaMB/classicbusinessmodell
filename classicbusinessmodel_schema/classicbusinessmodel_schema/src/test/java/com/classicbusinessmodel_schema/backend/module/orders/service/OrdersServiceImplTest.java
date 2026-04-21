@@ -12,6 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -80,19 +84,23 @@ class OrdersServiceImplTest {
     // ✅ Positive: Fetch all orders
     @Test
     void testGetAllOrders() {
-        when(ordersRepository.findAll()).thenReturn(List.of(order));
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Orders> page = new PageImpl<>(List.of(order));
+        when(ordersRepository.findAll(pageable)).thenReturn(page);
 
-        List<OrderResponseDTO> result = ordersService.getAllOrders();
+        Page<OrderResponseDTO> result = ordersService.getAllOrders(pageable);
 
-        assertEquals(1, result.size());
+        assertEquals(1, result.getTotalElements());
     }
 
     // ❌ Negative: No orders available
     @Test
     void testGetAllOrdersEmpty() {
-        when(ordersRepository.findAll()).thenReturn(Collections.emptyList());
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Orders> page = new PageImpl<>(Collections.emptyList());
+        when(ordersRepository.findAll(pageable)).thenReturn(page);
 
-        List<OrderResponseDTO> result = ordersService.getAllOrders();
+        Page<OrderResponseDTO> result = ordersService.getAllOrders(pageable);
 
         assertTrue(result.isEmpty());
     }
