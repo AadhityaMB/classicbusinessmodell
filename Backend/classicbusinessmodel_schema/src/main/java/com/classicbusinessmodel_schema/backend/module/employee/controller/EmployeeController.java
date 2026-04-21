@@ -44,7 +44,6 @@ public class EmployeeController {
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Employees fetched successfully")
     })
-
     @GetMapping
     public ApiResponse<Page<EmployeeResponseDTO>> getAllEmployees(
             @RequestParam(defaultValue = "0") int page,
