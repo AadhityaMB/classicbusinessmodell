@@ -47,11 +47,11 @@ public class Customer {
         private BigDecimal creditLimit;
 
         @JsonIgnore
-        @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+        @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
         private List<Orders> orders;
 
         @JsonIgnore
-        @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+        @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
         private List<Payment> payments;
 
         public String getAddressLine1() {
