@@ -12,6 +12,10 @@ import com.classicbusinessmodel_schema.backend.module.product.dto.response.Produ
 import com.classicbusinessmodel_schema.backend.module.product.repository.ProductLineRepository;
 import com.classicbusinessmodel_schema.backend.module.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -61,17 +65,21 @@ public class ProductLineServiceImpl implements ProductLineService {
     }
 
     @Override
-    public List<ProductLineResponse> getAllProductLines() {
+    public List<ProductLineResponse> getAllProductLines(int page, int size, String sortBy, String direction) {
 
-        List<ProductLine> productLines = productLineRepository.findAll();
+        Sort sort = direction.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
 
-        if (productLines.isEmpty()) {
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<ProductLine> pageData = productLineRepository.findAll(pageable);
+
+        if (pageData.isEmpty()) {
             throw new ResourceNotFoundException("No product lines found");
         }
 
-        return productLines.stream()
-                .map(this::mapToResponse)
-                .toList();
+        return pageData.map(this::mapToResponse).getContent();
     }
 
     @Override

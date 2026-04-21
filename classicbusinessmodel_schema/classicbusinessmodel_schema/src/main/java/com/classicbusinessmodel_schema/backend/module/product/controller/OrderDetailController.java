@@ -23,12 +23,16 @@ public class OrderDetailController {
 
     // GET ALL ITEMS FOR ORDER
     @GetMapping
-    @Operation(summary = "Get all items for a specific order")
+    @Operation(summary = "Get all items for a specific order", description = "Fetches all products associated with a given order number")
     public ResponseEntity<ApiResponse<List<OrderDetailResponse>>> getOrderItems(
-            @PathVariable Integer orderNumber) {
+            @PathVariable Integer orderNumber,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "orderLineNumber") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
 
         List<OrderDetailResponse> response =
-                orderDetailService.getItemsByOrder(orderNumber);
+                orderDetailService.getItemsByOrder(orderNumber, page, size, sortBy, direction);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -41,12 +45,11 @@ public class OrderDetailController {
 
     // ADD ITEM TO ORDER
     @PostMapping
-    @Operation(summary = "Add product to an order")
+    @Operation(summary = "Add product to an order", description = "Adds a new product item to a specific order")
     public ResponseEntity<ApiResponse<OrderDetailResponse>> addItem(
             @PathVariable Integer orderNumber,
             @Valid @RequestBody OrderDetailRequest request) {
 
-        // Inject path variable into request
         request.setOrderNumber(orderNumber);
 
         OrderDetailResponse response =
@@ -64,7 +67,7 @@ public class OrderDetailController {
 
     // UPDATE ORDER ITEM
     @PutMapping("/{productCode}")
-    @Operation(summary = "Update order item details")
+    @Operation(summary = "Update order item details", description = "Updates quantity or price of a product in an order")
     public ResponseEntity<ApiResponse<OrderDetailResponse>> updateItem(
             @PathVariable Integer orderNumber,
             @PathVariable String productCode,
@@ -84,7 +87,7 @@ public class OrderDetailController {
 
     // DELETE ORDER ITEM
     @DeleteMapping("/{productCode}")
-    @Operation(summary = "Delete item from an order")
+    @Operation(summary = "Delete item from an order", description = "Removes a product from a specific order")
     public ResponseEntity<ApiResponse<Void>> deleteItem(
             @PathVariable Integer orderNumber,
             @PathVariable String productCode) {

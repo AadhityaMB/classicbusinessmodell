@@ -197,7 +197,7 @@ public class ReportServiceImpl implements ReportService {
                 .toList();
     }
 
-    // 🔧 HELPER METHOD
+    // HELPER METHOD
     private double calculateOrderValue(Integer orderNumber) {
 
         List<OrderDetails> items =

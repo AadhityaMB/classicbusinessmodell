@@ -1,6 +1,8 @@
 package com.classicbusinessmodel_schema.backend.module.product.repository;
 
 import com.classicbusinessmodel_schema.backend.entity.ProductLine;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Repository
 public interface ProductLineRepository extends JpaRepository<ProductLine, String> {
+
+    Page<ProductLine> findAll(Pageable pageable);
 
     //Custom queries
     // Search by text description

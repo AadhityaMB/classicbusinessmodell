@@ -33,6 +33,7 @@ public class Product {
         @Size(max = 50)
         private String productVendor;
 
+        @Column(columnDefinition = "TEXT")
         @NotBlank
         private String productDescription;
 

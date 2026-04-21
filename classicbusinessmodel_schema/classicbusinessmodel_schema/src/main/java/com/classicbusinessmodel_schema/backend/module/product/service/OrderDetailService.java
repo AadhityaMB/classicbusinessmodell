@@ -8,7 +8,7 @@ public interface OrderDetailService {
 
     OrderDetailResponse addItem(OrderDetailRequest request);
 
-    List<OrderDetailResponse> getItemsByOrder(Integer orderNumber);
+    List<OrderDetailResponse> getItemsByOrder(Integer orderNumber, int page, int size, String sortBy, String direction);
 
     OrderDetailResponse updateItem(Integer orderNumber, String productCode, OrderDetailRequest request);
 
