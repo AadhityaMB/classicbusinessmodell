@@ -1,5 +1,4 @@
 package com.classicbusinessmodel_schema.backend.module.customer.service;
-
 import com.classicbusinessmodel_schema.backend.entity.Customer;
 import com.classicbusinessmodel_schema.backend.entity.Employee;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
@@ -17,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +47,8 @@ class CustomerServiceTest {
         customer.setCity("Chennai");
         customer.setCountry("India");
         customer.setCreditLimit(BigDecimal.valueOf(5000));
-    }
+        customer.setOrders(new ArrayList<>());
+        customer.setPayments(new ArrayList<>());    }
 
     // 1. GET ALL
     @Test
@@ -105,12 +106,16 @@ class CustomerServiceTest {
     // 5. DELETE
     @Test
     void testDeleteCustomer() {
-        when(customerRepository.existsById(1)).thenReturn(true);
-        doNothing().when(customerRepository).deleteByCustomerNumber(1);
+        // Arrange
+        when(customerRepository.findById(1)).thenReturn(Optional.of(customer));
+        doNothing().when(customerRepository).delete(customer);
 
+        // Act
         customerService.deleteCustomer(1);
 
-        verify(customerRepository, times(1)).deleteByCustomerNumber(1);
+        // Assert
+        verify(customerRepository).findById(1);
+        verify(customerRepository).delete(customer);
     }
 
     // 6. CREDIT LIMIT
