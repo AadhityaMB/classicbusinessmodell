@@ -4,7 +4,6 @@ package com.classicbusinessmodel_schema.backend.module.report.service;
 import com.classicbusinessmodel_schema.backend.entity.Customer;
 import com.classicbusinessmodel_schema.backend.entity.OrderDetails;
 import com.classicbusinessmodel_schema.backend.entity.Orders;
-import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;
 import com.classicbusinessmodel_schema.backend.module.orders.repository.OrdersRepository;
 import com.classicbusinessmodel_schema.backend.module.product.repository.OrderDetailRepository;
@@ -204,7 +203,7 @@ public class ReportServiceImpl implements ReportService {
                 orderDetailRepository.findByOrderOrderNumber(orderNumber);
 
         if (items.isEmpty()) {
-            throw new ResourceNotFoundException("Order not found");
+            return 0;
         }
 
         return items.stream()

@@ -1,5 +1,6 @@
 package com.classicbusinessmodel_schema.backend.config;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -20,11 +21,15 @@ public class SecurityConfig {
 
                 http
                                 .csrf(csrf -> csrf.disable())
+                                .cors(Customizer.withDefaults())
                                 .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/customers/{customerNumber}/orders").hasAnyRole("ORDERS", "CUSTOMER")
                                                 .requestMatchers("/api/customers/**").hasRole("CUSTOMER")
-                                                .requestMatchers("/api/payment/**").hasRole("PAYMENT")
+                                                .requestMatchers("/api/payments/**").hasRole("PAYMENT")
                                                 .requestMatchers("/api/employees/**").hasRole("EMPLOYEE")
-                                                .requestMatchers("/api/office/**").hasRole("OFFICE")
+                                                .requestMatchers("/api/offices/**").hasRole("OFFICE")
+                                                .requestMatchers("/api/orders/*/items/**").hasRole("ORDERDETAILS")
                                                 .requestMatchers("/api/orders/**").hasRole("ORDERS")
                                                 .requestMatchers("/api/products/**").hasRole("PRODUCT")
                                                 .requestMatchers("/api/product-lines/**").hasRole("PRODUCTLINE")
@@ -41,31 +46,31 @@ public class SecurityConfig {
 
                 UserDetails customerUser = User.withDefaultPasswordEncoder()
                                 .username("priya")
-                                .password("1234")
+                                .password("priya@123")
                                 .roles("CUSTOMER", "PAYMENT")
                                 .build();
 
                 UserDetails employeeUser = User.withDefaultPasswordEncoder()
                                 .username("harini")
-                                .password("1234")
+                                .password("harini@123")
                                 .roles("EMPLOYEE", "OFFICE")
                                 .build();
 
                 UserDetails ordersUser = User.withDefaultPasswordEncoder()
                                 .username("pritika")
-                                .password("1234")
+                                .password("pritika@123")
                                 .roles("ORDERS")
                                 .build();
 
                 UserDetails productUser = User.withDefaultPasswordEncoder()
                                 .username("meena")
-                                .password("1234")
-                                .roles("PRODUCT", "PRODUCTLINE")
+                                .password("meena@123")
+                                .roles("PRODUCT", "PRODUCTLINE","ORDERDETAILS")
                                 .build();
 
                 UserDetails reportUser = User.withDefaultPasswordEncoder()
                                 .username("aadhi")
-                                .password("1234")
+                                .password("aadhi@123")
                                 .roles("REPORT")
                                 .build();
 
