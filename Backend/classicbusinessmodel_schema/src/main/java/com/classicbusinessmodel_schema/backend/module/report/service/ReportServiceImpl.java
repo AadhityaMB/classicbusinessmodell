@@ -1,11 +1,5 @@
 package com.classicbusinessmodel_schema.backend.module.report.service;
 
-
-
-import com.classicbusinessmodel_schema.backend.entity.Customer;
-import com.classicbusinessmodel_schema.backend.entity.OrderDetails;
-import com.classicbusinessmodel_schema.backend.entity.Orders;
-import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import com.classicbusinessmodel_schema.backend.module.orders.repository.OrdersRepository;
 import com.classicbusinessmodel_schema.backend.module.report.dto.response.*;
@@ -42,7 +36,7 @@ public class ReportServiceImpl implements ReportService {
     private CustomerExposureResponseDTO mapToCustomerExposureDTO(ReportRepository.CustomerExposureProjection projection) {
         BigDecimal credit = projection.getCreditLimit() != null ? projection.getCreditLimit() : BigDecimal.ZERO;
         BigDecimal total = projection.getTotalOrderValue() != null ? projection.getTotalOrderValue() : BigDecimal.ZERO;
-        
+
         return CustomerExposureResponseDTO.builder()
                 .customerNumber(projection.getCustomerNumber())
                 .customerName(projection.getCustomerName())
@@ -77,21 +71,21 @@ public class ReportServiceImpl implements ReportService {
     // ===============================
     @Override
     public Page<SalesByCountryResponseDTO> getSalesByCountry(Pageable pageable) {
-        return reportRepository.getSalesByCountry(pageable).map(p -> 
-            SalesByCountryResponseDTO.builder()
-                .country(p.getCountry())
-                .totalSales(p.getTotalSales() != null ? p.getTotalSales() : BigDecimal.ZERO)
-                .build()
+        return reportRepository.getSalesByCountry(pageable).map(p ->
+                SalesByCountryResponseDTO.builder()
+                        .country(p.getCountry())
+                        .totalSales(p.getTotalSales() != null ? p.getTotalSales() : BigDecimal.ZERO)
+                        .build()
         );
     }
 
     @Override
     public List<SalesByCountryResponseDTO> getSalesByCountry() {
-        return reportRepository.getSalesByCountry(Pageable.unpaged()).map(p -> 
-            SalesByCountryResponseDTO.builder()
-                .country(p.getCountry())
-                .totalSales(p.getTotalSales() != null ? p.getTotalSales() : BigDecimal.ZERO)
-                .build()
+        return reportRepository.getSalesByCountry(Pageable.unpaged()).map(p ->
+                SalesByCountryResponseDTO.builder()
+                        .country(p.getCountry())
+                        .totalSales(p.getTotalSales() != null ? p.getTotalSales() : BigDecimal.ZERO)
+                        .build()
         ).getContent();
     }
 
@@ -101,22 +95,22 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public Page<SalesByEmployeeResponseDTO> getSalesByEmployee(Pageable pageable) {
         return reportRepository.getSalesByEmployee(pageable).map(p ->
-            SalesByEmployeeResponseDTO.builder()
-                .employeeNumber(p.getEmployeeNumber())
-                .employeeName(p.getEmployeeName())
-                .totalSales(p.getTotalSales() != null ? p.getTotalSales() : BigDecimal.ZERO)
-                .build()
+                SalesByEmployeeResponseDTO.builder()
+                        .employeeNumber(p.getEmployeeNumber())
+                        .employeeName(p.getEmployeeName())
+                        .totalSales(p.getTotalSales() != null ? p.getTotalSales() : BigDecimal.ZERO)
+                        .build()
         );
     }
 
     @Override
     public List<SalesByEmployeeResponseDTO> getSalesByEmployee() {
         return reportRepository.getSalesByEmployee(Pageable.unpaged()).map(p ->
-            SalesByEmployeeResponseDTO.builder()
-                .employeeNumber(p.getEmployeeNumber())
-                .employeeName(p.getEmployeeName())
-                .totalSales(p.getTotalSales() != null ? p.getTotalSales() : BigDecimal.ZERO)
-                .build()
+                SalesByEmployeeResponseDTO.builder()
+                        .employeeNumber(p.getEmployeeNumber())
+                        .employeeName(p.getEmployeeName())
+                        .totalSales(p.getTotalSales() != null ? p.getTotalSales() : BigDecimal.ZERO)
+                        .build()
         ).getContent();
     }
 
@@ -126,22 +120,22 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public Page<MonthlyRevenueResponseDTO> getMonthlyRevenue(Pageable pageable) {
         return reportRepository.getMonthlyRevenue(pageable).map(p ->
-            MonthlyRevenueResponseDTO.builder()
-                .year(p.getYear())
-                .month(p.getMonth())
-                .revenue(p.getRevenue() != null ? p.getRevenue() : BigDecimal.ZERO)
-                .build()
+                MonthlyRevenueResponseDTO.builder()
+                        .year(p.getYear())
+                        .month(p.getMonth())
+                        .revenue(p.getRevenue() != null ? p.getRevenue() : BigDecimal.ZERO)
+                        .build()
         );
     }
 
     @Override
     public List<MonthlyRevenueResponseDTO> getMonthlyRevenue() {
         return reportRepository.getMonthlyRevenue(Pageable.unpaged()).map(p ->
-            MonthlyRevenueResponseDTO.builder()
-                .year(p.getYear())
-                .month(p.getMonth())
-                .revenue(p.getRevenue() != null ? p.getRevenue() : BigDecimal.ZERO)
-                .build()
+                MonthlyRevenueResponseDTO.builder()
+                        .year(p.getYear())
+                        .month(p.getMonth())
+                        .revenue(p.getRevenue() != null ? p.getRevenue() : BigDecimal.ZERO)
+                        .build()
         ).getContent();
     }
 
@@ -153,20 +147,10 @@ public class ReportServiceImpl implements ReportService {
         return reportRepository.getHighRiskCustomers(pageable).map(this::mapToHighRiskCustomerDTO);
     }
 
-    // HELPER METHOD
-    private double calculateOrderValue(Integer orderNumber) {
-
-        List<OrderDetails> items =
-                orderDetailRepository.findByOrderOrderNumber(orderNumber);
-
-        if (items.isEmpty()) {
-            return 0;
-        }
-
     @Override
     public List<HighRiskCustomerResponseDTO> getHighRiskCustomers() {
         return reportRepository.getHighRiskCustomers(Pageable.unpaged()).map(this::mapToHighRiskCustomerDTO).getContent();
-  
+    }
 
     private HighRiskCustomerResponseDTO mapToHighRiskCustomerDTO(ReportRepository.CustomerExposureProjection p) {
         BigDecimal excess = p.getTotalOrderValue().subtract(p.getCreditLimit());
@@ -181,5 +165,6 @@ public class ReportServiceImpl implements ReportService {
         dto.setTotalOrderValue(p.getTotalOrderValue());
         dto.setRiskPercentage(riskPercentage);
         return dto;
+        ///
     }
 }
