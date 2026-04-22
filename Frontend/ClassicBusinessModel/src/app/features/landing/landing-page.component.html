@@ -1,0 +1,29 @@
+<section class="min-h-screen w-full bg-[#f5f7fc]">
+  <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)]">
+    <app-sidebar />
+
+    <div class="px-5 py-8 sm:px-8 lg:px-8 lg:py-14 xl:px-10">
+      <div class="mx-auto flex w-full max-w-[1600px] flex-col gap-7">
+        <div class="flex flex-col gap-4">
+          <p class="text-xs font-extrabold uppercase tracking-[0.35em] text-[#1f7a68]">Team Module Access</p>
+          <h1 class="max-w-5xl text-4xl font-bold leading-tight tracking-[-0.04em] text-slate-950 sm:text-5xl lg:text-[4.25rem] xl:text-[4.75rem]">
+            Classic Business Model
+          </h1>
+          <p class="max-w-4xl text-base leading-8 text-slate-500 sm:text-lg">
+            Select a team member to open the assigned module. Each login unlocks only that member&apos;s module.
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs font-extrabold uppercase tracking-[0.35em] text-[#1f7a68]">Choose a module</p>
+        </div>
+
+        <div class="grid grid-cols-1 items-stretch gap-4 md:grid-cols-2 lg:grid-cols-5">
+          @for (module of modules; track module.id) {
+            <app-module-card [module]="module" [compact]="true"></app-module-card>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

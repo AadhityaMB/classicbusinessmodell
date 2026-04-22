@@ -1,0 +1,244 @@
+@if (selected(); as item) {
+  <section class="min-h-screen w-full bg-[#f7f8fc]">
+    <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)]">
+      <app-sidebar [activeModuleId]="item.module.id" linkMode="dashboard" />
+
+      <div class="px-4 py-8 sm:px-6 lg:px-8">
+        <div class="mx-auto flex w-full max-w-7xl flex-col gap-6">
+          <a class="inline-flex w-fit items-center gap-2 text-base font-bold text-[#157c6b] no-underline" [routerLink]="['/modules', item.module.id]">
+            <span aria-hidden="true">&larr;</span>
+            <span>Back to dashboard</span>
+          </a>
+
+          <header class="flex flex-col gap-5 rounded-[28px] bg-[#1f2f46] p-6 text-white shadow-[0_20px_50px_rgba(35,48,64,0.12)] md:flex-row md:items-end md:justify-between md:p-8">
+            <div>
+              <p class="mb-2 text-xs font-bold uppercase tracking-[0.28em] text-white/75">{{ item.resource.name }}</p>
+              <h1 class="text-4xl font-bold tracking-[-0.04em] md:text-5xl">{{ item.action.label }}</h1>
+              <p class="mt-4 max-w-3xl text-base leading-8 text-slate-200">{{ item.action.description }}</p>
+            </div>
+            <div class="inline-flex min-w-24 items-center justify-center rounded-3xl bg-white/15 px-5 py-4 text-sm font-extrabold tracking-[0.08em]">
+              {{ item.action.method }}
+            </div>
+          </header>
+
+          <article class="rounded-3xl bg-[#fffdf8] p-6 shadow-sm ring-1 ring-[#d6deea] md:p-8">
+            <div class="grid gap-5">
+              <h2 class="text-2xl font-bold text-slate-950">{{ formTitle() }}</h2>
+
+              @if (pathFields().length) {
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  @for (field of pathFields(); track field.key) {
+                    <label class="grid gap-2.5">
+                      <span class="text-sm font-bold text-slate-700">{{ field.label }}</span>
+                      <input
+                        class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+                        [class.border-[#d9deea]]="!isFieldInvalid('path', field.key)"
+                        [class.focus:border-[#1d9a84]]="!isFieldInvalid('path', field.key)"
+                        [class.focus:ring-[#1d9a84]/10]="!isFieldInvalid('path', field.key)"
+                        [class.border-red-300]="isFieldInvalid('path', field.key)"
+                        [class.bg-red-50]="isFieldInvalid('path', field.key)"
+                        [class.focus:border-red-400]="isFieldInvalid('path', field.key)"
+                        [class.focus:ring-red-100]="isFieldInvalid('path', field.key)"
+                        [type]="field.type"
+                        [step]="field.step ?? null"
+                        [ngModel]="pathValues()[field.key]"
+                        (ngModelChange)="updatePathValue(field.key, $event)"
+                        [placeholder]="field.placeholder ?? ''"
+                        [attr.aria-invalid]="isFieldInvalid('path', field.key)"
+                      />
+                      @if (fieldError('path', field.key); as message) {
+                        <span class="text-sm font-medium text-red-600">{{ message }}</span>
+                      }
+                    </label>
+                  }
+                </div>
+              }
+
+              @if (queryFields().length) {
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  @for (field of queryFields(); track field.key) {
+                    <label class="grid gap-2.5">
+                      <span class="text-sm font-bold text-slate-700">{{ field.label }}</span>
+                      @if (field.type === 'textarea') {
+                        <textarea
+                          class="min-h-32 w-full resize-y rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+                          [class.border-[#d9deea]]="!isFieldInvalid('query', field.key)"
+                          [class.focus:border-[#1d9a84]]="!isFieldInvalid('query', field.key)"
+                          [class.focus:ring-[#1d9a84]/10]="!isFieldInvalid('query', field.key)"
+                          [class.border-red-300]="isFieldInvalid('query', field.key)"
+                          [class.bg-red-50]="isFieldInvalid('query', field.key)"
+                          [class.focus:border-red-400]="isFieldInvalid('query', field.key)"
+                          [class.focus:ring-red-100]="isFieldInvalid('query', field.key)"
+                          rows="4"
+                          [ngModel]="queryValues()[field.key]"
+                          (ngModelChange)="updateQueryValue(field.key, $event)"
+                          [placeholder]="field.placeholder ?? ''"
+                          [attr.aria-invalid]="isFieldInvalid('query', field.key)"
+                        ></textarea>
+                      } @else {
+                        <input
+                          class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+                          [class.border-[#d9deea]]="!isFieldInvalid('query', field.key)"
+                          [class.focus:border-[#1d9a84]]="!isFieldInvalid('query', field.key)"
+                          [class.focus:ring-[#1d9a84]/10]="!isFieldInvalid('query', field.key)"
+                          [class.border-red-300]="isFieldInvalid('query', field.key)"
+                          [class.bg-red-50]="isFieldInvalid('query', field.key)"
+                          [class.focus:border-red-400]="isFieldInvalid('query', field.key)"
+                          [class.focus:ring-red-100]="isFieldInvalid('query', field.key)"
+                          [type]="field.type"
+                          [step]="field.step ?? null"
+                          [ngModel]="queryValues()[field.key]"
+                          (ngModelChange)="updateQueryValue(field.key, $event)"
+                          [placeholder]="field.placeholder ?? ''"
+                          [attr.aria-invalid]="isFieldInvalid('query', field.key)"
+                        />
+                      }
+                      @if (fieldError('query', field.key); as message) {
+                        <span class="text-sm font-medium text-red-600">{{ message }}</span>
+                      }
+                    </label>
+                  }
+                </div>
+              }
+
+              @if (formFields().length) {
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  @for (field of formFields(); track field.key) {
+                    <label class="grid gap-2.5">
+                      <span class="text-sm font-bold text-slate-700">{{ field.label }}</span>
+                      @if (field.type === 'textarea') {
+                        <textarea
+                          class="min-h-36 w-full resize-y rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+                          [class.border-[#d9deea]]="!isFieldInvalid('form', field.key)"
+                          [class.focus:border-[#1d9a84]]="!isFieldInvalid('form', field.key)"
+                          [class.focus:ring-[#1d9a84]/10]="!isFieldInvalid('form', field.key)"
+                          [class.border-red-300]="isFieldInvalid('form', field.key)"
+                          [class.bg-red-50]="isFieldInvalid('form', field.key)"
+                          [class.focus:border-red-400]="isFieldInvalid('form', field.key)"
+                          [class.focus:ring-red-100]="isFieldInvalid('form', field.key)"
+                          rows="5"
+                          [ngModel]="formValues()[field.key]"
+                          (ngModelChange)="updateFormValue(field.key, $event)"
+                          [placeholder]="field.placeholder ?? ''"
+                          [attr.aria-invalid]="isFieldInvalid('form', field.key)"
+                        ></textarea>
+                      } @else {
+                        <input
+                          class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+                          [class.border-[#d9deea]]="!isFieldInvalid('form', field.key)"
+                          [class.focus:border-[#1d9a84]]="!isFieldInvalid('form', field.key)"
+                          [class.focus:ring-[#1d9a84]/10]="!isFieldInvalid('form', field.key)"
+                          [class.border-red-300]="isFieldInvalid('form', field.key)"
+                          [class.bg-red-50]="isFieldInvalid('form', field.key)"
+                          [class.focus:border-red-400]="isFieldInvalid('form', field.key)"
+                          [class.focus:ring-red-100]="isFieldInvalid('form', field.key)"
+                          [type]="field.type"
+                          [step]="field.step ?? null"
+                          [ngModel]="formValues()[field.key]"
+                          (ngModelChange)="updateFormValue(field.key, $event)"
+                          [placeholder]="field.placeholder ?? ''"
+                          [attr.aria-invalid]="isFieldInvalid('form', field.key)"
+                        />
+                      }
+                      @if (fieldError('form', field.key); as message) {
+                        <span class="text-sm font-medium text-red-600">{{ message }}</span>
+                      }
+                    </label>
+                  }
+                </div>
+              }
+
+              @if (isDeleteAction()) {
+                <div class="rounded-2xl bg-[#f7ece7] px-4 py-4 text-sm font-semibold text-[#8a4b33]">
+                  This action will permanently remove the selected record.
+                </div>
+              }
+
+              <div class="flex justify-center pt-2">
+                <button
+                  class="min-w-[220px] rounded-2xl bg-[#1f2f46] px-6 py-4 text-base font-bold text-white transition hover:bg-[#152235] disabled:cursor-progress disabled:opacity-70"
+                  type="button"
+                  (click)="submit()"
+                  [disabled]="isLoading()"
+                >
+                  {{ isLoading() ? 'Please wait...' : submitLabel() }}
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="rounded-3xl bg-[#fffdf8] p-6 shadow-sm ring-1 ring-[#d6deea] md:p-8">
+            <h2 class="text-2xl font-bold text-slate-950">Result</h2>
+
+            @if (successText()) {
+              <p class="mt-5 rounded-2xl bg-[#e8f1e5] px-4 py-4 text-sm font-bold text-[#345641]">{{ successText() }}</p>
+            }
+
+            @if (errorText()) {
+              <div class="mt-5 rounded-2xl bg-red-50 px-4 py-4 text-sm font-medium leading-7 text-red-700">
+                {{ errorText() }}
+              </div>
+            } @else if (scalarResult(); as scalar) {
+              @if (responseSummary().length) {
+                <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                  @for (entry of responseSummary(); track entry.key) {
+                    <div class="grid gap-1 rounded-2xl bg-[#f7f3ec] px-4 py-4">
+                      <strong class="text-sm font-bold capitalize text-slate-950">{{ entry.key }}</strong>
+                      <span class="text-sm text-slate-500 break-words">{{ entry.value }}</span>
+                    </div>
+                  }
+                </div>
+              }
+
+              <div class="mt-5 grid gap-2 rounded-2xl border border-[#d6deea] bg-white px-5 py-5">
+                <strong class="text-sm font-bold uppercase tracking-[0.08em] text-slate-500">{{ scalar.label }}</strong>
+                <span class="text-3xl font-bold text-slate-950">{{ scalar.value }}</span>
+              </div>
+            } @else if (tableRows().length) {
+              @if (responseSummary().length) {
+                <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                  @for (entry of responseSummary(); track entry.key) {
+                    <div class="grid gap-1 rounded-2xl bg-[#f7f3ec] px-4 py-4">
+                      <strong class="text-sm font-bold capitalize text-slate-950">{{ entry.key }}</strong>
+                      <span class="text-sm text-slate-500 break-words">{{ entry.value }}</span>
+                    </div>
+                  }
+                </div>
+              }
+
+              <div class="mt-5 overflow-auto rounded-2xl border border-[#d6deea]">
+                <table class="min-w-full border-collapse bg-white">
+                  <thead class="bg-[#f3ead8]">
+                    <tr>
+                      @for (column of tableColumns(); track column) {
+                        <th class="px-4 py-3 text-left text-sm font-bold capitalize text-slate-950">{{ column }}</th>
+                      }
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of tableRows(); track $index) {
+                      <tr class="border-t border-slate-200">
+                        @for (column of tableColumns(); track column) {
+                          <td class="px-4 py-3 align-top text-sm text-slate-700 break-words">{{ formatCell(row[column]) }}</td>
+                        }
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="mt-5 grid gap-2 rounded-2xl bg-[#f7f3ec] px-4 py-4">
+                <strong class="text-base font-bold text-slate-950">{{ emptyStateTitle() }}</strong>
+                <span class="text-sm leading-7 text-slate-500">{{ emptyStateText() }}</span>
+              </div>
+            }
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+} @else {
+  <section class="flex min-h-screen items-center justify-center bg-[#f7f8fc] px-6">
+    <p class="text-lg font-medium text-slate-600">Action not found.</p>
+  </section>
+}
