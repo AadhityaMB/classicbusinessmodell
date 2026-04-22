@@ -1,7 +1,7 @@
 @if (module(); as activeModule) {
   <section class="min-h-screen w-full bg-[#f7f8fc]">
     <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)]">
-      <app-sidebar [activeModuleId]="activeModule.id" linkMode="dashboard" />
+      <app-sidebar [activeModuleId]="activeModule.id" />
 
       <div class="px-6 py-8 sm:px-10 lg:px-16 lg:py-10">
         <div class="mx-auto flex w-full max-w-7xl flex-col gap-8">

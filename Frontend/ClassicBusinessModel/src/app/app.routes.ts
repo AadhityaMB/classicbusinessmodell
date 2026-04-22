@@ -16,13 +16,6 @@ export const routes: Routes = [
       )
   },
   {
-    path: 'modules/orders',
-    loadComponent: () =>
-      import('./features/dashboard/orders-dashboard.component').then(
-        (m) => m.OrdersDashboardComponent
-      )
-  },
-  {
     path: 'modules/:moduleId',
     loadComponent: () =>
       import('./features/dashboard/module-dashboard.component').then(

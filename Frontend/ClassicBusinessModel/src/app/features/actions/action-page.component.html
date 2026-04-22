@@ -1,7 +1,7 @@
 @if (selected(); as item) {
   <section class="min-h-screen w-full bg-[#f7f8fc]">
     <div class="grid min-h-screen grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)]">
-      <app-sidebar [activeModuleId]="item.module.id" linkMode="dashboard" />
+      <app-sidebar [activeModuleId]="item.module.id" />
 
       <div class="px-4 py-8 sm:px-6 lg:px-8">
         <div class="mx-auto flex w-full max-w-7xl flex-col gap-6">
