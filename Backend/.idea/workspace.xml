@@ -8,6 +8,9 @@
       <change beforePath="$PROJECT_DIR$/../../../Day 1/classicbusinessmodel/classicbusinessmodel_schema/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/report/controller/ReportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Day 1/classicbusinessmodel/classicbusinessmodel_schema/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/report/controller/ReportController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Day 1/classicbusinessmodel/classicbusinessmodel_schema/classicbusinessmodel_schema/src/test/java/com/classicbusinessmodel_schema/backend/module/orders/repository/OrdersRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Day 1/classicbusinessmodel/classicbusinessmodel_schema/classicbusinessmodel_schema/src/test/java/com/classicbusinessmodel_schema/backend/module/orders/repository/OrdersRepositoryTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Day 1/classicbusinessmodel/classicbusinessmodell" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/report/service/ReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/report/service/ReportServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/package-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
