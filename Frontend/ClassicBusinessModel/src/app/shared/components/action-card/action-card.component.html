@@ -1,0 +1,31 @@
+<a
+  class="flex h-full flex-col gap-4 rounded-3xl border border-[#e3e7ef] bg-white p-5 text-left no-underline shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+  [class.bg-emerald-50]="action().tone === 'success'"
+  [class.bg-amber-50]="action().tone === 'warning'"
+  [class.bg-slate-50]="action().tone === 'neutral'"
+  [routerLink]="['/modules', moduleId(), resourceId(), action().id]"
+>
+  <div class="flex items-center justify-between gap-4">
+    <span
+      class="inline-flex min-w-[58px] items-center justify-center rounded-full px-3 py-1.5 text-xs font-bold tracking-[0.08em]"
+      [class.bg-[#f4e6d1]]="action().tone !== 'success' && action().tone !== 'warning' && action().tone !== 'neutral'"
+      [class.text-[#7b5a3a]]="action().tone !== 'success' && action().tone !== 'warning' && action().tone !== 'neutral'"
+      [class.bg-emerald-100]="action().tone === 'success'"
+      [class.text-emerald-800]="action().tone === 'success'"
+      [class.bg-amber-100]="action().tone === 'warning'"
+      [class.text-amber-800]="action().tone === 'warning'"
+      [class.bg-slate-200]="action().tone === 'neutral'"
+      [class.text-slate-700]="action().tone === 'neutral'"
+    >
+      {{ action().method }}
+    </span>
+    <span class="text-sm font-semibold text-slate-500">Open</span>
+  </div>
+
+  <div class="flex-1">
+    <h4 class="text-lg font-bold text-slate-950">{{ action().label }}</h4>
+    <p class="mt-2 text-sm leading-6 text-slate-500">{{ action().description }}</p>
+  </div>
+
+  <small class="mt-auto text-sm leading-6 text-slate-500">{{ action().endpoint }}</small>
+</a>

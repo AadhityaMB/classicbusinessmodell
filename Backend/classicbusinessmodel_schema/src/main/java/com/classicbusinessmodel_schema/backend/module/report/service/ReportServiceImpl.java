@@ -1,5 +1,11 @@
 package com.classicbusinessmodel_schema.backend.module.report.service;
 
+
+
+import com.classicbusinessmodel_schema.backend.entity.Customer;
+import com.classicbusinessmodel_schema.backend.entity.OrderDetails;
+import com.classicbusinessmodel_schema.backend.entity.Orders;
+import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import com.classicbusinessmodel_schema.backend.module.orders.repository.OrdersRepository;
 import com.classicbusinessmodel_schema.backend.module.report.dto.response.*;
@@ -147,10 +153,20 @@ public class ReportServiceImpl implements ReportService {
         return reportRepository.getHighRiskCustomers(pageable).map(this::mapToHighRiskCustomerDTO);
     }
 
+    // HELPER METHOD
+    private double calculateOrderValue(Integer orderNumber) {
+
+        List<OrderDetails> items =
+                orderDetailRepository.findByOrderOrderNumber(orderNumber);
+
+        if (items.isEmpty()) {
+            return 0;
+        }
+
     @Override
     public List<HighRiskCustomerResponseDTO> getHighRiskCustomers() {
         return reportRepository.getHighRiskCustomers(Pageable.unpaged()).map(this::mapToHighRiskCustomerDTO).getContent();
-    }
+  
 
     private HighRiskCustomerResponseDTO mapToHighRiskCustomerDTO(ReportRepository.CustomerExposureProjection p) {
         BigDecimal excess = p.getTotalOrderValue().subtract(p.getCreditLimit());

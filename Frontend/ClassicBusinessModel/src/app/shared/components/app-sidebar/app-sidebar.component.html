@@ -1,0 +1,36 @@
+<aside class="flex h-auto flex-col bg-[#121a2b] px-5 py-8 text-white lg:sticky lg:top-0 lg:h-screen xl:px-6">
+  <div class="mb-9">
+    <a class="block text-[18px] font-bold leading-tight tracking-[0.01em] text-white no-underline xl:text-[20px]" routerLink="/">
+      Classic Business Model
+    </a>
+  </div>
+
+  <nav class="flex flex-col gap-3" aria-label="Module navigation">
+    @for (module of modules(); track module.id) {
+      <a
+        class="rounded-xl px-3 py-3 text-white transition"
+        [class.bg-white]="module.id === activeModuleId()"
+        [class.text-slate-900]="module.id === activeModuleId()"
+        [class.shadow-lg]="module.id === activeModuleId()"
+        [class.shadow-slate-950/10]="module.id === activeModuleId()"
+        [class.hover:bg-white/5]="module.id !== activeModuleId()"
+        [routerLink]="moduleLink(module.id)"
+      >
+        <strong
+          class="block text-[1.05rem] font-bold leading-tight xl:text-[1.12rem]"
+          [class.text-slate-900]="module.id === activeModuleId()"
+          [class.text-white]="module.id !== activeModuleId()"
+        >
+          {{ module.memberName }}
+        </strong>
+        <span
+          class="mt-1 block text-[0.95rem] leading-6 xl:text-[0.98rem]"
+          [class.text-slate-500]="module.id === activeModuleId()"
+          [class.text-slate-300]="module.id !== activeModuleId()"
+        >
+          {{ sidebarLabel(module.id) }}
+        </span>
+      </a>
+    }
+  </nav>
+</aside>

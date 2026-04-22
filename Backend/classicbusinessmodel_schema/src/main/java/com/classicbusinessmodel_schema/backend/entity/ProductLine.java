@@ -18,7 +18,6 @@ public class ProductLine {
     @Column(columnDefinition = "TEXT")
     private String htmlDescription;
 
-    @Lob
     @Column(name = "image")
     private byte[] image;
 
