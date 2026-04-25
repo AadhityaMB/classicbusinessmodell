@@ -12,17 +12,16 @@ import java.util.List;
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 
-    // Get all orders for a specific customer
-    List<Orders> findByCustomerCustomerNumber(Integer customerNumber);
+    // Custom query to get all orders for a specific customer
+    @Query("SELECT o FROM Orders o WHERE o.customer.customerNumber = :customerNumber")
+    List<Orders> findByCustomerCustomerNumber(@Param("customerNumber") Integer customerNumber);
 
-    // Get orders by status within a date range
-    List<Orders> findByStatusAndOrderDateBetween(String status, LocalDate fromDate, LocalDate toDate);
-
-    // Custom JPQL query to fetch orders using customer name
-    @Query("SELECT o FROM Orders o WHERE o.customer.customerName = :name")
-    List<Orders> findByCustomerName(@Param("name") String customerName);
-
-    // Native query to fetch all shipped orders
-    @Query(value = "SELECT * FROM orders WHERE status = 'Shipped'", nativeQuery = true)
-    List<Orders> getAllShippedOrders();
+    // Custom query to get orders by status within a date range
+    @Query("SELECT o FROM Orders o WHERE o.status = :status AND o.orderDate BETWEEN :fromDate AND :toDate")
+    List<Orders> findByStatusAndOrderDateBetween(
+            @Param("status") String status,
+            @Param("fromDate") LocalDate fromDate,
+            @Param("toDate") LocalDate toDate
+    );
 }
+
