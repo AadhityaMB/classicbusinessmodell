@@ -24,6 +24,7 @@ public class OrdersServiceImpl implements OrdersService {
     @Autowired
     private CustomerRepository customerRepository;
 
+    // Create a new order and save it to database
     @Override
     public OrderResponseDTO createOrder(OrderRequestDTO request) {
 
@@ -42,12 +43,14 @@ public class OrdersServiceImpl implements OrdersService {
         return mapToDTO(orderRepository.save(order));
     }
 
+    // Fetch all orders with pagination support
     @Override
     public Page<OrderResponseDTO> getAllOrders(Pageable pageable) {
         return orderRepository.findAll(pageable)
                 .map(this::mapToDTO);
     }
 
+    // Get a single order using order number
     @Override
     public OrderResponseDTO getOrderById(Integer orderNumber) {
         Orders order = orderRepository.findById(orderNumber)
@@ -56,6 +59,7 @@ public class OrdersServiceImpl implements OrdersService {
         return mapToDTO(order);
     }
 
+    // Update all fields of an existing order
     @Override
     public OrderResponseDTO updateOrder(Integer orderNumber, OrderRequestDTO request) {
 
@@ -71,6 +75,7 @@ public class OrdersServiceImpl implements OrdersService {
         return mapToDTO(orderRepository.save(order));
     }
 
+    // Update only the status field of an order
     @Override
     public OrderResponseDTO updateOrderStatus(Integer orderNumber, OrderRequestDTO request) {
 
@@ -84,6 +89,7 @@ public class OrdersServiceImpl implements OrdersService {
         return mapToDTO(orderRepository.save(order));
     }
 
+    // Fetch all orders belonging to a specific customer
     @Override
     public List<OrderResponseDTO> getOrdersByCustomer(Integer customerNumber) {
         return orderRepository.findByCustomerCustomerNumber(customerNumber)
@@ -92,6 +98,7 @@ public class OrdersServiceImpl implements OrdersService {
                 .collect(Collectors.toList());
     }
 
+    // Search orders based on status and date range
     @Override
     public List<OrderResponseDTO> searchOrders(String status, LocalDate fromDate, LocalDate toDate) {
         return orderRepository.findByStatusAndOrderDateBetween(status, fromDate, toDate)
@@ -100,6 +107,7 @@ public class OrdersServiceImpl implements OrdersService {
                 .collect(Collectors.toList());
     }
 
+    // Convert Orders entity to OrderResponseDTO
     private OrderResponseDTO mapToDTO(Orders order) {
         return new OrderResponseDTO(
                 order.getOrderNumber(),

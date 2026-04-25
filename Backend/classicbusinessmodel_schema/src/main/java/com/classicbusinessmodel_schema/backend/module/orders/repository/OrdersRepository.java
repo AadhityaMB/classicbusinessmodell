@@ -12,34 +12,17 @@ import java.util.List;
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 
-    // Get orders by customer
+    // Get all orders for a specific customer
     List<Orders> findByCustomerCustomerNumber(Integer customerNumber);
 
-    // Find by status
-    List<Orders> findByStatus(String status);
-
-    // Date range search
-    List<Orders> findByOrderDateBetween(LocalDate start, LocalDate end);
-
+    // Get orders by status within a date range
     List<Orders> findByStatusAndOrderDateBetween(String status, LocalDate fromDate, LocalDate toDate);
 
-    // 1. Custom JPQL - Get orders with customer name
+    // Custom JPQL query to fetch orders using customer name
     @Query("SELECT o FROM Orders o WHERE o.customer.customerName = :name")
     List<Orders> findByCustomerName(@Param("name") String customerName);
 
-    // 2. Native Query - Get shipped orders
+    // Native query to fetch all shipped orders
     @Query(value = "SELECT * FROM orders WHERE status = 'Shipped'", nativeQuery = true)
     List<Orders> getAllShippedOrders();
-
-    // 3. Orders not shipped yet
-    @Query("SELECT o FROM Orders o WHERE o.shippedDate IS NULL")
-    List<Orders> findUnshippedOrders();
-
-    // 4. Orders after a specific date
-    @Query("SELECT o FROM Orders o WHERE o.orderDate > :date")
-    List<Orders> findOrdersAfterDate(@Param("date") LocalDate date);
-
-    // 5. Count orders by status
-    @Query("SELECT COUNT(o) FROM Orders o WHERE o.status = :status")
-    long countByStatus(@Param("status") String status);
 }
