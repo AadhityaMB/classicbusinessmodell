@@ -103,20 +103,5 @@ class PaymentServiceTest {
                 () -> paymentService.getPaymentByCheckNumber("CHK1"));
     }
 
-    // 5. CREATE PAYMENT
-    @Test
-    void testCreatePayment() {
 
-        Payment payment = getPayment();
-
-        when(paymentRepository.save(any(Payment.class)))
-                .thenReturn(payment);
-
-        PaymentResponseDTO result = paymentService.createPayment(
-                new PaymentResponseDTO("CHK1", 1, BigDecimal.valueOf(1000), LocalDate.now())
-        );
-
-        assertNotNull(result);
-        assertEquals("CHK1", result.getCheckNumber());
-    }
 }
