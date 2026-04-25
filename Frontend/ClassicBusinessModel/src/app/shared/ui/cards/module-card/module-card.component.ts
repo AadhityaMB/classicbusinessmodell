@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ModuleDefinition } from '../../../core/models/module.models';
+import { ModuleDefinition } from '../../../../core/models/module.models';
 
 @Component({
   selector: 'app-module-card',

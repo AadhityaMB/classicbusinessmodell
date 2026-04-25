@@ -1,10 +1,10 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ActionField } from '../../core/models/module.models';
-import { getModuleById } from '../../core/data/module-data';
-import { ApiService } from '../../core/services/api.service';
-import { AppSidebarComponent } from '../../shared/components/app-sidebar/app-sidebar.component';
+import { ActionField } from '../../../core/models/module.models';
+import { getModuleById } from '../../../core/data/module-data';
+import { ApiService } from '../../../core/services/api.service';
+import { AppSidebarComponent } from '../../../shared/layout/app-sidebar/app-sidebar.component';
 
 type FieldScope = 'path' | 'query' | 'form';
 
@@ -156,6 +156,43 @@ export class ActionPageComponent {
     return Array.from(columns);
   });
 
+  protected readonly paginationState = computed(() => {
+    const response = this.responseData();
+    const source = this.isRecord(response) && 'data' in response ? response['data'] : response;
+
+    if (!this.isRecord(source) || !Array.isArray(source['content'])) {
+      return null;
+    }
+
+    const pageNumber = typeof source['number'] === 'number' ? source['number'] : null;
+    const pageSize = typeof source['size'] === 'number' ? source['size'] : null;
+    const totalPages = typeof source['totalPages'] === 'number' ? source['totalPages'] : null;
+    const totalElements = typeof source['totalElements'] === 'number' ? source['totalElements'] : null;
+    const first = typeof source['first'] === 'boolean' ? source['first'] : pageNumber === 0;
+    const last = typeof source['last'] === 'boolean' ? source['last'] : totalPages !== null && pageNumber !== null
+      ? pageNumber >= totalPages - 1
+      : false;
+    const numberOfElements = typeof source['numberOfElements'] === 'number'
+      ? source['numberOfElements']
+      : Array.isArray(source['content'])
+        ? source['content'].length
+        : 0;
+
+    if (pageNumber === null || pageSize === null || totalPages === null || totalElements === null) {
+      return null;
+    }
+
+    return {
+      pageNumber,
+      pageSize,
+      totalPages,
+      totalElements,
+      numberOfElements,
+      first,
+      last
+    };
+  });
+
   constructor() {
     this.route.paramMap.subscribe((params) => {
       this.routeState.set({
@@ -271,10 +308,60 @@ export class ActionPageComponent {
     return 'Submit';
   }
 
+  protected goToPreviousPage(): void {
+    const pagination = this.paginationState();
+
+    if (!pagination || pagination.first || this.isLoading()) {
+      return;
+    }
+
+    this.setQueryValue('page', String(Math.max(0, pagination.pageNumber - 1)));
+    this.submit();
+  }
+
+  protected goToNextPage(): void {
+    const pagination = this.paginationState();
+
+    if (!pagination || pagination.last || this.isLoading()) {
+      return;
+    }
+
+    this.setQueryValue('page', String(pagination.pageNumber + 1));
+    this.submit();
+  }
+
   protected prettyLabel(key: string): string {
     return key
       .replace(/([A-Z])/g, ' $1')
       .replace(/^./, (value) => value.toUpperCase());
+  }
+
+  protected fieldPattern(field: ActionField): string | null {
+    return field.validation?.pattern ? String(field.validation.pattern.value) : null;
+  }
+
+  protected fieldMaxLength(field: ActionField): number | null {
+    return field.validation?.maxLength ? Number(field.validation.maxLength.value) : null;
+  }
+
+  protected fieldMinLength(field: ActionField): number | null {
+    return field.validation?.minLength ? Number(field.validation.minLength.value) : null;
+  }
+
+  protected inputMode(field: ActionField): string | null {
+    if (field.type === 'email') {
+      return 'email';
+    }
+
+    if (field.key.toLowerCase().includes('phone')) {
+      return 'tel';
+    }
+
+    if (field.type === 'number') {
+      return 'decimal';
+    }
+
+    return null;
   }
 
   protected formatCell(value: unknown): string {
@@ -549,6 +636,11 @@ export class ActionPageComponent {
       fieldErrors,
       message: serverMessage
     };
+  }
+
+  private setQueryValue(key: string, value: string): void {
+    this.queryValues.update((current) => ({ ...current, [key]: value }));
+    this.touchedQueryFields.update((current) => ({ ...current, [key]: true }));
   }
 
   private isNumericKey(key: string): boolean {
