@@ -26,7 +26,7 @@ public class OrdersController {
     @Autowired
     private OrdersService orderService;
 
-    // CREATE ORDER
+    // Creates a new order for an existing customer
     @Operation(
             summary = "Create a new order",
             description = "Creates a new order for an existing customer"
@@ -43,7 +43,7 @@ public class OrdersController {
         );
     }
 
-    // GET ALL ORDERS WITH PAGINATION
+    // Fetches all orders with pagination and sorting
     @Operation(
             summary = "Get all orders",
             description = "Fetches all orders with pagination and sorting"
@@ -65,7 +65,7 @@ public class OrdersController {
         );
     }
 
-    // GET ORDER BY ID
+    // Retrieves a specific order using order number
     @Operation(
             summary = "Get order by ID",
             description = "Retrieves a specific order using order number"
@@ -80,7 +80,7 @@ public class OrdersController {
         );
     }
 
-    // UPDATE FULL ORDER
+    // Updates all details of an existing order
     @Operation(
             summary = "Update an order",
             description = "Updates all details of an existing order"
@@ -97,7 +97,7 @@ public class OrdersController {
         );
     }
 
-    // UPDATE STATUS ONLY
+    // Updates only the status of an existing order
     @Operation(
             summary = "Update order status",
             description = "Updates only the status of an existing order"
@@ -114,7 +114,7 @@ public class OrdersController {
         );
     }
 
-    // GET ORDERS BY CUSTOMER
+    // Fetches all orders belonging to a specific customer
     @Operation(
             summary = "Get orders by customer number",
             description = "Fetches all orders belonging to a specific customer"
@@ -130,7 +130,7 @@ public class OrdersController {
         );
     }
 
-    // SEARCH ORDERS
+    // Fetches orders filtered by status and date range
     @Operation(
             summary = "Search orders",
             description = "Fetches orders filtered by status and date range"

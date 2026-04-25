@@ -9,17 +9,24 @@ import java.util.List;
 
 public interface OrdersService {
 
+    // Create a new order
     OrderResponseDTO createOrder(OrderRequestDTO request);
 
+    // Get all orders with pagination
     Page<OrderResponseDTO> getAllOrders(Pageable pageable);
 
+    // Get order by order number
     OrderResponseDTO getOrderById(Integer orderNumber);
 
+    // Update complete order details
     OrderResponseDTO updateOrder(Integer orderNumber, OrderRequestDTO request);
 
+    // Update only order status
     OrderResponseDTO updateOrderStatus(Integer orderNumber, OrderRequestDTO request);
 
+    // Get all orders for a specific customer
     List<OrderResponseDTO> getOrdersByCustomer(Integer customerNumber);
 
+    // Search orders using status and date range
     List<OrderResponseDTO> searchOrders(String status, LocalDate fromDate, LocalDate toDate);
 }
