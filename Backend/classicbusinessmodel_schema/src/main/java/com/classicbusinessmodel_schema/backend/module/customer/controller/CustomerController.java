@@ -76,6 +76,7 @@ public class CustomerController {
     public ResponseEntity<ApiResponse<CustomerResponseDTO>> getCustomerById(
             @PathVariable Integer customerNumber) {
 
+        // calls service to fetch customer by ID
         CustomerResponseDTO response =
                 customerService.getCustomerById(customerNumber);
 
