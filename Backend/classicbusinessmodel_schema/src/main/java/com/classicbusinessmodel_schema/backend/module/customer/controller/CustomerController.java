@@ -6,7 +6,6 @@ import com.classicbusinessmodel_schema.backend.module.customer.dto.request.Custo
 import com.classicbusinessmodel_schema.backend.module.customer.dto.response.CustomerResponseDTO;
 import com.classicbusinessmodel_schema.backend.module.customer.service.CustomerService;
 import jakarta.validation.Valid;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -15,27 +14,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
+// Marks this class as a REST controller
 @RestController
+
+// Base URL for all customer APIs
 @RequestMapping("/api/customers")
+
 @Tag(name = "Customer", description = "APIs for managing customers")
 public class CustomerController {
 
+    // Injects the CustomerService
     @Autowired
     private CustomerService customerService;
 
-    // CREATE CUSTOMER API
-    @Operation(summary = "Create Customer", description = "Creates a new customer in the system")
+    // Handles POST request to create a customer
     @PostMapping
     public ResponseEntity<ApiResponse<CustomerResponseDTO>> createCustomer(
             @Valid @RequestBody CustomerRequestDTO request) {
 
-        // call service to create customer
+        // Call service layer
         CustomerResponseDTO response = customerService.createCustomer(request);
 
-        // return standard API response
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(
                         HttpStatus.CREATED.value(),
@@ -44,21 +45,19 @@ public class CustomerController {
                 ));
     }
 
-    // GET ALL CUSTOMERS (with pagination)
-    @Operation(summary = "Get all customers", description = "Fetch all customers with pagination and sorting")
+    // Handles GET request with pagination and sorting
     @GetMapping
     public ResponseEntity<ApiResponse<Page<CustomerResponseDTO>>> getAllCustomers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "customerName") String sortBy) {
 
-        // pagination and sorting setup
+        // Create pageable object
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
 
-        // fetch data from service
+        // Fetch customers from service
         Page<CustomerResponseDTO> result = customerService.getAllCustomers(pageable);
 
-        // return response
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         HttpStatus.OK.value(),
@@ -68,8 +67,7 @@ public class CustomerController {
         );
     }
 
-    // GET CUSTOMER BY ID
-    @Operation(summary = "Get customer by ID", description = "Fetch a single customer using customer number")
+    // Fetch a customer using ID from URL
     @GetMapping("/{customerNumber}")
     public ResponseEntity<ApiResponse<CustomerResponseDTO>> getCustomerById(
             @PathVariable Integer customerNumber) {
@@ -77,24 +75,22 @@ public class CustomerController {
         CustomerResponseDTO response =
                 customerService.getCustomerById(customerNumber);
 
-        ApiResponse<CustomerResponseDTO> apiResponse =
+        return ResponseEntity.ok(
                 new ApiResponse<>(
                         HttpStatus.OK.value(),
                         "Customer fetched successfully",
                         response
-                );
-
-        return ResponseEntity.ok(apiResponse);
+                )
+        );
     }
 
-    // UPDATE CUSTOMER
-    @Operation(summary = "Update customer", description = "Update existing customer details")
+    // Updates an existing customer
     @PutMapping("/{customerNumber}")
     public ResponseEntity<ApiResponse<CustomerResponseDTO>> updateCustomer(
             @PathVariable Integer customerNumber,
             @Valid @RequestBody CustomerRequestDTO request) {
 
-        // update customer details
+        // Call service to update
         CustomerResponseDTO response =
                 customerService.updateCustomer(customerNumber, request);
 
@@ -107,13 +103,12 @@ public class CustomerController {
         );
     }
 
-    // DELETE CUSTOMER
-    @Operation(summary = "Delete customer", description = "Delete a customer by ID")
+    // Deletes a customer by ID
     @DeleteMapping("/{customerNumber}")
     public ResponseEntity<ApiResponse<Void>> deleteCustomer(
             @PathVariable Integer customerNumber) {
 
-        // delete customer by id
+        // Call service to delete
         customerService.deleteCustomer(customerNumber);
 
         return ResponseEntity.ok(
@@ -125,13 +120,12 @@ public class CustomerController {
         );
     }
 
-    // GET CREDIT LIMIT
-    @Operation(summary = "Get credit limit", description = "Fetch credit limit of a customer")
+    // Fetch credit limit of a customer
     @GetMapping("/{customerNumber}/credit-limit")
     public ResponseEntity<ApiResponse<BigDecimal>> getCreditLimit(
             @PathVariable Integer customerNumber) {
 
-        // fetch credit limit
+        // Get credit limit from service
         BigDecimal creditLimit = customerService.getCreditLimit(customerNumber);
 
         return ResponseEntity.ok(
@@ -143,14 +137,13 @@ public class CustomerController {
         );
     }
 
-    // UPDATE CREDIT LIMIT
-    @Operation(summary = "Update credit limit", description = "Update credit limit for a customer")
+    // Update credit limit of a customer
     @PutMapping("/{customerNumber}/credit-limit")
     public ResponseEntity<ApiResponse<CustomerResponseDTO>> updateCreditLimit(
             @PathVariable Integer customerNumber,
             @Valid @RequestBody CreditLimitRequestDTO request) {
 
-        // update credit limit
+        // Pass value from request DTO
         CustomerResponseDTO response =
                 customerService.updateCreditLimit(customerNumber, request.getCreditLimit());
 
@@ -163,14 +156,13 @@ public class CustomerController {
         );
     }
 
-    // SEARCH CUSTOMERS BY COUNTRY / CITY
-    @Operation(summary = "Search customers", description = "Search customers by country or city")
+    // Search customers by country or city
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<CustomerResponseDTO>>> searchCustomers(
             @RequestParam(required = false) String country,
             @RequestParam(required = false) String city) {
 
-        // search based on filters
+        // Call service with filters
         List<CustomerResponseDTO> result =
                 customerService.searchByGeography(country, city);
 

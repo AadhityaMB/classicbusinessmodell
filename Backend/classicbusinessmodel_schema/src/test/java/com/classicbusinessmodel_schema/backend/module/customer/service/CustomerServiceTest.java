@@ -1,6 +1,5 @@
 package com.classicbusinessmodel_schema.backend.module.customer.service;
 import com.classicbusinessmodel_schema.backend.entity.Customer;
-import com.classicbusinessmodel_schema.backend.entity.Employee;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import com.classicbusinessmodel_schema.backend.module.customer.dto.request.CustomerRequestDTO;
 import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;

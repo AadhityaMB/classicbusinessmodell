@@ -14,88 +14,119 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
+// Marks this class as service layer
 @Service
+// Enables transaction management (DB operations)
 @Transactional
 public class CustomerServiceImpl implements CustomerService {
 
+    // Injects CustomerRepository
     @Autowired
     private CustomerRepository customerRepository;
 
+    // Injects EmployeeRepository
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    // GET ALL CUSTOMERS (PAGINATION)
+    // Fetch all customers with pagination
     @Override
     public Page<CustomerResponseDTO> getAllCustomers(Pageable pageable) {
+
+        // Fetch from DB and convert Entity → DTO
         return customerRepository.findAll(pageable)
                 .map(this::convert);
     }
 
-    // GET CUSTOMER BY ID
+    // Fetch single customer by ID
     @Override
     public CustomerResponseDTO getCustomerById(Integer id) {
+
+        // Find customer or throw exception
         Customer c = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+
+        // Convert to DTO
         return convert(c);
     }
 
-    // CREATE CUSTOMER
+    // Create new customer
     @Override
     public CustomerResponseDTO createCustomer(CustomerRequestDTO r) {
+
         Customer c = new Customer();
+
+        // Map DTO → Entity
         set(c, r);
+
+        // Save to DB and convert to DTO
         return convert(customerRepository.save(c));
     }
 
-    // UPDATE CUSTOMER
+    // Update existing customer
     @Override
     public CustomerResponseDTO updateCustomer(Integer id, CustomerRequestDTO r) {
+
+        // Fetch existing customer
         Customer c = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+
+        // Update fields
         set(c, r);
+
+        // Save updated entity
         return convert(customerRepository.save(c));
     }
 
-    // DELETE CUSTOMER
+    // Delete customer
     @Override
     public void deleteCustomer(Integer id) {
 
+        // Fetch customer
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        // remove child relations
+        // Clear child relationships (avoid foreign key issues)
         customer.getOrders().clear();
         customer.getPayments().clear();
 
+        // Delete from DB
         customerRepository.delete(customer);
     }
 
-    // GET CREDIT LIMIT ONLY
+    // Get only credit limit
     @Override
     public BigDecimal getCreditLimit(Integer id) {
+
+        // Fetch customer and return credit limit
         return customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found"))
                 .getCreditLimit();
     }
 
-    // UPDATE CREDIT LIMIT
+    // Update only credit limit
     @Override
     public CustomerResponseDTO updateCreditLimit(Integer id, BigDecimal limit) {
+
+        // Check if customer exists
         if (!customerRepository.existsById(id)) {
             throw new ResourceNotFoundException("Customer not found");
         }
+
+        // Execute custom update query
         customerRepository.updateCreditLimit(id, limit);
+
+        // Return updated customer
         return getCustomerById(id);
     }
 
-    // SEARCH CUSTOMERS BY COUNTRY / CITY
+    // Search customers based on country/city
     @Override
     public List<CustomerResponseDTO> searchByGeography(String country, String city) {
         List<Customer> customers;
 
+        // Apply filters based on input
         if (country != null && city != null) {
             customers = customerRepository.findByCountryAndCity(country, city);
         } else if (country != null) {
@@ -106,16 +137,16 @@ public class CustomerServiceImpl implements CustomerService {
             customers = customerRepository.findAll();
         }
 
-        List<CustomerResponseDTO> list = new ArrayList<>();
-
-        // Convert entity list to DTO list
+        // Convert Entity list → DTO list
         return customers.stream()
                 .map(this::convert)
                 .toList();
     }
 
-    // MAP DTO → ENTITY
+    // Convert DTO → Entity
     private void set(Customer c, CustomerRequestDTO r) {
+
+        // Set basic fields
         c.setCustomerNumber(r.getCustomerNumber());
         c.setCustomerName(r.getCustomerName());
         c.setContactLastName(r.getContactLastName());
@@ -129,20 +160,26 @@ public class CustomerServiceImpl implements CustomerService {
         c.setCountry(r.getCountry());
         c.setCreditLimit(r.getCreditLimit());
 
-        // Assign sales representative if provided
+        // Assign sales rep if present
         if (r.getSalesRepEmployeeNumber() != null) {
+
+            // Fetch employee
             Employee e = employeeRepository.findById(r.getSalesRepEmployeeNumber())
                     .orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+
             c.setSalesRep(e);
         } else {
             c.setSalesRep(null);
         }
     }
 
-    // MAP ENTITY → DTO
+    // Convert Entity → DTO
     private CustomerResponseDTO convert(Customer c) {
+
+        // Create DTO object
         CustomerResponseDTO d = new CustomerResponseDTO();
 
+        // Map basic fields
         d.setCustomerNumber(c.getCustomerNumber());
         d.setCustomerName(c.getCustomerName());
         d.setContactLastName(c.getContactLastName());
@@ -156,7 +193,7 @@ public class CustomerServiceImpl implements CustomerService {
         d.setCountry(c.getCountry());
         d.setCreditLimit(c.getCreditLimit());
 
-        // Flatten sales rep details
+        // Map sales rep details if exists
         if (c.getSalesRep() != null) {
             d.setSalesRepEmployeeNumber(c.getSalesRep().getEmployeeNumber());
             d.setSalesRepName(c.getSalesRep().getFirstName() + " " + c.getSalesRep().getLastName());
