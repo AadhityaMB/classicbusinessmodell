@@ -68,8 +68,7 @@ class OrderDetailServiceTest {
         when(orderRepository.findById(1))
                 .thenReturn(Optional.of(order));
 
-        when(repository.existsById(any()))
-                .thenReturn(false);
+        when(repository.existsByOrderAndProduct(1, "P1")).thenReturn(false);
 
         when(repository.save(any()))
                 .thenAnswer(i -> i.getArgument(0));

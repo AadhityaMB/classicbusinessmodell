@@ -60,7 +60,9 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         );
 
         // Prevent duplicate order item
-        if (repository.existsById(id)) {
+        if (repository.existsByOrderAndProduct(
+                request.getOrderNumber(),
+                request.getProductCode())) {
             throw new ResourceAlreadyExistsException("Order item already exists");
         }
 

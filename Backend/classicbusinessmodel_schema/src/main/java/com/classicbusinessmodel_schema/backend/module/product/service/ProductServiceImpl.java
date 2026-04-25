@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         // Prevent duplicate product creation
-        if (productRepository.existsById(request.getProductCode())) {
+        if (productRepository.existsProduct(request.getProductCode())) {
             throw new ResourceAlreadyExistsException("Product already exists");
         }
 

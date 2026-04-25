@@ -46,7 +46,7 @@ class ProductLineServiceTest {
         ProductLine pl = new ProductLine();
         pl.setProductLine("Classic Cars");
 
-        when(productLineRepository.existsById("Classic Cars")).thenReturn(false);
+        when(productLineRepository.existsProductLine("Classic Cars")).thenReturn(false);
         when(productLineRepository.save(any())).thenReturn(pl);
 
         ProductLineResponse response = service.createProductLine(request);
@@ -62,7 +62,7 @@ class ProductLineServiceTest {
         ProductLineRequest request = new ProductLineRequest();
         request.setProductLine("Classic Cars");
 
-        when(productLineRepository.existsById("Classic Cars")).thenReturn(true);
+        when(productLineRepository.existsProductLine("Classic Cars")).thenReturn(true);
 
         assertThrows(ResourceAlreadyExistsException.class,
                 () -> service.createProductLine(request));
@@ -111,8 +111,7 @@ class ProductLineServiceTest {
 
         product.setProductLine(pl);
 
-        when(productLineRepository.existsById("Classic Cars"))
-                .thenReturn(true);
+        when(productLineRepository.existsProductLine("Classic Cars")).thenReturn(true);
 
         when(productRepository.findByProductLineProductLine("Classic Cars"))
                 .thenReturn(List.of(product));
