@@ -21,8 +21,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+// Unit tests for ProductService using Mockito
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
+
+    // Mock dependencies for isolated service testing
 
     @Mock
     private ProductRepository productRepository;
@@ -33,7 +36,7 @@ class ProductServiceTest {
     @InjectMocks
     private ProductServiceImpl service;
 
-    // 1. CREATE (POSITIVE)
+    // Verify successful creation of a product
     @Test
     void createProduct_success() {
 
@@ -54,7 +57,7 @@ class ProductServiceTest {
         verify(productRepository).save(any());
     }
 
-    // 2. CREATE (NEGATIVE - DUPLICATE)
+    // Verify exception when creating duplicate product
     @Test
     void createProduct_duplicate() {
 
@@ -67,7 +70,7 @@ class ProductServiceTest {
                 () -> service.createProduct(request));
     }
 
-    // 3. GET BY ID (NEGATIVE - NOT FOUND)
+    // Verify exception when product is not found
     @Test
     void getProduct_notFound() {
 
@@ -77,7 +80,7 @@ class ProductServiceTest {
                 () -> service.getProductById("P1"));
     }
 
-    // 4. DELETE (NEGATIVE - INVALID INPUT)
+    // Verify validation failure for invalid delete input
     @Test
     void deleteProduct_invalidInput() {
 
@@ -85,7 +88,7 @@ class ProductServiceTest {
                 () -> service.deleteProduct(""));
     }
 
-    // 5. UPDATE (POSITIVE)
+    // Verify successful update of a product
     @Test
     void updateProduct_success() {
 

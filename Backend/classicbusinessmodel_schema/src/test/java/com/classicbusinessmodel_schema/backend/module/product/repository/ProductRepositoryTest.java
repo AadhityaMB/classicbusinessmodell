@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
+// Test class for validating ProductRepository operations
 @DataJpaTest
 class ProductRepositoryTest {
 
@@ -19,8 +20,9 @@ class ProductRepositoryTest {
     @Autowired
     private ProductLineRepository productLineRepository;
 
-    // HELPERS
+    // Helper methods for setting up test data
 
+    // Create and persist a test product line
     private ProductLine createProductLine() {
         ProductLine pl = new ProductLine();
         pl.setProductLine("PL_" + System.currentTimeMillis());
@@ -29,6 +31,7 @@ class ProductRepositoryTest {
         return productLineRepository.save(pl);
     }
 
+    // Build a product entity for testing
     private Product createProduct(ProductLine pl) {
         Product product = new Product();
         product.setProductCode("P_" + System.currentTimeMillis());
@@ -43,9 +46,9 @@ class ProductRepositoryTest {
         return product;
     }
 
-    // TESTS
+    // Test cases for repository CRUD operations
 
-    // 1. CREATE
+    // Verify saving a product
     @Test
     void saveProduct() {
 
@@ -55,7 +58,7 @@ class ProductRepositoryTest {
         assertNotNull(saved);
     }
 
-    // 2. READ BY ID
+    // Verify fetching product by ID
     @Test
     void findById() {
 
@@ -67,7 +70,7 @@ class ProductRepositoryTest {
         assertTrue(found.isPresent());
     }
 
-    // 3. READ ALL
+    // Verify fetching all products
     @Test
     void findAll() {
 
@@ -76,7 +79,7 @@ class ProductRepositoryTest {
         assertNotNull(list); // no empty assumption
     }
 
-    // 4. UPDATE
+    // Verify updating a product
     @Test
     void updateProduct() {
 
@@ -90,7 +93,7 @@ class ProductRepositoryTest {
         assertEquals("Updated", updated.getProductName());
     }
 
-    // 5. DELETE
+    // Verify deleting a product
     @Test
     void deleteProduct() {
 

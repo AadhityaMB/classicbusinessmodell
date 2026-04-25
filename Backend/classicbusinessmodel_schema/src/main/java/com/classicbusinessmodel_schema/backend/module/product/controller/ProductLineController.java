@@ -12,15 +12,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+// Handles APIs for managing product lines and related products
 @RestController
 @RequestMapping("/api/product-lines")
 @Tag(name = "Product Lines", description = "Product category APIs")
 public class ProductLineController {
 
+    // Service layer dependency for product line operations
     @Autowired
     private ProductLineService productLineService;
 
+    // Fetch all product lines
     @GetMapping
+    @Operation(summary = "Get all product lines", description = "Fetches all product categories with pagination and sorting")
     public ResponseEntity<ApiResponse<Page<ProductLineResponse>>> getAllProductLines(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -39,6 +43,7 @@ public class ProductLineController {
         );
     }
 
+    // Fetch details of a specific product line
     @GetMapping("/{productLine}")
     @Operation(summary = "Get product line by name", description = "Fetches details of a specific product line")
     public ResponseEntity<ApiResponse<ProductLineResponse>> getProductLine(
@@ -56,6 +61,7 @@ public class ProductLineController {
         );
     }
 
+    // Fetch all products belonging to a specific product line
     @GetMapping("/{productLine}/products")
     @Operation(summary = "Get products under a product line", description = "Fetches all products belonging to a specific product line")
     public ResponseEntity<ApiResponse<List<ProductResponse>>> getProductsByLine(

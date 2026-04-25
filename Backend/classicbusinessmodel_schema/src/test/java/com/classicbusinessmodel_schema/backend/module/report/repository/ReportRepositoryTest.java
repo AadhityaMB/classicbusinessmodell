@@ -12,22 +12,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Repository-level integration tests for the Report module.
- *
- * The Report module has no dedicated repository; it aggregates data from
- * CustomerRepository, OrdersRepository, and OrderDetailRepository.
- * These tests verify that the underlying JPA queries used by ReportServiceImpl
- * behave correctly against an in-memory H2 database.
- */
 @DataJpaTest
 class ReportRepositoryTest {
 
@@ -105,7 +98,10 @@ class ReportRepositoryTest {
     @Test
     @DisplayName("findByOrderOrderNumber returns empty list when no details exist for order")
     void testFindOrderDetails_Empty() {
-        List<OrderDetails> details = orderDetailRepository.findByOrderOrderNumber(9001);
+        Pageable pageable = PageRequest.of(0, 10);
+
+        Page<OrderDetails> details =
+                orderDetailRepository.findByOrder_OrderNumber(9001, pageable);
 
         assertTrue(details.isEmpty());
     }

@@ -14,17 +14,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+// Handles APIs for managing products (create, update, delete, fetch)
 @RestController
 @RequestMapping("/api/products")
 @Tag(name = "Products", description = "Product management APIs")
 public class ProductController {
 
+    // Service layer dependency for product operations
     @Autowired
     private ProductService productService;
 
-    // CREATE PRODUCT
+    // Create a new product
     @PostMapping
     @Operation(summary = "Create new product", description = "Adds a new product to the system")
     public ResponseEntity<ApiResponse<ProductResponse>> createProduct(
@@ -42,7 +42,7 @@ public class ProductController {
                 );
     }
 
-    // UPDATE PRODUCT
+    // Update an existing product by product code
     @PutMapping("/{productCode}")
     @Operation(summary = "Update product", description = "Updates details of an existing product")
     public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(
@@ -61,12 +61,13 @@ public class ProductController {
         );
     }
 
-    // DELETE PRODUCT
+    // Delete a product by product code
     @DeleteMapping("/{productCode}")
     @Operation(summary = "Delete product", description = "Removes a product from the system")
     public ResponseEntity<ApiResponse<Void>> deleteProduct(
             @PathVariable String productCode) {
 
+        // Delegate delete operation to service layer
         productService.deleteProduct(productCode);
 
         return ResponseEntity.ok(
@@ -78,6 +79,7 @@ public class ProductController {
         );
     }
 
+    // Fetch all products with pagination and sorting
     @GetMapping
     @Operation(summary = "Get all products", description = "Fetches all products with pagination and sorting")
     public ResponseEntity<ApiResponse<Page<ProductResponse>>> getAllProducts(
@@ -98,7 +100,7 @@ public class ProductController {
         );
     }
 
-    // GET PRODUCT BY ID
+    // Fetch a product using its product code
     @GetMapping("/{productCode}")
     @Operation(summary = "Get product by product code", description = "Fetches details of a specific product using its code")
     public ResponseEntity<ApiResponse<ProductResponse>> getProductById(

@@ -20,27 +20,34 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
+// Service implementation for managing product operations
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {
 
+    // Service implementation for managing product operations
     @Autowired
     private ProductRepository productRepository;
 
+    // Repository for product line validation and lookup
     @Autowired
     private ProductLineRepository productLineRepository;
 
+    // Create a new product after validation checks
     @Override
     public ProductResponse createProduct(CreateProductRequest request) {
 
+        // Validate product code
         if (request.getProductCode() == null || request.getProductCode().isBlank()) {
             throw new BadRequestException("Product code cannot be empty");
         }
 
+        // Prevent duplicate product creation
         if (productRepository.existsById(request.getProductCode())) {
             throw new ResourceAlreadyExistsException("Product already exists");
         }
 
+        // Fetch and validate product line
         ProductLine productLine = productLineRepository.findById(request.getProductLine())
                 .orElseThrow(() -> new ResourceNotFoundException("Product line not found"));
 
@@ -55,16 +62,20 @@ public class ProductServiceImpl implements ProductService {
         product.setBuyPrice(request.getBuyPrice());
         product.setMSRP(request.getMsrp());
 
+        // Save entity and return response DTO
         return mapToResponse(productRepository.save(product));
     }
 
+    // Update product details based on provided fields
     @Override
     public ProductResponse updateProduct(String productCode, UpdateProductRequest request) {
 
+        // Validate product code
         if (productCode == null || productCode.isBlank()) {
             throw new BadRequestException("Product code cannot be empty");
         }
 
+        // Fetch existing product
         Product product = productRepository.findById(productCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
@@ -72,6 +83,7 @@ public class ProductServiceImpl implements ProductService {
             product.setProductName(request.getProductName());
         }
 
+        // Update product line after validation
         if (request.getProductLine() != null) {
             ProductLine pl = productLineRepository.findById(request.getProductLine())
                     .orElseThrow(() -> new ResourceNotFoundException("Product line not found"));
@@ -102,9 +114,11 @@ public class ProductServiceImpl implements ProductService {
             product.setMSRP(request.getMsrp());
         }
 
+        // Save updated product and return response DTO
         return mapToResponse(productRepository.save(product));
     }
 
+    // Delete a product after validating its existence
     @Override
     public void deleteProduct(String productCode) {
 
@@ -112,37 +126,45 @@ public class ProductServiceImpl implements ProductService {
             throw new BadRequestException("Product code cannot be empty");
         }
 
+        // Ensure product exists
         Product product = productRepository.findById(productCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         try {
+            // Perform delete operation
             productRepository.delete(product);
         } catch (Exception e) {
             throw new DatabaseException("Failed to delete product (possible FK constraint)");
         }
     }
 
+    // Fetch paginated products with sorting
     @Override
     public Page<ProductResponse> getAllProducts(int page, int size, String sortBy, String direction) {
 
+        // Build sorting configuration
         Sort sort = direction.equalsIgnoreCase("desc") ?
                 Sort.by(sortBy).descending() :
                 Sort.by(sortBy).ascending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
+        // Fetch paginated data from repository
         Page<Product> productPage = productRepository.findAll(pageable);
 
         if (productPage.isEmpty()) {
             throw new ResourceNotFoundException("No products found");
         }
 
+        // Convert entities to response DTOs
         return productPage.map(this::mapToResponse);
     }
 
+    // Fetch a product by its product code
     @Override
     public ProductResponse getProductById(String productCode) {
 
+        // Validate product code
         if (productCode == null || productCode.isBlank()) {
             throw new BadRequestException("Product code cannot be null or empty");
         }
@@ -153,28 +175,7 @@ public class ProductServiceImpl implements ProductService {
         return mapToResponse(product);
     }
 
-    @Override
-    public List<ProductResponse> getProductsByLine(String productLine) {
-
-        if (productLine == null || productLine.isBlank()) {
-            throw new BadRequestException("Product line cannot be null or empty");
-        }
-
-        if (!productLineRepository.existsById(productLine)) {
-            throw new ResourceNotFoundException("Product line not found");
-        }
-
-        List<Product> products = productRepository.findByProductLineProductLine(productLine);
-
-        if (products.isEmpty()) {
-            throw new ResourceNotFoundException("No products found for this product line");
-        }
-
-        return products.stream()
-                .map(this::mapToResponse)
-                .toList();
-    }
-
+    // Convert Product entity to response DTO
     private ProductResponse mapToResponse(Product product) {
         return new ProductResponse(
                 product.getProductCode(),

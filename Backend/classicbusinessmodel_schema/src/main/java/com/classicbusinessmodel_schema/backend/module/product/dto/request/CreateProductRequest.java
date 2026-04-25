@@ -3,8 +3,10 @@ package com.classicbusinessmodel_schema.backend.module.product.dto.request;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
+// Request DTO for creating a new product with validation rules
 public class CreateProductRequest {
 
+    // Unique identifier for the product
     @NotBlank(message = "Product code cannot be empty")
     @Size(max = 15)
     private String productCode;
@@ -13,6 +15,7 @@ public class CreateProductRequest {
     @Size(max = 70)
     private String productName;
 
+    // Product category reference (must match existing product line)
     @NotBlank
     @Size(max = 50)
     private String productLine;
@@ -28,14 +31,17 @@ public class CreateProductRequest {
     @NotBlank
     private String productDescription;
 
+    // Available stock quantity (cannot be negative)
     @NotNull(message = "Stock is required")
     @Min(value = 0, message = "Stock cannot be negative")
     private Integer quantityInStock;
 
+    // Available stock quantity (cannot be negative)
     @NotNull(message = "Buy price is required")
     @DecimalMin(value = "0.01", message = "Buy price must be greater than 0")
     private BigDecimal buyPrice;
 
+    // Selling price (must be greater than zero)
     @NotNull
     @DecimalMin("0.01")
     private BigDecimal msrp;
