@@ -5,6 +5,7 @@ import com.classicbusinessmodel_schema.backend.module.customer.dto.request.Credi
 import com.classicbusinessmodel_schema.backend.module.customer.dto.request.CustomerRequestDTO;
 import com.classicbusinessmodel_schema.backend.module.customer.dto.response.CustomerResponseDTO;
 import com.classicbusinessmodel_schema.backend.module.customer.service.CustomerService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class CustomerController {
     private CustomerService customerService;
 
     // Handles POST request to create a customer
+    @Operation(summary = "Create Customer", description = "Creates a new customer in the system")
     @PostMapping
     public ResponseEntity<ApiResponse<CustomerResponseDTO>> createCustomer(
             @Valid @RequestBody CustomerRequestDTO request) {
@@ -46,6 +48,7 @@ public class CustomerController {
     }
 
     // Handles GET request with pagination and sorting
+    @Operation(summary = "Get all customers", description = "Fetch all customers with pagination and sorting")
     @GetMapping
     public ResponseEntity<ApiResponse<Page<CustomerResponseDTO>>> getAllCustomers(
             @RequestParam(defaultValue = "0") int page,
@@ -68,6 +71,7 @@ public class CustomerController {
     }
 
     // Fetch a customer using ID from URL
+    @Operation(summary = "Get customer by ID", description = "Fetch a single customer using customer number")
     @GetMapping("/{customerNumber}")
     public ResponseEntity<ApiResponse<CustomerResponseDTO>> getCustomerById(
             @PathVariable Integer customerNumber) {
@@ -85,6 +89,7 @@ public class CustomerController {
     }
 
     // Updates an existing customer
+    @Operation(summary = "Update customer", description = "Update existing customer details")
     @PutMapping("/{customerNumber}")
     public ResponseEntity<ApiResponse<CustomerResponseDTO>> updateCustomer(
             @PathVariable Integer customerNumber,
@@ -104,6 +109,7 @@ public class CustomerController {
     }
 
     // Deletes a customer by ID
+    @Operation(summary = "Delete customer", description = "Delete a customer by ID")
     @DeleteMapping("/{customerNumber}")
     public ResponseEntity<ApiResponse<Void>> deleteCustomer(
             @PathVariable Integer customerNumber) {
@@ -121,6 +127,7 @@ public class CustomerController {
     }
 
     // Fetch credit limit of a customer
+    @Operation(summary = "Get credit limit", description = "Fetch credit limit of a customer")
     @GetMapping("/{customerNumber}/credit-limit")
     public ResponseEntity<ApiResponse<BigDecimal>> getCreditLimit(
             @PathVariable Integer customerNumber) {
@@ -138,6 +145,7 @@ public class CustomerController {
     }
 
     // Update credit limit of a customer
+    @Operation(summary = "Update credit limit", description = "Update credit limit for a customer")
     @PutMapping("/{customerNumber}/credit-limit")
     public ResponseEntity<ApiResponse<CustomerResponseDTO>> updateCreditLimit(
             @PathVariable Integer customerNumber,
@@ -157,6 +165,7 @@ public class CustomerController {
     }
 
     // Search customers by country or city
+    @Operation(summary = "Search customers", description = "Search customers by country or city")
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<CustomerResponseDTO>>> searchCustomers(
             @RequestParam(required = false) String country,

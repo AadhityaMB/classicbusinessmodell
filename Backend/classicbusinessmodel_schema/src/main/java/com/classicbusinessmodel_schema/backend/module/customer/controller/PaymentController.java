@@ -3,6 +3,7 @@ package com.classicbusinessmodel_schema.backend.module.customer.controller;
 import com.classicbusinessmodel_schema.backend.common.ApiResponse;
 import com.classicbusinessmodel_schema.backend.module.customer.dto.response.PaymentResponseDTO;
 import com.classicbusinessmodel_schema.backend.module.customer.service.PaymentService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ public class PaymentController {
     private PaymentService paymentService;
 
     // Handles GET request to fetch all payments with pagination
+    @Operation(summary = "Get all payments", description = "Fetch all payments with pagination")
     @GetMapping("/all")
     public ResponseEntity<ApiResponse<List<PaymentResponseDTO>>> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -46,6 +48,7 @@ public class PaymentController {
     }
 
     // Fetch payments by customer number
+    @Operation(summary = "Get payments by customer", description = "Fetch payments using customer number")
     @GetMapping("/customer/{customerNumber}")
     public ResponseEntity<ApiResponse<List<PaymentResponseDTO>>> getByCustomer(
             @PathVariable Integer customerNumber) {
@@ -64,6 +67,7 @@ public class PaymentController {
     }
 
     // Fetch payment using check number
+    @Operation(summary = "Get payment by check number", description = "Fetch payment using check number")
     @GetMapping("/check/{checkNumber}")
     public ResponseEntity<ApiResponse<PaymentResponseDTO>> getByCheck(
             @PathVariable String checkNumber) {
