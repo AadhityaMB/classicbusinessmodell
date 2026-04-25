@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// Test class for validating OrderDetailRepository operations
 @DataJpaTest
 class OrderDetailRepositoryTest {
 
@@ -31,8 +32,9 @@ class OrderDetailRepositoryTest {
     @Autowired
     private OrdersRepository ordersRepository;
 
-    // HELPERS
+    // Helper methods for setting up test data
 
+    // Create and persist a test product line
     private ProductLine createProductLine() {
         ProductLine pl = new ProductLine();
         pl.setProductLine("PL_" + System.currentTimeMillis());
@@ -41,6 +43,7 @@ class OrderDetailRepositoryTest {
         return productLineRepository.save(pl);
     }
 
+    // Create and persist a test product
     private Product createProduct(ProductLine pl) {
         Product product = new Product();
         product.setProductCode("P_" + System.currentTimeMillis());
@@ -55,6 +58,7 @@ class OrderDetailRepositoryTest {
         return productRepository.save(product);
     }
 
+    // Create and persist a test customer
     private Customer createCustomer() {
         Customer customer = new Customer();
         customer.setCustomerNumber((int) (System.currentTimeMillis() % 100000));
@@ -69,6 +73,7 @@ class OrderDetailRepositoryTest {
         return customerRepository.save(customer);
     }
 
+    // Create and persist a test order
     private Orders createOrder(Customer customer) {
         Orders order = new Orders();
         order.setOrderNumber((int) (System.currentTimeMillis() % 100000));
@@ -76,6 +81,7 @@ class OrderDetailRepositoryTest {
         return ordersRepository.save(order);
     }
 
+    // Build order details entity (not persisted yet)
     private OrderDetails createOrderDetails(Orders order, Product product) {
         OrderDetails od = new OrderDetails();
         od.setOrder(order);
@@ -86,8 +92,9 @@ class OrderDetailRepositoryTest {
         return od;
     }
 
-    // TESTS
+    // Test cases for repository CRUD operations
 
+    // Verify saving order details
     @Test
     void saveOrderDetails() {
 
@@ -102,6 +109,7 @@ class OrderDetailRepositoryTest {
         assertEquals(5, saved.getQuantityOrdered());
     }
 
+    // Verify fetching order details by composite ID
     @Test
     void findById() {
 
@@ -119,14 +127,16 @@ class OrderDetailRepositoryTest {
         assertTrue(found.isPresent());
     }
 
+    // Verify fetching all order details
     @Test
     void findAll() {
 
         List<OrderDetails> list = repository.findAll();
 
-        assertNotNull(list); // ❗ no "isEmpty" assumption
+        assertNotNull(list);
     }
 
+    // Verify updating order details
     @Test
     void updateOrderDetails() {
 
@@ -144,6 +154,7 @@ class OrderDetailRepositoryTest {
         assertEquals(10, updated.getQuantityOrdered());
     }
 
+    // Verify deleting order details
     @Test
     void deleteOrderDetails() {
 

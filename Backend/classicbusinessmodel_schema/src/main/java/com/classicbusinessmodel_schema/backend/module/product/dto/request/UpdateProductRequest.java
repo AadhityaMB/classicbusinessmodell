@@ -5,11 +5,13 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
+// Request DTO for updating product details (supports partial updates)
 public class UpdateProductRequest {
 
     @Size(max = 70)
     private String productName;
 
+    // Product line reference (must match an existing product line)
     @Size(max = 50)
     private String productLine;
 
@@ -21,12 +23,15 @@ public class UpdateProductRequest {
 
     private String productDescription;
 
+    // Updated stock quantity (cannot be negative)
     @Min(value = 0, message = "Stock cannot be negative")
     private Integer quantityInStock;
 
+    // Updated cost price of the product
     @DecimalMin(value = "0.01", message = "Price must be greater than 0")
     private BigDecimal buyPrice;
 
+    // Updated selling price
     @DecimalMin("0.01")
     private BigDecimal msrp;
 

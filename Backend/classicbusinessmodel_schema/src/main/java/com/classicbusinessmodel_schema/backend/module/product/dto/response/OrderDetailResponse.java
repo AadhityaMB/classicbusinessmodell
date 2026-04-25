@@ -2,6 +2,7 @@ package com.classicbusinessmodel_schema.backend.module.product.dto.response;
 
 import java.math.BigDecimal;
 
+// Response DTO representing an item within an order
 public class OrderDetailResponse {
 
     private Integer orderNumber;

@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +26,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+// Unit tests for OrderDetailService using Mockito
 @ExtendWith(MockitoExtension.class)
 class OrderDetailServiceTest {
+
+    // Mock dependencies for isolated service testing
 
     @Mock
     private OrderDetailRepository repository;
@@ -42,7 +44,7 @@ class OrderDetailServiceTest {
     @InjectMocks
     private OrderDetailServiceImpl service;
 
-    // 1. ADD ITEM (SUCCESS)
+    // Verify successful addition of an order item
     @Test
     void addItem_success() {
 
@@ -80,7 +82,7 @@ class OrderDetailServiceTest {
 
     }
 
-    // 2. INVALID INPUT
+    // Verify validation failure for invalid input
     @Test
     void addItem_invalidInput() {
 
@@ -92,7 +94,7 @@ class OrderDetailServiceTest {
         verify(repository, never()).save(any());
     }
 
-    // 3. PRODUCT NOT FOUND
+    // Verify exception when product does not exist
     @Test
     void addItem_productNotFound() {
 
@@ -112,7 +114,7 @@ class OrderDetailServiceTest {
         verify(repository, never()).save(any());
     }
 
-    // 4. INSUFFICIENT STOCK
+    // Verify exception when stock is insufficient
     @Test
     void addItem_insufficientStock() {
 
@@ -135,7 +137,7 @@ class OrderDetailServiceTest {
         verify(repository, never()).save(any());
     }
 
-    // 5. GET ITEMS BY ORDER
+    // Verify fetching paginated order items
     @Test
     void getItemsByOrder_success() {
 
@@ -155,10 +157,10 @@ class OrderDetailServiceTest {
         when(repository.findByOrder_OrderNumber(eq(1), any(Pageable.class)))
                 .thenAnswer(invocation -> new PageImpl<>(List.of(od)));
 
-        List<OrderDetailResponse> response =
+        Page<OrderDetailResponse> response =
                 service.getItemsByOrder(1, 0, 10, "orderLineNumber", "asc");
 
         assertNotNull(response);
-        assertEquals(1, response.size());
+        assertEquals(1, response.getContent().size());
     }
 }

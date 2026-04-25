@@ -8,13 +8,16 @@ import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
+// Test class for validating ProductLineRepository operations
 @DataJpaTest
 class ProductLineRepositoryTest {
 
     @Autowired
     private ProductLineRepository repository;
 
-    // HELPER
+    // Helper method for creating test product line data
+
+    // Build a product line entity for testing
     private ProductLine createProductLine() {
         ProductLine pl = new ProductLine();
         pl.setProductLine("PL_" + System.currentTimeMillis());
@@ -23,7 +26,7 @@ class ProductLineRepositoryTest {
         return pl;
     }
 
-    // 1. CREATE
+    // Verify saving a product line
     @Test
     void saveProductLine() {
 
@@ -32,7 +35,7 @@ class ProductLineRepositoryTest {
         assertNotNull(saved);
     }
 
-    // 2. READ BY ID
+    // Verify fetching product line by ID
     @Test
     void findById() {
 
@@ -43,16 +46,16 @@ class ProductLineRepositoryTest {
         assertTrue(found.isPresent());
     }
 
-    // 3. READ ALL
+    // Verify fetching all product lines
     @Test
     void findAll() {
 
         List<ProductLine> list = repository.findAll();
 
-        assertNotNull(list); // no empty assumption
+        assertNotNull(list);
     }
 
-    // 4. UPDATE
+    // Verify updating a product line
     @Test
     void updateProductLine() {
 
@@ -65,7 +68,7 @@ class ProductLineRepositoryTest {
         assertEquals("Updated", updated.getTextDescription());
     }
 
-    // 5. DELETE
+    // Verify deleting a product line
     @Test
     void deleteProductLine() {
 

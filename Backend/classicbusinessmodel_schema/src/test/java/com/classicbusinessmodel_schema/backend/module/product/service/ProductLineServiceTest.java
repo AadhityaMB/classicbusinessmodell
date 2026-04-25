@@ -21,8 +21,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+// Unit tests for ProductLineService using Mockito
 @ExtendWith(MockitoExtension.class)
 class ProductLineServiceTest {
+
+    // Mock dependencies for isolated service testing
 
     @Mock
     private ProductRepository productRepository;
@@ -33,7 +36,7 @@ class ProductLineServiceTest {
     @InjectMocks
     private ProductLineServiceImpl service;
 
-    // 1. CREATE (POSITIVE)
+    // Verify successful creation of a product line
     @Test
     void createProductLine_success() {
 
@@ -52,7 +55,7 @@ class ProductLineServiceTest {
         assertEquals("Classic Cars", response.getProductLine());
     }
 
-    // 2. CREATE (NEGATIVE - DUPLICATE)
+    // Verify exception when creating duplicate product line
     @Test
     void createProductLine_duplicate() {
 
@@ -65,7 +68,7 @@ class ProductLineServiceTest {
                 () -> service.createProductLine(request));
     }
 
-    // 3. GET BY ID (NEGATIVE - NOT FOUND)
+    // Verify exception when product line is not found
     @Test
     void getProductLine_notFound() {
 
@@ -76,7 +79,7 @@ class ProductLineServiceTest {
                 () -> service.getProductLineById("Classic Cars"));
     }
 
-    // 4. DELETE (NEGATIVE - HAS PRODUCTS)
+    // Verify delete fails when product line has associated products
     @Test
     void deleteProductLine_hasProducts() {
 
@@ -95,7 +98,7 @@ class ProductLineServiceTest {
                 () -> service.deleteProductLine("Classic Cars"));
     }
 
-    // 5. GET PRODUCTS BY LINE (POSITIVE)
+    // Verify fetching products for a valid product line
     @Test
     void getProductsByLine_success() {
 

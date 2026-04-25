@@ -1,5 +1,6 @@
 package com.classicbusinessmodel_schema.backend.module.product.dto.response;
 
+// Response DTO representing product line details
 public class ProductLineResponse {
 
     private String productLine;
