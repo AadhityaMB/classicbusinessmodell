@@ -93,6 +93,19 @@ export class ActionPageComponent {
   protected readonly isListPage = computed(() => this.isGetAction() && (this.isGetAllAction() || this.selected()?.action.autoLoad || this.queryFields().length > 0));
   protected readonly isLookupPage = computed(() => this.isGetAction() && !this.isListPage());
 
+  protected readonly canLoadData = computed(() => {
+    const item = this.selected();
+    if (!item || !this.isWriteAction() || item.action.id.startsWith('create-')) {
+      return false;
+    }
+
+    return item.resource.actions.some(a =>
+      a.method === 'GET' &&
+      !a.id.startsWith('get-all-') &&
+      a.endpoint.includes('{')
+    );
+  });
+
   protected readonly responseSummary = computed(() => {
     const response = this.responseData();
 
@@ -253,6 +266,7 @@ export class ActionPageComponent {
         if (item.action.method === 'POST') {
           this.formValues.set({});
           this.touchedFormFields.set({});
+          this.hasSubmitted.set(false);
         }
       })
       .catch((error: { error?: unknown; status?: number; message?: string }) => {
@@ -266,9 +280,56 @@ export class ActionPageComponent {
       });
   }
 
+  protected loadCurrentData(): void {
+    const item = this.selected();
+    if (!item) return;
+
+    const getAction = item.resource.actions.find(a =>
+      a.method === 'GET' &&
+      !a.id.startsWith('get-all-') &&
+      a.endpoint.includes('{')
+    );
+
+    if (!getAction) {
+      this.errorText.set('No lookup action found for this resource.');
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorText.set('');
+    this.successText.set('');
+
+    this.apiService.executeAction(getAction, this.pathValues(), {}, null)
+      .then(response => {
+        const data = this.isRecord(response) && 'data' in response ? response['data'] : response;
+        if (this.isRecord(data)) {
+          const newFormValues = { ...this.formValues() };
+          this.formFields().forEach(field => {
+            if (data[field.key] !== undefined && data[field.key] !== null) {
+              newFormValues[field.key] = String(data[field.key]);
+            }
+          });
+          this.formValues.set(newFormValues);
+          this.successText.set('Data loaded successfully. You can now modify the fields below.');
+        } else {
+          this.errorText.set('No data found for this ID.');
+        }
+      })
+      .catch(() => {
+        this.errorText.set('Failed to load current data. Please check the ID.');
+      })
+      .finally(() => this.isLoading.set(false));
+  }
+
   protected updatePathValue(key: string, value: string): void {
     this.pathValues.update((current) => ({ ...current, [key]: value }));
     this.touchedPathFields.update((current) => ({ ...current, [key]: true }));
+
+    if (this.canLoadData()) {
+       if (this.pathKeys().every(k => this.pathValues()[k]?.trim())) {
+         this.loadCurrentData();
+       }
+    }
   }
 
   protected updateQueryValue(key: string, value: string): void {
@@ -615,9 +676,9 @@ export class ActionPageComponent {
 
     if (data) {
       Object.entries(data).forEach(([key, value]) => {
-        if (typeof value === 'string') {
-          fieldErrors[key] = value;
-        }
+         if (typeof value === 'string') {
+           fieldErrors[key] = value;
+         }
       });
     }
 
