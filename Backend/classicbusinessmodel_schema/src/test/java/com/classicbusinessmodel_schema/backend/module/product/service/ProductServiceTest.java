@@ -47,7 +47,7 @@ class ProductServiceTest {
         ProductLine pl = new ProductLine();
         pl.setProductLine("Classic Cars");
 
-        when(productRepository.existsById("P1")).thenReturn(false);
+        when(productRepository.existsProduct("P1")).thenReturn(false);
         when(productLineRepository.findById("Classic Cars")).thenReturn(Optional.of(pl));
         when(productRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
@@ -64,7 +64,7 @@ class ProductServiceTest {
         CreateProductRequest request = new CreateProductRequest();
         request.setProductCode("P1");
 
-        when(productRepository.existsById("P1")).thenReturn(true);
+        when(productRepository.existsProduct("P1")).thenReturn(true);
 
         assertThrows(ResourceAlreadyExistsException.class,
                 () -> service.createProduct(request));

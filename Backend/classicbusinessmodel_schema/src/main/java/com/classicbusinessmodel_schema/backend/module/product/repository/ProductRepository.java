@@ -18,13 +18,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     @Query("SELECT p FROM Product p WHERE p.productLine.productLine = :productLine")
     List<Product> findByProductLineProductLine(@Param("productLine") String productLine);
 
-    // CUSTOM QUERIES
-
-    // Fetch products with stock below a given threshold
-    @Query("SELECT p FROM Product p WHERE p.quantityInStock < :quantity")
-    List<Product> findByQuantityInStockLessThan(@Param("quantity") Integer quantity);
-
-    // Search products by name using case-insensitive keyword match
-    @Query("SELECT p FROM Product p WHERE LOWER(p.productName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    List<Product> findByProductNameContainingIgnoreCase(@Param("keyword") String keyword);
+    // CUSTOM QUERY
+    // Check if product exists using custom query
+    @Query("SELECT COUNT(p) > 0 FROM Product p WHERE p.productCode = :productCode")
+    boolean existsProduct(@Param("productCode") String productCode);
 }

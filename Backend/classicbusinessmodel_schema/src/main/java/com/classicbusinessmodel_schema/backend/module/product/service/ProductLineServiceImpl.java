@@ -43,7 +43,7 @@ public class ProductLineServiceImpl implements ProductLineService {
         }
 
         // Prevent duplicate product line
-        if (productLineRepository.existsById(request.getProductLine())) {
+        if (productLineRepository.existsProductLine(request.getProductLine())) {
             throw new ResourceAlreadyExistsException("Product line already exists");
         }
 
@@ -112,7 +112,7 @@ public class ProductLineServiceImpl implements ProductLineService {
     public List<ProductResponse> getProductsByLine(String productLine) {
 
         // Validate product line existence
-        if (!productLineRepository.existsById(productLine)) {
+        if (!productLineRepository.existsProductLine(productLine)){
             throw new ResourceNotFoundException("Product line not found");
         }
 
