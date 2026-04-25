@@ -14,15 +14,6 @@ import java.util.Optional;
 @Repository
 public interface OfficeRepository extends JpaRepository<Office, String> {
 
-    @Query("SELECT o FROM Office o WHERE o.city = :city")
-    List<Office> findByCityCustom(@Param("city") String city);
-
-    @Query("SELECT o FROM Office o WHERE o.country = :country")
-    List<Office> findByCountryCustom(@Param("country") String country);
-
-    @Query("SELECT o.city FROM Office o")
-    List<String> findAllCities();
-
     @Query("SELECT o FROM Office o WHERE o.officeCode = :code")
     Optional<Office> findOfficeByCodeCustom(@Param("code") String code);
 

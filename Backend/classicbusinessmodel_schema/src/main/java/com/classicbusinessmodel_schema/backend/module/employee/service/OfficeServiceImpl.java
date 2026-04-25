@@ -14,20 +14,26 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// Marks this class as a service layer component
 @Service
 public class OfficeServiceImpl implements OfficeService {
 
+    // Inject Office repository
     @Autowired
     private OfficeRepository officeRepository;
 
+    // Inject Employee repository
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    // Create a new office
     @Override
     public OfficeResponseDTO createOffice(OfficeRequestDTO dto) {
 
+        // Create office entity
         Office office = new Office();
 
+        // Set office details from request DTO
         office.setOfficeCode(dto.getOfficeCode());
         office.setCity(dto.getCity());
         office.setPhone(dto.getPhone());
@@ -38,43 +44,65 @@ public class OfficeServiceImpl implements OfficeService {
         office.setPostalCode(dto.getPostalCode());
         office.setTerritory(dto.getTerritory());
 
+        // Save office and return response DTO
         return mapToDTO(officeRepository.save(office));
     }
 
+    // Fetch all offices
     @Override
     public List<OfficeResponseDTO> getAllOffices() {
+
+        // Get all offices and convert entities to DTOs
         return officeRepository.findAll()
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
+    // Fetch office by office code
     @Override
     public OfficeResponseDTO getOfficeByCode(String officeCode) {
 
+        // Find office or throw exception if not found
         Office office = officeRepository.findById(officeCode)
-                .orElseThrow(() -> new ResourceNotFoundException("Office not found with code: " + officeCode));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Office not found with code: " + officeCode
+                        )
+                );
 
+        // Convert entity to response DTO
         return mapToDTO(office);
     }
 
+    // Get all employees working in a specific office
     @Override
     public List<EmployeeResponseDTO> getEmployeesByOffice(String officeCode) {
 
+        // Check whether office exists
         Office office = officeRepository.findById(officeCode)
-                .orElseThrow(() -> new ResourceNotFoundException("Office not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Office not found")
+                );
 
-        List<Employee> employees = employeeRepository.findByOfficeOfficeCode(officeCode);
+        // Fetch employees belonging to that office
+        List<Employee> employees =
+                employeeRepository.findByOfficeOfficeCode(officeCode);
 
+        // Throw exception if no employees found
         if (employees.isEmpty()) {
-            throw new ResourceNotFoundException("No employees found for office: " + officeCode);
+            throw new ResourceNotFoundException(
+                    "No employees found for office: " + officeCode
+            );
         }
 
+        // Convert employee entities into DTOs
         return employees.stream()
                 .map(this::mapEmployeeToDTO)
                 .collect(Collectors.toList());
     }
 
+    // Convert Office entity to response DTO
     private OfficeResponseDTO mapToDTO(Office office) {
 
         return new OfficeResponseDTO(
@@ -90,6 +118,7 @@ public class OfficeServiceImpl implements OfficeService {
         );
     }
 
+    // Convert Employee entity to response DTO
     private EmployeeResponseDTO mapEmployeeToDTO(Employee emp) {
 
         return new EmployeeResponseDTO(
@@ -100,7 +129,11 @@ public class OfficeServiceImpl implements OfficeService {
                 emp.getEmail(),
                 emp.getJobTitle(),
                 emp.getOffice().getOfficeCode(),
-                emp.getManager() != null ? emp.getManager().getEmployeeNumber() : null
+
+                // Return manager ID if manager exists
+                emp.getManager() != null
+                        ? emp.getManager().getEmployeeNumber()
+                        : null
         );
     }
 }
