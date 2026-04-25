@@ -3,11 +3,12 @@ package com.classicbusinessmodel_schema.backend.module.product.service;
 import com.classicbusinessmodel_schema.backend.module.product.dto.request.CreateProductRequest;
 import com.classicbusinessmodel_schema.backend.module.product.dto.request.UpdateProductRequest;
 import com.classicbusinessmodel_schema.backend.module.product.dto.response.ProductResponse;
+import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ProductService {
 
-    List<ProductResponse> getAllProducts(int page, int size, String sortBy, String direction);
+    Page<ProductResponse> getAllProducts(int page, int size, String sortBy, String direction);
 
     ProductResponse getProductById(String productCode);
 

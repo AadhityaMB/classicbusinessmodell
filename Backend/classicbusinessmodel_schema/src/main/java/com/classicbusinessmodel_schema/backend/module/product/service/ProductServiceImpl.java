@@ -123,7 +123,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> getAllProducts(int page, int size, String sortBy, String direction) {
+    public Page<ProductResponse> getAllProducts(int page, int size, String sortBy, String direction) {
 
         Sort sort = direction.equalsIgnoreCase("desc") ?
                 Sort.by(sortBy).descending() :
@@ -137,7 +137,7 @@ public class ProductServiceImpl implements ProductService {
             throw new ResourceNotFoundException("No products found");
         }
 
-        return productPage.map(this::mapToResponse).getContent();
+        return productPage.map(this::mapToResponse);
     }
 
     @Override

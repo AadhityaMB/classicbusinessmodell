@@ -402,7 +402,7 @@ export const MODULES: ModuleDefinition[] = [
         id: 'office',
         name: 'Office',
         summary: 'Office records.',
-        accent: '#a78bfa',
+        accent: '#8b5cf6',
         actions: [
           {
             id: 'create-office',
@@ -502,7 +502,7 @@ export const MODULES: ModuleDefinition[] = [
               { key: 'orderDate', label: 'Order Date', type: 'date', required: true },
               { key: 'requiredDate', label: 'Required Date', type: 'date', required: true },
               { key: 'shippedDate', label: 'Shipped Date', type: 'date' },
-              { key: 'status', label: 'Status', type: 'text', required: true, placeholder: 'Enter status', validation: { notBlank: 'Status is required', maxLength: { value: 15, message: 'Status must not exceed 15 characters' } } },
+              { key: 'status', label: 'Status', type: 'select', required: true, options: ['Shipped', 'Cancelled', 'Resolved'], placeholder: 'Select status' },
               { key: 'comments', label: 'Comments', type: 'textarea', placeholder: 'Enter comments' }
             ]
           },
@@ -541,7 +541,7 @@ export const MODULES: ModuleDefinition[] = [
               { key: 'orderDate', label: 'Order Date', type: 'date', required: true },
               { key: 'requiredDate', label: 'Required Date', type: 'date', required: true },
               { key: 'shippedDate', label: 'Shipped Date', type: 'date' },
-              { key: 'status', label: 'Status', type: 'text', required: true, placeholder: 'Enter status', validation: { notBlank: 'Status is required', maxLength: { value: 15, message: 'Status must not exceed 15 characters' } } },
+              { key: 'status', label: 'Status', type: 'select', required: true, options: ['Shipped', 'Cancelled', 'Resolved'], placeholder: 'Select status' },
               { key: 'comments', label: 'Comments', type: 'textarea', placeholder: 'Enter comments' }
             ]
           },
@@ -555,7 +555,7 @@ export const MODULES: ModuleDefinition[] = [
             submitLabel: 'Update Status',
             successMessage: 'Order status updated successfully',
             formFields: [
-              { key: 'status', label: 'Status', type: 'text', required: true, placeholder: 'Enter status', validation: { notBlank: 'Status is required', maxLength: { value: 15, message: 'Status must not exceed 15 characters' } } }
+              { key: 'status', label: 'Status', type: 'select', required: true, options: ['Shipped', 'Cancelled', 'Resolved'], placeholder: 'Select status' }
             ]
           },
           {
@@ -574,7 +574,7 @@ export const MODULES: ModuleDefinition[] = [
             method: 'GET',
             tone: 'neutral',
             queryFields: [
-              { key: 'status', label: 'Status', type: 'text', required: true, placeholder: 'Enter status' },
+              { key: 'status', label: 'Status', type: 'select', required: true, options: ['Shipped', 'Cancelled', 'Resolved'], placeholder: 'Select status' },
               { key: 'fromDate', label: 'From Date', type: 'date', required: true },
               { key: 'toDate', label: 'To Date', type: 'date', required: true }
             ]
@@ -612,7 +612,7 @@ export const MODULES: ModuleDefinition[] = [
             formFields: [
               { key: 'productCode', label: 'Product Code', type: 'text', required: true, placeholder: 'Enter product code', validation: { notBlank: 'Product code cannot be empty', maxLength: { value: 15 } } },
               { key: 'productName', label: 'Product Name', type: 'text', required: true, placeholder: 'Enter product name', validation: { notBlank: 'Product name is required', maxLength: { value: 70 } } },
-              { key: 'productLine', label: 'Product Line', type: 'text', required: true, placeholder: 'Enter product line', validation: { notBlank: 'Product line is required', maxLength: { value: 50 } } },
+              { key: 'productLine', label: 'Product Line', type: 'select', required: true, options: ['Classic Cars', 'Motorcycles', 'Planes', 'Ships', 'Trains', 'Trucks and Buses', 'Vintage Cars'], placeholder: 'Select product line' },
               { key: 'productScale', label: 'Product Scale', type: 'text', required: true, placeholder: 'Enter product scale', validation: { notBlank: 'Product scale is required', maxLength: { value: 10 } } },
               { key: 'productVendor', label: 'Product Vendor', type: 'text', required: true, placeholder: 'Enter product vendor', validation: { notBlank: 'Product vendor is required', maxLength: { value: 50 } } },
               { key: 'productDescription', label: 'Product Description', type: 'textarea', required: true, placeholder: 'Enter description' },
@@ -632,7 +632,7 @@ export const MODULES: ModuleDefinition[] = [
             successMessage: 'Product updated successfully',
             formFields: [
               { key: 'productName', label: 'Product Name', type: 'text', placeholder: 'Enter product name', validation: { maxLength: { value: 70 } } },
-              { key: 'productLine', label: 'Product Line', type: 'text', placeholder: 'Enter product line', validation: { maxLength: { value: 50 } } },
+              { key: 'productLine', label: 'Product Line', type: 'select', options: ['Classic Cars', 'Motorcycles', 'Planes', 'Ships', 'Trains', 'Trucks and Buses', 'Vintage Cars'], placeholder: 'Select product line' },
               { key: 'productScale', label: 'Product Scale', type: 'text', placeholder: 'Enter product scale', validation: { maxLength: { value: 10 } } },
               { key: 'productVendor', label: 'Product Vendor', type: 'text', placeholder: 'Enter product vendor', validation: { maxLength: { value: 50 } } },
               { key: 'productDescription', label: 'Product Description', type: 'textarea', placeholder: 'Enter description' },
@@ -707,7 +707,10 @@ export const MODULES: ModuleDefinition[] = [
             description: 'Search products by product line.',
             endpoint: 'GET /api/product-lines/{productLine}/products',
             method: 'GET',
-            tone: 'primary'
+            tone: 'primary',
+            pathFields: [
+              { key: 'productLine', label: 'Product Line', type: 'select', required: true, options: ['Classic Cars', 'Motorcycles', 'Planes', 'Ships', 'Trains', 'Trucks and Buses', 'Vintage Cars'], placeholder: 'Select product line' }
+            ]
           }
         ]
       },
@@ -717,6 +720,14 @@ export const MODULES: ModuleDefinition[] = [
         summary: 'Order detail records.',
         accent: '#fecdd3',
         actions: [
+          {
+            id: 'get-order-item',
+            label: 'Order Item Details',
+            description: 'Search order item by order and product.',
+            endpoint: 'GET /api/orders/{orderNumber}/items/{productCode}',
+            method: 'GET',
+            tone: 'neutral'
+          },
           {
             id: 'get-order-items',
             label: 'Get Order Items',

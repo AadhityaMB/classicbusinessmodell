@@ -34,12 +34,13 @@ export interface FieldValidation {
 export interface ActionField {
   key: string;
   label: string;
-  type: 'text' | 'number' | 'email' | 'date' | 'textarea';
+  type: 'text' | 'number' | 'email' | 'date' | 'textarea' | 'select';
   required?: boolean;
   placeholder?: string;
   step?: string;
   defaultValue?: string;
   validation?: FieldValidation;
+  options?: string[];
 }
 
 export interface ModuleResource {

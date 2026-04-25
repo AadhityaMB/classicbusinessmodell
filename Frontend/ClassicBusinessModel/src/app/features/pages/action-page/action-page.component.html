@@ -29,27 +29,60 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                   @for (field of pathFields(); track field.key) {
                     <label class="grid gap-2.5">
-                      <span class="text-sm font-bold text-slate-700">{{ field.label }}</span>
-                      <input
-                        class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
-                        [class.border-[#d9deea]]="!isFieldInvalid('path', field.key)"
-                        [class.focus:border-[#1d9a84]]="!isFieldInvalid('path', field.key)"
-                        [class.focus:ring-[#1d9a84]/10]="!isFieldInvalid('path', field.key)"
-                        [class.border-red-300]="isFieldInvalid('path', field.key)"
-                        [class.bg-red-50]="isFieldInvalid('path', field.key)"
-                        [class.focus:border-red-400]="isFieldInvalid('path', field.key)"
-                        [class.focus:ring-red-100]="isFieldInvalid('path', field.key)"
-                        [type]="field.type"
-                        [step]="field.step ?? null"
-                        [attr.inputmode]="inputMode(field)"
-                        [attr.pattern]="fieldPattern(field)"
-                        [attr.maxlength]="fieldMaxLength(field)"
-                        [attr.minlength]="fieldMinLength(field)"
-                        [ngModel]="pathValues()[field.key]"
-                        (ngModelChange)="updatePathValue(field.key, $event)"
-                        [placeholder]="field.placeholder ?? ''"
-                        [attr.aria-invalid]="isFieldInvalid('path', field.key)"
-                      />
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm font-bold text-slate-700">{{ field.label }}</span>
+                        @if (canLoadData() && $last) {
+                          <button
+                            type="button"
+                            (click)="loadCurrentData()"
+                            class="text-xs font-bold text-[#157c6b] hover:underline disabled:opacity-50"
+                            [disabled]="isLoading() || !pathValues()[field.key]"
+                          >
+                            Load Current Data
+                          </button>
+                        }
+                      </div>
+                      @if (field.type === 'select') {
+                        <select
+                          class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+                          [class.border-[#d9deea]]="!isFieldInvalid('path', field.key)"
+                          [class.focus:border-[#1d9a84]]="!isFieldInvalid('path', field.key)"
+                          [class.focus:ring-[#1d9a84]/10]="!isFieldInvalid('path', field.key)"
+                          [class.border-red-300]="isFieldInvalid('path', field.key)"
+                          [class.bg-red-50]="isFieldInvalid('path', field.key)"
+                          [class.focus:border-red-400]="isFieldInvalid('path', field.key)"
+                          [class.focus:ring-red-100]="isFieldInvalid('path', field.key)"
+                          [ngModel]="pathValues()[field.key]"
+                          (ngModelChange)="updatePathValue(field.key, $event)"
+                          [attr.aria-invalid]="isFieldInvalid('path', field.key)"
+                        >
+                          <option value="" disabled selected>{{ field.placeholder ?? 'Select ' + field.label }}</option>
+                          @for (option of field.options; track option) {
+                            <option [value]="option">{{ option }}</option>
+                          }
+                        </select>
+                      } @else {
+                        <input
+                          class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+                          [class.border-[#d9deea]]="!isFieldInvalid('path', field.key)"
+                          [class.focus:border-[#1d9a84]]="!isFieldInvalid('path', field.key)"
+                          [class.focus:ring-[#1d9a84]/10]="!isFieldInvalid('path', field.key)"
+                          [class.border-red-300]="isFieldInvalid('path', field.key)"
+                          [class.bg-red-50]="isFieldInvalid('path', field.key)"
+                          [class.focus:border-red-400]="isFieldInvalid('path', field.key)"
+                          [class.focus:ring-red-100]="isFieldInvalid('path', field.key)"
+                          [type]="field.type"
+                          [step]="field.step ?? null"
+                          [attr.inputmode]="inputMode(field)"
+                          [attr.pattern]="fieldPattern(field)"
+                          [attr.maxlength]="fieldMaxLength(field)"
+                          [attr.minlength]="fieldMinLength(field)"
+                          [ngModel]="pathValues()[field.key]"
+                          (ngModelChange)="updatePathValue(field.key, $event)"
+                          [placeholder]="field.placeholder ?? ''"
+                          [attr.aria-invalid]="isFieldInvalid('path', field.key)"
+                        />
+                      }
                       @if (fieldError('path', field.key); as message) {
                         <span class="text-sm font-medium text-red-600">{{ message }}</span>
                       }
@@ -79,6 +112,25 @@
                           [placeholder]="field.placeholder ?? ''"
                           [attr.aria-invalid]="isFieldInvalid('query', field.key)"
                         ></textarea>
+                      } @else if (field.type === 'select') {
+                        <select
+                          class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+                          [class.border-[#d9deea]]="!isFieldInvalid('query', field.key)"
+                          [class.focus:border-[#1d9a84]]="!isFieldInvalid('query', field.key)"
+                          [class.focus:ring-[#1d9a84]/10]="!isFieldInvalid('query', field.key)"
+                          [class.border-red-300]="isFieldInvalid('query', field.key)"
+                          [class.bg-red-50]="isFieldInvalid('query', field.key)"
+                          [class.focus:border-red-400]="isFieldInvalid('query', field.key)"
+                          [class.focus:ring-red-100]="isFieldInvalid('query', field.key)"
+                          [ngModel]="queryValues()[field.key]"
+                          (ngModelChange)="updateQueryValue(field.key, $event)"
+                          [attr.aria-invalid]="isFieldInvalid('query', field.key)"
+                        >
+                          <option value="" disabled selected>{{ field.placeholder ?? 'Select ' + field.label }}</option>
+                          @for (option of field.options; track option) {
+                            <option [value]="option">{{ option }}</option>
+                          }
+                        </select>
                       } @else {
                         <input
                           class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
@@ -130,6 +182,25 @@
                           [placeholder]="field.placeholder ?? ''"
                           [attr.aria-invalid]="isFieldInvalid('form', field.key)"
                         ></textarea>
+                      } @else if (field.type === 'select') {
+                        <select
+                          class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+                          [class.border-[#d9deea]]="!isFieldInvalid('form', field.key)"
+                          [class.focus:border-[#1d9a84]]="!isFieldInvalid('form', field.key)"
+                          [class.focus:ring-[#1d9a84]/10]="!isFieldInvalid('form', field.key)"
+                          [class.border-red-300]="isFieldInvalid('form', field.key)"
+                          [class.bg-red-50]="isFieldInvalid('form', field.key)"
+                          [class.focus:border-red-400]="isFieldInvalid('form', field.key)"
+                          [class.focus:ring-red-100]="isFieldInvalid('form', field.key)"
+                          [ngModel]="formValues()[field.key]"
+                          (ngModelChange)="updateFormValue(field.key, $event)"
+                          [attr.aria-invalid]="isFieldInvalid('form', field.key)"
+                        >
+                          <option value="" disabled selected>{{ field.placeholder ?? 'Select ' + field.label }}</option>
+                          @for (option of field.options; track option) {
+                            <option [value]="option">{{ option }}</option>
+                          }
+                        </select>
                       } @else {
                         <input
                           class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"

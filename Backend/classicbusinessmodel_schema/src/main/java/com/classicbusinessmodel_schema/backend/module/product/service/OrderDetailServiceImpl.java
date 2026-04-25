@@ -70,7 +70,20 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     }
 
     @Override
-    public List<OrderDetailResponse> getItemsByOrder(Integer orderNumber, int page, int size, String sortBy, String direction) {
+    public OrderDetailResponse getItem(Integer orderNumber, String productCode) {
+        if (orderNumber == null || productCode == null) {
+            throw new BadRequestException("Order number and product code are required");
+        }
+
+        OrderDetailsId id = new OrderDetailsId(orderNumber, productCode);
+        OrderDetails item = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order item not found"));
+
+        return mapToResponse(item);
+    }
+
+    @Override
+    public Page<OrderDetailResponse> getItemsByOrder(Integer orderNumber, int page, int size, String sortBy, String direction) {
 
         if (orderNumber == null) {
             throw new BadRequestException("Order number cannot be null");
@@ -89,7 +102,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
             throw new ResourceNotFoundException("No items found for this order");
         }
 
-        return itemsPage.map(this::mapToResponse).getContent();
+        return itemsPage.map(this::mapToResponse);
     }
 
     @Override

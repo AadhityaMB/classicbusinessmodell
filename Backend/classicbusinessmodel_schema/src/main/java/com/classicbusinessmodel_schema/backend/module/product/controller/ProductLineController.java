@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -20,13 +21,13 @@ public class ProductLineController {
     private ProductLineService productLineService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ProductLineResponse>>> getAllProductLines(
+    public ResponseEntity<ApiResponse<Page<ProductLineResponse>>> getAllProductLines(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "productLine") String sortBy,
             @RequestParam(defaultValue = "asc") String direction) {
 
-        List<ProductLineResponse> response =
+        Page<ProductLineResponse> response =
                 productLineService.getAllProductLines(page, size, sortBy, direction);
 
         return ResponseEntity.ok(

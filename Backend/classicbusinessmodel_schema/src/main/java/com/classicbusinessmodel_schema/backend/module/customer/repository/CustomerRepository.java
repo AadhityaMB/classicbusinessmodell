@@ -17,6 +17,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     // 2.Find by city
     List<Customer> findByCity(String city);
+
     // 3. Find customers by country and city
     List<Customer> findByCountryAndCity(String country, String city);
 
