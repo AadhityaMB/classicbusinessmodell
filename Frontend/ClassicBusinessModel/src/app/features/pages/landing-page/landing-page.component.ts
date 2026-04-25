@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { ModuleCardComponent } from '../../shared/components/module-card/module-card.component';
-import { MODULES } from '../../core/data/module-data';
-import { AppSidebarComponent } from '../../shared/components/app-sidebar/app-sidebar.component';
+import { ModuleCardComponent } from '../../../shared/ui/cards/module-card/module-card.component';
+import { MODULES } from '../../../core/data/module-data';
+import { AppSidebarComponent } from '../../../shared/layout/app-sidebar/app-sidebar.component';
 
 @Component({
   selector: 'app-landing-page',

@@ -79,6 +79,7 @@ public class ProductController {
 
     // GET ALL PRODUCTS
     @GetMapping
+    @Operation(summary = "Get all products", description = "Fetches all products with pagination and sorting")
     public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,

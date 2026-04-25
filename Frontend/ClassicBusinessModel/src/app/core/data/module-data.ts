@@ -1,5 +1,7 @@
 import { ModuleDefinition } from '../models/module.models';
 
+const PHONE_PATTERN = '^[+]?[0-9()\\-\\s.]{7,20}$';
+
 export const MODULES: ModuleDefinition[] = [
   {
     id: 'report',
@@ -25,7 +27,12 @@ export const MODULES: ModuleDefinition[] = [
             endpoint: 'GET /api/reports/customer-exposure',
             method: 'GET',
             tone: 'primary',
-            autoLoad: true
+            autoLoad: true,
+            submitLabel: 'Fetch Report',
+            queryFields: [
+              { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+            ]
           },
           {
             id: 'order-value',
@@ -42,7 +49,12 @@ export const MODULES: ModuleDefinition[] = [
             endpoint: 'GET /api/reports/sales-by-country',
             method: 'GET',
             tone: 'primary',
-            autoLoad: true
+            autoLoad: true,
+            submitLabel: 'Fetch Report',
+            queryFields: [
+              { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+            ]
           },
           {
             id: 'sales-by-employee',
@@ -51,7 +63,12 @@ export const MODULES: ModuleDefinition[] = [
             endpoint: 'GET /api/reports/sales-by-employee',
             method: 'GET',
             tone: 'neutral',
-            autoLoad: true
+            autoLoad: true,
+            submitLabel: 'Fetch Report',
+            queryFields: [
+              { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+            ]
           },
           {
             id: 'monthly-revenue',
@@ -60,7 +77,12 @@ export const MODULES: ModuleDefinition[] = [
             endpoint: 'GET /api/reports/monthly-revenue',
             method: 'GET',
             tone: 'success',
-            autoLoad: true
+            autoLoad: true,
+            submitLabel: 'Fetch Report',
+            queryFields: [
+              { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+            ]
           },
           {
             id: 'high-risk-customers',
@@ -69,7 +91,12 @@ export const MODULES: ModuleDefinition[] = [
             endpoint: 'GET /api/reports/high-risk-customers',
             method: 'GET',
             tone: 'warning',
-            autoLoad: true
+            autoLoad: true,
+            submitLabel: 'Fetch Report',
+            queryFields: [
+              { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+            ]
           }
         ]
       }
@@ -106,7 +133,21 @@ export const MODULES: ModuleDefinition[] = [
               { key: 'customerName', label: 'Customer Name', type: 'text', required: true, placeholder: 'Enter customer name', validation: { notBlank: 'Customer name is required', maxLength: { value: 50 } } },
               { key: 'contactFirstName', label: 'Contact First Name', type: 'text', required: true, placeholder: 'Enter first name', validation: { notBlank: 'Contact first name is required', maxLength: { value: 50 } } },
               { key: 'contactLastName', label: 'Contact Last Name', type: 'text', required: true, placeholder: 'Enter last name', validation: { notBlank: 'Contact last name is required', maxLength: { value: 50 } } },
-              { key: 'phone', label: 'Phone', type: 'text', required: true, placeholder: 'Enter phone', validation: { notBlank: 'Phone is required', maxLength: { value: 50 } } },
+              {
+                key: 'phone',
+                label: 'Phone',
+                type: 'text',
+                required: true,
+                placeholder: 'Enter phone',
+                validation: {
+                  notBlank: 'Phone is required',
+                  maxLength: { value: 50 },
+                  pattern: {
+                    value: PHONE_PATTERN,
+                    message: 'Phone number format is invalid'
+                  }
+                }
+              },
               { key: 'addressLine1', label: 'Address Line 1', type: 'text', required: true, placeholder: 'Enter address line 1', validation: { notBlank: 'Address line 1 is required', maxLength: { value: 50 } } },
               { key: 'addressLine2', label: 'Address Line 2', type: 'text', placeholder: 'Enter address line 2', validation: { maxLength: { value: 50 } } },
               { key: 'city', label: 'City', type: 'text', required: true, placeholder: 'Enter city', validation: { notBlank: 'City is required', maxLength: { value: 50 } } },
@@ -152,7 +193,21 @@ export const MODULES: ModuleDefinition[] = [
               { key: 'customerName', label: 'Customer Name', type: 'text', required: true, placeholder: 'Enter customer name', validation: { notBlank: 'Customer name is required', maxLength: { value: 50 } } },
               { key: 'contactFirstName', label: 'Contact First Name', type: 'text', required: true, placeholder: 'Enter first name', validation: { notBlank: 'Contact first name is required', maxLength: { value: 50 } } },
               { key: 'contactLastName', label: 'Contact Last Name', type: 'text', required: true, placeholder: 'Enter last name', validation: { notBlank: 'Contact last name is required', maxLength: { value: 50 } } },
-              { key: 'phone', label: 'Phone', type: 'text', required: true, placeholder: 'Enter phone', validation: { notBlank: 'Phone is required', maxLength: { value: 50 } } },
+              {
+                key: 'phone',
+                label: 'Phone',
+                type: 'text',
+                required: true,
+                placeholder: 'Enter phone',
+                validation: {
+                  notBlank: 'Phone is required',
+                  maxLength: { value: 50 },
+                  pattern: {
+                    value: PHONE_PATTERN,
+                    message: 'Phone number format is invalid'
+                  }
+                }
+              },
               { key: 'addressLine1', label: 'Address Line 1', type: 'text', required: true, placeholder: 'Enter address line 1', validation: { notBlank: 'Address line 1 is required', maxLength: { value: 50 } } },
               { key: 'addressLine2', label: 'Address Line 2', type: 'text', placeholder: 'Enter address line 2', validation: { maxLength: { value: 50 } } },
               { key: 'city', label: 'City', type: 'text', required: true, placeholder: 'Enter city', validation: { notBlank: 'City is required', maxLength: { value: 50 } } },
@@ -361,7 +416,20 @@ export const MODULES: ModuleDefinition[] = [
             formFields: [
               { key: 'officeCode', label: 'Office Code', type: 'text', required: true, placeholder: 'Enter office code' },
               { key: 'city', label: 'City', type: 'text', required: true, placeholder: 'Enter city', validation: { notBlank: 'City is required', maxLength: { value: 50 } } },
-              { key: 'phone', label: 'Phone', type: 'text', required: true, placeholder: 'Enter phone number' },
+              {
+                key: 'phone',
+                label: 'Phone',
+                type: 'text',
+                required: true,
+                placeholder: 'Enter phone number',
+                validation: {
+                  notBlank: 'Phone is required',
+                  pattern: {
+                    value: PHONE_PATTERN,
+                    message: 'Phone number format is invalid'
+                  }
+                }
+              },
               { key: 'addressLine1', label: 'Address Line 1', type: 'text', required: true, placeholder: 'Enter address line 1' },
               { key: 'addressLine2', label: 'Address Line 2', type: 'text', placeholder: 'Enter address line 2' },
               { key: 'state', label: 'State', type: 'text', placeholder: 'Enter state' },

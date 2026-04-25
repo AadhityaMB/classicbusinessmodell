@@ -1,6 +1,7 @@
 package com.classicbusinessmodel_schema.backend.exception;
 
 import com.classicbusinessmodel_schema.backend.common.ApiResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +13,12 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    // DATABASE CONSTRAINT VIOLATION
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDataIntegrity(DataIntegrityViolationException ex) {
+        return buildResponse("Cannot perform operation due to data dependency (Foreign Key Constraint)", HttpStatus.CONFLICT);
+    }
 
     // VALIDATION ERROR (DTO)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -54,18 +61,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<ApiResponse<Void>> handleAlreadyExists(ResourceAlreadyExistsException ex) {
         return buildResponse(ex.getMessage(), HttpStatus.CONFLICT);
-    }
-
-    // Order Processing Error (400)
-    @ExceptionHandler(OrderProcessingException.class)
-    public ResponseEntity<ApiResponse<Void>> handleOrderProcessing(OrderProcessingException ex) {
-        return buildResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    // Payment Failed (400)
-    @ExceptionHandler(PaymentFailedException.class)
-    public ResponseEntity<ApiResponse<Void>> handlePayment(PaymentFailedException ex) {
-        return buildResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     // Insufficient Stock (400)

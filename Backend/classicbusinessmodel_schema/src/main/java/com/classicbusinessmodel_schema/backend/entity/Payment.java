@@ -13,8 +13,6 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "payments")
-//@IdClass(PaymentId.class)
-//@Builder
 public class Payment {
 
         @EmbeddedId

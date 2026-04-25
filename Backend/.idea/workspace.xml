@@ -8,9 +8,48 @@
       <change beforePath="$PROJECT_DIR$/../../../Day 1/classicbusinessmodel/classicbusinessmodel_schema/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/report/controller/ReportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Day 1/classicbusinessmodel/classicbusinessmodel_schema/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/report/controller/ReportController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Day 1/classicbusinessmodel/classicbusinessmodel_schema/classicbusinessmodel_schema/src/test/java/com/classicbusinessmodel_schema/backend/module/orders/repository/OrdersRepositoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Day 1/classicbusinessmodel/classicbusinessmodel_schema/classicbusinessmodel_schema/src/test/java/com/classicbusinessmodel_schema/backend/module/orders/repository/OrdersRepositoryTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Day 1/classicbusinessmodel/classicbusinessmodell" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/report/service/ReportServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/report/service/ReportServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/classicbusinessmodel_schema/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/entity/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/entity/Customer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/entity/Orders.java" beforeDir="false" afterPath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/entity/Orders.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/entity/Payment.java" beforeDir="false" afterPath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/entity/Payment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/exception/OrderProcessingException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/exception/PaymentFailedException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/orders/controller/OrdersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/orders/controller/OrdersController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/product/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/product/controller/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/report/controller/ReportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/classicbusinessmodel_schema/src/main/java/com/classicbusinessmodel_schema/backend/module/report/controller/ReportController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/app.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/app.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/app.spec.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/app.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/core/data/module-data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/core/data/module-data.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/actions/action-page.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/actions/action-page.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/actions/action-page.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/auth/module-login-page.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/auth/module-login-page.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/auth/module-login-page.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/dashboard/module-dashboard.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/dashboard/module-dashboard.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/dashboard/module-dashboard.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/dashboard/orders-dashboard.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/landing/landing-page.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/landing/landing-page.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/features/landing/landing-page.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/shared/components/action-card/action-card.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/shared/components/action-card/action-card.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/shared/components/action-card/action-card.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/shared/components/app-sidebar/app-sidebar.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/shared/components/app-sidebar/app-sidebar.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/shared/components/app-sidebar/app-sidebar.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/shared/components/module-card/module-card.component.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/shared/components/module-card/module-card.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/app/shared/components/module-card/module-card.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../Frontend/ClassicBusinessModel/src/main.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +79,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;JUnit.com.classicbusinessmodel_schema.backend.module in classicbusinessmodel.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.module in classicbusinessmodel.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
@@ -64,6 +104,14 @@
       </extension>
       <option name="PACKAGE_NAME" value="com.classicbusinessmodel_schema.backend.module" />
       <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="module in classicbusinessmodel" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="classicbusinessmodel" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/classicbusinessmodel_schema/src/test/java/com/classicbusinessmodel_schema/backend/module" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -115,6 +163,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.com.classicbusinessmodel_schema.backend.module in classicbusinessmodel" />
+        <item itemvalue="JUnit.module in classicbusinessmodel" />
       </list>
     </recent_temporary>
   </component>

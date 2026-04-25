@@ -2,9 +2,9 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { MODULES, getModuleById } from '../../core/data/module-data';
-import { AuthService } from '../../core/services/auth.service';
-import { AppSidebarComponent } from '../../shared/components/app-sidebar/app-sidebar.component';
+import { MODULES, getModuleById } from '../../../core/data/module-data';
+import { AuthService } from '../../../core/services/auth.service';
+import { AppSidebarComponent } from '../../../shared/layout/app-sidebar/app-sidebar.component';
 
 @Component({
   selector: 'app-module-login-page',

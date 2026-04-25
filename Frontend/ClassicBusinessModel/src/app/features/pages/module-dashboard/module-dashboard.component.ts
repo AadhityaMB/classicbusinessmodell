@@ -1,8 +1,8 @@
 import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { getModuleById } from '../../core/data/module-data';
-import { ActionCardComponent } from '../../shared/components/action-card/action-card.component';
-import { AppSidebarComponent } from '../../shared/components/app-sidebar/app-sidebar.component';
+import { getModuleById } from '../../../core/data/module-data';
+import { ActionCardComponent } from '../../../shared/ui/cards/action-card/action-card.component';
+import { AppSidebarComponent } from '../../../shared/layout/app-sidebar/app-sidebar.component';
 
 @Component({
   selector: 'app-module-dashboard',
