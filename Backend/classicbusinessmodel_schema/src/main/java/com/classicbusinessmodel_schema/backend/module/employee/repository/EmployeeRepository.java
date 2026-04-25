@@ -18,15 +18,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     List<Employee> findByOfficeOfficeCode(String officeCode);
 
-    @Query("SELECT e FROM Employee e WHERE e.jobTitle = :jobTitle")
-    List<Employee> findEmployeesByJobTitle(@Param("jobTitle") String jobTitle);
-
-    @Query("SELECT e FROM Employee e WHERE e.manager.employeeNumber = :managerId")
-    List<Employee> findSubordinatesCustom(@Param("managerId") Integer managerId);
-
-    @Query("SELECT e.email FROM Employee e")
-    List<String> findAllEmployeeEmails();
-
     @Query("SELECT e FROM Employee e WHERE e.employeeNumber = :id")
     Optional<Employee> findEmployeeByIdCustom(@Param("id") Integer id);
 
