@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -77,15 +78,15 @@ public class ProductController {
         );
     }
 
-    // GET ALL PRODUCTS
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts(
+    @Operation(summary = "Get all products", description = "Fetches all products with pagination and sorting")
+    public ResponseEntity<ApiResponse<Page<ProductResponse>>> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "productName") String sortBy,
             @RequestParam(defaultValue = "asc") String direction) {
 
-        List<ProductResponse> response =
+        Page<ProductResponse> response =
                 productService.getAllProducts(page, size, sortBy, direction);
 
         return ResponseEntity.ok(

@@ -65,7 +65,7 @@ public class ProductLineServiceImpl implements ProductLineService {
     }
 
     @Override
-    public List<ProductLineResponse> getAllProductLines(int page, int size, String sortBy, String direction) {
+    public Page<ProductLineResponse> getAllProductLines(int page, int size, String sortBy, String direction) {
 
         Sort sort = direction.equalsIgnoreCase("desc") ?
                 Sort.by(sortBy).descending() :
@@ -79,7 +79,7 @@ public class ProductLineServiceImpl implements ProductLineService {
             throw new ResourceNotFoundException("No product lines found");
         }
 
-        return pageData.map(this::mapToResponse).getContent();
+        return pageData.map(this::mapToResponse);
     }
 
     @Override

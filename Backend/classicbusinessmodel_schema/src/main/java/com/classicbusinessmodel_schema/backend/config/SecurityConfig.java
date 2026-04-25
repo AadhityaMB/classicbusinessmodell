@@ -12,9 +12,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,35 +50,35 @@ public class SecurityConfig {
         }
 
         @Bean
-        public UserDetailsService userDetailsService() {
+        public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
 
-                UserDetails customerUser = User.withDefaultPasswordEncoder()
+                UserDetails customerUser = User.builder()
                                 .username("priya")
-                                .password("priya@123")
+                                .password(passwordEncoder.encode("priya@123"))
                                 .roles("CUSTOMER", "PAYMENT")
                                 .build();
 
-                UserDetails employeeUser = User.withDefaultPasswordEncoder()
+                UserDetails employeeUser = User.builder()
                                 .username("harini")
-                                .password("harini@123")
+                                .password(passwordEncoder.encode("harini@123"))
                                 .roles("EMPLOYEE", "OFFICE")
                                 .build();
 
-                UserDetails ordersUser = User.withDefaultPasswordEncoder()
+                UserDetails ordersUser = User.builder()
                                 .username("pritika")
-                                .password("pritika@123")
+                                .password(passwordEncoder.encode("pritika@123"))
                                 .roles("ORDERS")
                                 .build();
 
-                UserDetails productUser = User.withDefaultPasswordEncoder()
+                UserDetails productUser = User.builder()
                                 .username("meena")
-                                .password("meena@123")
-                                .roles("PRODUCT", "PRODUCTLINE","ORDERDETAILS")
+                                .password(passwordEncoder.encode("meena@123"))
+                                .roles("PRODUCT", "PRODUCTLINE", "ORDERDETAILS")
                                 .build();
 
-                UserDetails reportUser = User.withDefaultPasswordEncoder()
+                UserDetails reportUser = User.builder()
                                 .username("aadhi")
-                                .password("aadhi@123")
+                                .password(passwordEncoder.encode("aadhi@123"))
                                 .roles("REPORT")
                                 .build();
 

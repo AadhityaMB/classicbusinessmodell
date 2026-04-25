@@ -1,6 +1,7 @@
 package com.classicbusinessmodel_schema.backend.module.orders.service;
 
 import com.classicbusinessmodel_schema.backend.entity.Orders;
+import com.classicbusinessmodel_schema.backend.exception.InvalidDataException;
 import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;
 import com.classicbusinessmodel_schema.backend.module.orders.dto.requestDto.OrderRequestDTO;
 import com.classicbusinessmodel_schema.backend.module.orders.dto.responseDto.OrderResponseDTO;
@@ -101,6 +102,9 @@ public class OrdersServiceImpl implements OrdersService {
     // Search orders based on status and date range
     @Override
     public List<OrderResponseDTO> searchOrders(String status, LocalDate fromDate, LocalDate toDate) {
+        if (fromDate.isAfter(toDate)) {
+            throw new InvalidDataException("From Date cannot be greater than To Date");
+        }
         return orderRepository.findByStatusAndOrderDateBetween(status, fromDate, toDate)
                 .stream()
                 .map(this::mapToDTO)

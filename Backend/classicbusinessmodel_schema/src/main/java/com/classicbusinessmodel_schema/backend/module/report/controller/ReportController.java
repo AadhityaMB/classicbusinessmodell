@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/reports")
+@Tag(name = "Reports", description = "Analytical reports for business intelligence")
 public class ReportController {
 
     private final ReportService reportService;
@@ -29,6 +33,7 @@ public class ReportController {
 
     // 1. Customer Exposure
     @GetMapping("/customer-exposure")
+    @Operation(summary = "Get customer exposure", description = "Calculates total order value vs credit limit for all customers")
     public ResponseEntity<ApiResponse<Page<CustomerExposureResponseDTO>>> getCustomerExposure(
             @PageableDefault(size = 10) Pageable pageable) {
 
@@ -38,6 +43,7 @@ public class ReportController {
 
     // 2. Order Value (no pagination needed)
     @GetMapping("/order-value/{orderNumber}")
+    @Operation(summary = "Get order value", description = "Calculates the total value of a specific order")
     public ResponseEntity<ApiResponse<OrderValueResponseDTO>> getOrderValue(
             @PathVariable Integer orderNumber) {
 
@@ -50,6 +56,7 @@ public class ReportController {
 
     // 3. Sales By Country
     @GetMapping("/sales-by-country")
+    @Operation(summary = "Get sales by country", description = "Aggregates total sales revenue by country")
     public ResponseEntity<ApiResponse<Page<SalesByCountryResponseDTO>>> getSalesByCountry(
             @PageableDefault(size = 10) Pageable pageable) {
 
@@ -59,6 +66,7 @@ public class ReportController {
 
     // 4. Sales By Employee
     @GetMapping("/sales-by-employee")
+    @Operation(summary = "Get sales by employee", description = "Aggregates total sales revenue handled by each employee")
     public ResponseEntity<ApiResponse<Page<SalesByEmployeeResponseDTO>>> getSalesByEmployee(
             @PageableDefault(size = 10) Pageable pageable) {
 
@@ -68,6 +76,7 @@ public class ReportController {
 
     // 5. Monthly Revenue
     @GetMapping("/monthly-revenue")
+    @Operation(summary = "Get monthly revenue", description = "Calculates total revenue aggregated by month and year")
     public ResponseEntity<ApiResponse<Page<MonthlyRevenueResponseDTO>>> getMonthlyRevenue(
             @PageableDefault(size = 10) Pageable pageable) {
 
@@ -77,10 +86,11 @@ public class ReportController {
 
     // 6. High Risk Customers
     @GetMapping("/high-risk-customers")
+    @Operation(summary = "Get high risk customers", description = "Identifies customers whose total order value exceeds their credit limit")
     public ResponseEntity<ApiResponse<Page<HighRiskCustomerResponseDTO>>> getHighRiskCustomers(
             @PageableDefault(size = 10) Pageable pageable) {
 
         return success("High risk customers fetched successfully",
                 reportService.getHighRiskCustomers(pageable));
     }
-}
+}

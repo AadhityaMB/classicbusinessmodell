@@ -1,6 +1,7 @@
 package com.classicbusinessmodel_schema.backend.exception;
 
 import com.classicbusinessmodel_schema.backend.common.ApiResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +13,12 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    // DATABASE CONSTRAINT VIOLATION
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Object>> handleDataIntegrity(DataIntegrityViolationException ex) {
+        return buildResponse("Cannot perform operation due to data dependency (Foreign Key Constraint)", HttpStatus.CONFLICT);
+    }
 
     // VALIDATION ERROR (DTO)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -34,66 +41,54 @@ public class GlobalExceptionHandler {
 
     // Resource Not Found (404)
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleNotFound(ResourceNotFoundException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleNotFound(ResourceNotFoundException ex) {
         return buildResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     // Bad Request (400)
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiResponse<Void>> handleBadRequest(BadRequestException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleBadRequest(BadRequestException ex) {
         return buildResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     // Invalid Data (400)
     @ExceptionHandler(InvalidDataException.class)
-    public ResponseEntity<ApiResponse<Void>> handleInvalidData(InvalidDataException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleInvalidData(InvalidDataException ex) {
         return buildResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     // Resource Already Exists (409)
     @ExceptionHandler(ResourceAlreadyExistsException.class)
-    public ResponseEntity<ApiResponse<Void>> handleAlreadyExists(ResourceAlreadyExistsException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleAlreadyExists(ResourceAlreadyExistsException ex) {
         return buildResponse(ex.getMessage(), HttpStatus.CONFLICT);
-    }
-
-    // Order Processing Error (400)
-    @ExceptionHandler(OrderProcessingException.class)
-    public ResponseEntity<ApiResponse<Void>> handleOrderProcessing(OrderProcessingException ex) {
-        return buildResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    // Payment Failed (400)
-    @ExceptionHandler(PaymentFailedException.class)
-    public ResponseEntity<ApiResponse<Void>> handlePayment(PaymentFailedException ex) {
-        return buildResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     // Insufficient Stock (400)
     @ExceptionHandler(InsufficientStockException.class)
-    public ResponseEntity<ApiResponse<Void>> handleStock(InsufficientStockException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleStock(InsufficientStockException ex) {
         return buildResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     // Database Error (500)
     @ExceptionHandler(DatabaseException.class)
-    public ResponseEntity<ApiResponse<Void>> handleDatabase(DatabaseException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleDatabase(DatabaseException ex) {
         return buildResponse("Database error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // Invalid Path Variable / Param
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiResponse<Void>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         return buildResponse("Invalid parameter type", HttpStatus.BAD_REQUEST);
     }
 
     // LAST fallback (keep LAST always)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleGeneral(Exception ex) {
+    public ResponseEntity<ApiResponse<Object>> handleGeneral(Exception ex) {
         return buildResponse("Unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // COMMON BUILDER
-    private ResponseEntity<ApiResponse<Void>> buildResponse(String message, HttpStatus status) {
+    private ResponseEntity<ApiResponse<Object>> buildResponse(String message, HttpStatus status) {
 
         return new ResponseEntity<>(
                 new ApiResponse<>(

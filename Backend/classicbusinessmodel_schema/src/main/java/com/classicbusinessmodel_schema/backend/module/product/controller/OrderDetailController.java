@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -24,20 +25,39 @@ public class OrderDetailController {
     // GET ALL ITEMS FOR ORDER
     @GetMapping
     @Operation(summary = "Get all items for a specific order", description = "Fetches all products associated with a given order number")
-    public ResponseEntity<ApiResponse<List<OrderDetailResponse>>> getOrderItems(
+    public ResponseEntity<ApiResponse<Page<OrderDetailResponse>>> getOrderItems(
             @PathVariable Integer orderNumber,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "orderLineNumber") String sortBy,
             @RequestParam(defaultValue = "asc") String direction) {
 
-        List<OrderDetailResponse> response =
+        Page<OrderDetailResponse> response =
                 orderDetailService.getItemsByOrder(orderNumber, page, size, sortBy, direction);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
                         200,
                         "Order items fetched successfully",
+                        response
+                )
+        );
+    }
+
+    // GET SINGLE ORDER ITEM
+    @GetMapping("/{productCode}")
+    @Operation(summary = "Get specific order item", description = "Fetches details of a specific product within an order")
+    public ResponseEntity<ApiResponse<OrderDetailResponse>> getItem(
+            @PathVariable Integer orderNumber,
+            @PathVariable String productCode) {
+
+        OrderDetailResponse response =
+                orderDetailService.getItem(orderNumber, productCode);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        200,
+                        "Order item fetched successfully",
                         response
                 )
         );
