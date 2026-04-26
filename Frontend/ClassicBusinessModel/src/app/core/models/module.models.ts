@@ -1,3 +1,9 @@
+export interface ChartConfig {
+  type: 'bar' | 'pie' | 'line' | 'doughnut';
+  labelKey: string;
+  valueKey: string;
+}
+
 export interface ModuleAction {
   id: string;
   label: string;
@@ -12,6 +18,7 @@ export interface ModuleAction {
   submitLabel?: string;
   successMessage?: string;
   autoLoad?: boolean;
+  chartConfig?: ChartConfig;
 }
 
 export interface FieldValidationRule {

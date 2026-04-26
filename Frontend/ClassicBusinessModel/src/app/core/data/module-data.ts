@@ -54,7 +54,8 @@ export const MODULES: ModuleDefinition[] = [
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
               { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
-            ]
+            ],
+            chartConfig: { type: 'pie', labelKey: 'country', valueKey: 'totalSales' }
           },
           {
             id: 'sales-by-employee',
@@ -68,7 +69,8 @@ export const MODULES: ModuleDefinition[] = [
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
               { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
-            ]
+            ],
+            chartConfig: { type: 'bar', labelKey: 'employeeName', valueKey: 'totalSales' }
           },
           {
             id: 'monthly-revenue',
@@ -82,7 +84,8 @@ export const MODULES: ModuleDefinition[] = [
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
               { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
-            ]
+            ],
+            chartConfig: { type: 'line', labelKey: 'month', valueKey: 'revenue' }
           },
           {
             id: 'high-risk-customers',
@@ -96,7 +99,8 @@ export const MODULES: ModuleDefinition[] = [
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
               { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
-            ]
+            ],
+            chartConfig: { type: 'bar', labelKey: 'customerName', valueKey: 'riskPercentage' }
           }
         ]
       }

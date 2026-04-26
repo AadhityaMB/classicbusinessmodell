@@ -5,12 +5,14 @@ import { ActionField } from '../../../core/models/module.models';
 import { getModuleById } from '../../../core/data/module-data';
 import { ApiService } from '../../../core/services/api.service';
 import { AppSidebarComponent } from '../../../shared/layout/app-sidebar/app-sidebar.component';
+import { BaseChartDirective } from 'ng2-charts';
+import { ChartConfiguration, ChartData } from 'chart.js';
 
 type FieldScope = 'path' | 'query' | 'form';
 
 @Component({
   selector: 'app-action-page',
-  imports: [RouterLink, FormsModule, AppSidebarComponent],
+  imports: [RouterLink, FormsModule, AppSidebarComponent, BaseChartDirective],
   templateUrl: './action-page.component.html',
   styleUrl: './action-page.component.css'
 })
@@ -203,6 +205,60 @@ export class ActionPageComponent {
       numberOfElements,
       first,
       last
+    };
+  });
+
+  protected readonly chartData = computed<ChartData | null>(() => {
+    const config = this.selected()?.action.chartConfig;
+    const rows = this.tableRows();
+
+    if (!config || rows.length === 0) {
+      return null;
+    }
+
+    const labels = rows.map(row => {
+      const label = row[config.labelKey];
+      if (config.labelKey === 'month' && typeof label === 'number') {
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        return monthNames[label - 1] || String(label);
+      }
+      return String(label ?? 'Unknown');
+    });
+    const data = rows.map(row => {
+      const val = row[config.valueKey];
+      return typeof val === 'number' ? val : parseFloat(String(val)) || 0;
+    });
+
+    return {
+      labels,
+      datasets: [
+        {
+          data,
+          label: this.selected()?.action.label ?? 'Value',
+          backgroundColor: config.type === 'pie' || config.type === 'doughnut'
+            ? [
+                '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
+                '#ec4899', '#06b6d4', '#f97316', '#64748b', '#14b8a6'
+              ]
+            : '#3b82f6',
+          borderColor: '#3b82f6',
+          borderWidth: 1
+        }
+      ]
+    };
+  });
+
+  protected readonly chartOptions = computed<ChartConfiguration['options']>(() => {
+    const config = this.selected()?.action.chartConfig;
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: config?.type === 'pie' || config?.type === 'doughnut',
+          position: 'bottom'
+        }
+      }
     };
   });
 
