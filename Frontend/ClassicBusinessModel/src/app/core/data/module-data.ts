@@ -172,7 +172,16 @@ export const MODULES: ModuleDefinition[] = [
             submitLabel: 'Fetch Customers',
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
-              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' },
+              {
+                key: 'sortBy',
+                label: 'Sort By',
+                type: 'select',
+                required: true,
+                placeholder: 'Select sort field',
+                defaultValue: 'customerName',
+                options: ['customerName', 'customerNumber', 'city', 'country', 'creditLimit']
+              }
             ]
           },
           {

@@ -5,8 +5,8 @@ import { ActionField } from '../../../core/models/module.models';
 import { getModuleById } from '../../../core/data/module-data';
 import { ApiService } from '../../../core/services/api.service';
 import { AppSidebarComponent } from '../../../shared/layout/app-sidebar/app-sidebar.component';
-import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 
 type FieldScope = 'path' | 'query' | 'form';
 
@@ -391,6 +391,11 @@ export class ActionPageComponent {
   protected updateQueryValue(key: string, value: string): void {
     this.queryValues.update((current) => ({ ...current, [key]: value }));
     this.touchedQueryFields.update((current) => ({ ...current, [key]: true }));
+
+    if (key === 'sortBy' && this.isGetAllAction() && !this.isLoading()) {
+      this.setQueryValue('page', '0');
+      this.submit();
+    }
   }
 
   protected updateFormValue(key: string, value: string): void {
