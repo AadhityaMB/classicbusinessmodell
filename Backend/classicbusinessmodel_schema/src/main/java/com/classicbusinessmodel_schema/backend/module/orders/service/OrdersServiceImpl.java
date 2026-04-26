@@ -2,6 +2,7 @@ package com.classicbusinessmodel_schema.backend.module.orders.service;
 
 import com.classicbusinessmodel_schema.backend.entity.Orders;
 import com.classicbusinessmodel_schema.backend.exception.InvalidDataException;
+import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;
 import com.classicbusinessmodel_schema.backend.module.orders.dto.requestDto.OrderRequestDTO;
 import com.classicbusinessmodel_schema.backend.module.orders.dto.responseDto.OrderResponseDTO;
@@ -33,7 +34,7 @@ public class OrdersServiceImpl implements OrdersService {
         order.setOrderNumber((int) (Math.random() * 100000));
 
         order.setCustomer(customerRepository.findById(request.getCustomerNumber())
-                .orElseThrow(() -> new RuntimeException("Customer not found")));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found")));
 
         order.setOrderDate(request.getOrderDate());
         order.setRequiredDate(request.getRequiredDate());
@@ -55,7 +56,7 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public OrderResponseDTO getOrderById(Integer orderNumber) {
         Orders order = orderRepository.findById(orderNumber)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
         return mapToDTO(order);
     }
@@ -65,7 +66,7 @@ public class OrdersServiceImpl implements OrdersService {
     public OrderResponseDTO updateOrder(Integer orderNumber, OrderRequestDTO request) {
 
         Orders order = orderRepository.findById(orderNumber)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
         order.setOrderDate(request.getOrderDate());
         order.setRequiredDate(request.getRequiredDate());
@@ -81,7 +82,7 @@ public class OrdersServiceImpl implements OrdersService {
     public OrderResponseDTO updateOrderStatus(Integer orderNumber, OrderRequestDTO request) {
 
         Orders order = orderRepository.findById(orderNumber)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
         if (request.getStatus() != null) {
             order.setStatus(request.getStatus());
