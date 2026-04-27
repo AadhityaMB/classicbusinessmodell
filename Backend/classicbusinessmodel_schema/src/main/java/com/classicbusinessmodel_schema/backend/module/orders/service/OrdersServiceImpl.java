@@ -2,6 +2,7 @@ package com.classicbusinessmodel_schema.backend.module.orders.service;
 
 import com.classicbusinessmodel_schema.backend.entity.Orders;
 import com.classicbusinessmodel_schema.backend.exception.InvalidDataException;
+import com.classicbusinessmodel_schema.backend.exception.ResourceAlreadyExistsException;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;
 import com.classicbusinessmodel_schema.backend.module.orders.dto.requestDto.OrderRequestDTO;
@@ -31,7 +32,14 @@ public class OrdersServiceImpl implements OrdersService {
     public OrderResponseDTO createOrder(OrderRequestDTO request) {
 
         Orders order = new Orders();
-        order.setOrderNumber((int) (Math.random() * 100000));
+
+        Integer orderNumber = (int) (Math.random() * 100000);
+
+        if (orderRepository.existsById(orderNumber)) {
+            throw new ResourceAlreadyExistsException("Order already exists");
+        }
+
+        order.setOrderNumber(orderNumber);
 
         order.setCustomer(customerRepository.findById(request.getCustomerNumber())
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found")));

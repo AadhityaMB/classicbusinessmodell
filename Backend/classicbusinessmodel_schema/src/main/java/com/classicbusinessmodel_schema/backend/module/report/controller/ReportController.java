@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+
 @RestController
 @RequestMapping("/api/reports")
 @Tag(name = "Reports", description = "Analytical reports for business intelligence")
@@ -23,10 +24,12 @@ public class ReportController {
 
     private final ReportService reportService;
 
+    //constructor
     public ReportController(ReportService reportService) {
         this.reportService = reportService;
     }
 
+    //Api response helper method
     private <T> ResponseEntity<ApiResponse<Page<T>>> success(String message, Page<T> data) {
         return ResponseEntity.ok(new ApiResponse<>(200, message, data));
     }
@@ -93,4 +96,4 @@ public class ReportController {
         return success("High risk customers fetched successfully",
                 reportService.getHighRiskCustomers(pageable));
     }
-}
+}

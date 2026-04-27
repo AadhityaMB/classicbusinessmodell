@@ -1,0 +1,9 @@
+@if (chartData) {
+  <div class="mt-8 mb-10 h-[400px] w-full rounded-2xl bg-white p-6 shadow-sm ring-1 ring-[#d6deea]">
+    <canvas baseChart
+      [data]="chartData"
+      [options]="chartOptions"
+      [type]="chartType">
+    </canvas>
+  </div>
+}
