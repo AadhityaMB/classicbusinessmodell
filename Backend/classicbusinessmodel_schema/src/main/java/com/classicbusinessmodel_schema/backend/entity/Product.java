@@ -49,7 +49,7 @@ public class Product {
         private BigDecimal MSRP;
 
         @JsonIgnore
-        @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+        @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
         private List<OrderDetails> orderDetails;
 
         public Product() {

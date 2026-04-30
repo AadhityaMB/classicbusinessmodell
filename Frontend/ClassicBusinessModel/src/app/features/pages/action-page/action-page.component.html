@@ -257,22 +257,22 @@
               <p class="mt-5 rounded-2xl bg-[#e8f1e5] px-4 py-4 text-sm font-bold text-[#345641]">{{ successText() }}</p>
             }
 
+            @if (responseSummary().length) {
+              <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" [class.mb-5]="errorText() || scalarResult() || tableRows().length">
+                @for (entry of responseSummary(); track entry.key) {
+                  <div class="grid gap-1 rounded-2xl px-4 py-4" [class.bg-[#f7f3ec]]="!errorText()" [class.bg-red-50]="errorText()">
+                    <strong class="text-sm font-bold capitalize" [class.text-slate-950]="!errorText()" [class.text-red-950]="errorText()">{{ entry.key }}</strong>
+                    <span class="text-sm break-words" [class.text-slate-500]="!errorText()" [class.text-red-800]="errorText()">{{ entry.value }}</span>
+                  </div>
+                }
+              </div>
+            }
+
             @if (errorText()) {
               <div class="mt-5 rounded-2xl bg-red-50 px-4 py-4 text-sm font-medium leading-7 text-red-700">
                 {{ errorText() }}
               </div>
             } @else if (scalarResult(); as scalar) {
-              @if (responseSummary().length) {
-                <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                  @for (entry of responseSummary(); track entry.key) {
-                    <div class="grid gap-1 rounded-2xl bg-[#f7f3ec] px-4 py-4">
-                      <strong class="text-sm font-bold capitalize text-slate-950">{{ entry.key }}</strong>
-                      <span class="text-sm text-slate-500 break-words">{{ entry.value }}</span>
-                    </div>
-                  }
-                </div>
-              }
-
               <div class="mt-5 grid gap-2 rounded-2xl border border-[#d6deea] bg-white px-5 py-5">
                 <strong class="text-sm font-bold uppercase tracking-[0.08em] text-slate-500">{{ scalar.label }}</strong>
                 <span class="text-3xl font-bold text-slate-950">{{ scalar.value }}</span>
@@ -285,17 +285,6 @@
                     [options]="chartOptions()"
                     [type]="item.action.chartConfig!.type">
                   </canvas>
-                </div>
-              }
-
-              @if (responseSummary().length) {
-                <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                  @for (entry of responseSummary(); track entry.key) {
-                    <div class="grid gap-1 rounded-2xl bg-[#f7f3ec] px-4 py-4">
-                      <strong class="text-sm font-bold capitalize text-slate-950">{{ entry.key }}</strong>
-                      <span class="text-sm text-slate-500 break-words">{{ entry.value }}</span>
-                    </div>
-                  }
                 </div>
               }
 

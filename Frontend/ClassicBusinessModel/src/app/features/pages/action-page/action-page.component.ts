@@ -330,6 +330,10 @@ export class ActionPageComponent {
 
         this.backendFieldErrors.set(errorDetails.fieldErrors);
         this.errorText.set(errorDetails.message);
+        
+        if (this.isRecord(error.error)) {
+          this.responseData.set(error.error);
+        }
       })
       .finally(() => {
         this.isLoading.set(false);

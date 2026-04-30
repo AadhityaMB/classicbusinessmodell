@@ -2,10 +2,11 @@ package com.classicbusinessmodel_schema.backend.module.employee.service;
 
 import com.classicbusinessmodel_schema.backend.entity.Employee;
 import com.classicbusinessmodel_schema.backend.entity.Office;
+import com.classicbusinessmodel_schema.backend.exception.ResourceAlreadyExistsException;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import com.classicbusinessmodel_schema.backend.module.employee.dto.requestDto.OfficeRequestDTO;
-import com.classicbusinessmodel_schema.backend.module.employee.dto.responseDto.OfficeResponseDTO;
 import com.classicbusinessmodel_schema.backend.module.employee.dto.responseDto.EmployeeResponseDTO;
+import com.classicbusinessmodel_schema.backend.module.employee.dto.responseDto.OfficeResponseDTO;
 import com.classicbusinessmodel_schema.backend.module.employee.repository.EmployeeRepository;
 import com.classicbusinessmodel_schema.backend.module.employee.repository.OfficeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +15,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Marks this class as a service layer component
 @Service
 public class OfficeServiceImpl implements OfficeService {
 
-    // Inject Office repository
     @Autowired
     private OfficeRepository officeRepository;
 
-    // Inject Employee repository
     @Autowired
     private EmployeeRepository employeeRepository;
 
@@ -30,10 +28,13 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     public OfficeResponseDTO createOffice(OfficeRequestDTO dto) {
 
-        // Create office entity
-        Office office = new Office();
+        // ResourceAlreadyExistsException: Check if office already exists
+        if (officeRepository.existsById(dto.getOfficeCode())) {
+            throw new ResourceAlreadyExistsException(
+                    "Office already exists with code: " + dto.getOfficeCode());
+        }
 
-        // Set office details from request DTO
+        Office office = new Office();
         office.setOfficeCode(dto.getOfficeCode());
         office.setCity(dto.getCity());
         office.setPhone(dto.getPhone());
@@ -44,7 +45,6 @@ public class OfficeServiceImpl implements OfficeService {
         office.setPostalCode(dto.getPostalCode());
         office.setTerritory(dto.getTerritory());
 
-        // Save office and return response DTO
         return mapToDTO(officeRepository.save(office));
     }
 
@@ -52,7 +52,6 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     public List<OfficeResponseDTO> getAllOffices() {
 
-        // Get all offices and convert entities to DTOs
         return officeRepository.findAll()
                 .stream()
                 .map(this::mapToDTO)
@@ -63,15 +62,11 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     public OfficeResponseDTO getOfficeByCode(String officeCode) {
 
-        // Find office or throw exception if not found
+        // ResourceNotFoundException: Find office or throw if not found
         Office office = officeRepository.findById(officeCode)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Office not found with code: " + officeCode
-                        )
-                );
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Office not found with code: " + officeCode));
 
-        // Convert entity to response DTO
         return mapToDTO(office);
     }
 
@@ -79,24 +74,19 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     public List<EmployeeResponseDTO> getEmployeesByOffice(String officeCode) {
 
-        // Check whether office exists
-        Office office = officeRepository.findById(officeCode)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Office not found")
-                );
+        // ResourceNotFoundException: Check whether office exists
+        officeRepository.findById(officeCode)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Office not found with code: " + officeCode));
 
-        // Fetch employees belonging to that office
-        List<Employee> employees =
-                employeeRepository.findByOfficeOfficeCode(officeCode);
+        List<Employee> employees = employeeRepository.findByOfficeOfficeCode(officeCode);
 
-        // Throw exception if no employees found
+        // ResourceNotFoundException: No employees found in office
         if (employees.isEmpty()) {
             throw new ResourceNotFoundException(
-                    "No employees found for office: " + officeCode
-            );
+                    "No employees found for office: " + officeCode);
         }
 
-        // Convert employee entities into DTOs
         return employees.stream()
                 .map(this::mapEmployeeToDTO)
                 .collect(Collectors.toList());
@@ -129,11 +119,7 @@ public class OfficeServiceImpl implements OfficeService {
                 emp.getEmail(),
                 emp.getJobTitle(),
                 emp.getOffice().getOfficeCode(),
-
-                // Return manager ID if manager exists
-                emp.getManager() != null
-                        ? emp.getManager().getEmployeeNumber()
-                        : null
+                emp.getManager() != null ? emp.getManager().getEmployeeNumber() : null
         );
     }
 }
