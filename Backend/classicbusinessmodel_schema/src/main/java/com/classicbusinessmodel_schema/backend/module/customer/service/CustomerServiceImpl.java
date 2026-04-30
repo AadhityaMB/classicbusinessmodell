@@ -46,7 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Find customer or throw exception
         Customer c = customerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID "+id));
 
         // Convert to DTO
         return convert(c);
@@ -74,7 +74,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Fetch existing customer
         Customer c = customerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID "+id));
 
         // Update fields
         set(c, r);
@@ -89,7 +89,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Fetch customer
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID "+id));
 
         // Clear child relationships (avoid foreign key issues)
         customer.getOrders().clear();
@@ -105,7 +105,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Fetch customer and return credit limit
         return customerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"))
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID "+id))
                 .getCreditLimit();
     }
 
@@ -115,7 +115,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Check if customer exists
         if (!customerRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Customer not found");
+            throw new ResourceNotFoundException("Customer not found with ID "+ id);
         }
 
         // Execute custom update query
