@@ -140,6 +140,9 @@ public class CustomerServiceImpl implements CustomerService {
         } else {
             customers = customerRepository.findAll();
         }
+        if (customers.isEmpty()) {
+            throw new ResourceNotFoundException("No customers found for given search criteria");
+        }
 
         // Convert Entity list → DTO list
         return customers.stream()

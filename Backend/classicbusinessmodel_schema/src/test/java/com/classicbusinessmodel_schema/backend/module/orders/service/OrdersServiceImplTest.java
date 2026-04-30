@@ -124,7 +124,7 @@ class OrdersServiceImplTest {
                 () -> ordersService.getOrderById(1));
     }
 
-    //  Positive: Update order successfully
+    // Positive: Update order successfully
     @Test
     void testUpdateOrderSuccess() {
         when(ordersRepository.findById(1)).thenReturn(Optional.of(order));
