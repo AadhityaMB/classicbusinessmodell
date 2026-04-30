@@ -28,7 +28,6 @@ class OrdersRepositoryTest {
         customer.setCustomerName("Test Customer");
         customer.setContactFirstName("John");
         customer.setContactLastName("Doe");
-
         return entityManager.persist(customer);
     }
 

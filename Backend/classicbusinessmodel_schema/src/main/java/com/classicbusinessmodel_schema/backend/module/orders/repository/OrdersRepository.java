@@ -23,5 +23,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer> {
             @Param("fromDate") LocalDate fromDate,
             @Param("toDate") LocalDate toDate
     );
+
+
 }
 
