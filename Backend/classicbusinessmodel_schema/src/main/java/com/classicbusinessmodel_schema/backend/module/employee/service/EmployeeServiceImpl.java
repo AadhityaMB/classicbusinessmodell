@@ -2,6 +2,8 @@ package com.classicbusinessmodel_schema.backend.module.employee.service;
 
 import com.classicbusinessmodel_schema.backend.entity.Employee;
 import com.classicbusinessmodel_schema.backend.entity.Office;
+import com.classicbusinessmodel_schema.backend.exception.InvalidDataException;
+import com.classicbusinessmodel_schema.backend.exception.ResourceAlreadyExistsException;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import com.classicbusinessmodel_schema.backend.module.employee.dto.requestDto.EmployeeRequestDTO;
 import com.classicbusinessmodel_schema.backend.module.employee.dto.responseDto.EmployeeResponseDTO;
@@ -16,15 +18,12 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Marks this class as a service layer component
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    // Inject Employee repository
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    // Inject Office repository
     @Autowired
     private OfficeRepository officeRepository;
 
@@ -32,32 +31,29 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeResponseDTO createEmployee(EmployeeRequestDTO dto) {
 
-        // Convert DTO into entity
+        // ResourceAlreadyExistsException: Check if employee already exists
+        if (employeeRepository.existsById(dto.getEmployeeNumber())) {
+            throw new ResourceAlreadyExistsException(
+                    "Employee already exists with ID: " + dto.getEmployeeNumber());
+        }
+
         Employee emp = mapToEntity(dto);
-
-        // Save employee to database
-        Employee saved = employeeRepository.save(emp);
-
-        // Convert saved entity back to response DTO
-        return mapToDTO(saved);
+        return mapToDTO(employeeRepository.save(emp));
     }
 
     // Get all employees with pagination
     @Override
     public Page<EmployeeResponseDTO> getAllEmployees(int page, int size) {
 
-        // Create pageable object
         Pageable pageable = PageRequest.of(page, size);
-
-        // Fetch employees and convert each entity to DTO
-        return employeeRepository.findAll(pageable)
-                .map(this::mapToDTO);
+        return employeeRepository.findAll(pageable).map(this::mapToDTO);
     }
 
     // Get employee by ID
     @Override
     public EmployeeResponseDTO getEmployeeById(Integer id) {
 
+        // ResourceNotFoundException: Throw if employee not found
         return mapToDTO(
                 employeeRepository.findById(id)
                         .orElseThrow(() -> new ResourceNotFoundException(
@@ -69,80 +65,79 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeResponseDTO updateEmployee(Integer id, EmployeeRequestDTO dto) {
 
-        // Find employee or throw exception
+        // InvalidDataException: Prevent employee from being their own manager
+        if (dto.getManagerId() != null && dto.getManagerId().equals(id)) {
+            throw new InvalidDataException("Employee cannot be assigned as their own manager");
+        }
+
+        // ResourceNotFoundException: Find employee or throw
         Employee existing = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Employee not found with ID: " + id));
 
-        // Update employee basic details
         existing.setFirstName(dto.getFirstName());
         existing.setLastName(dto.getLastName());
         existing.setEmail(dto.getEmail());
         existing.setExtension(dto.getExtension());
         existing.setJobTitle(dto.getJobTitle());
 
-        // Fetch and set office
+        // ResourceNotFoundException: Fetch and set office
         Office office = officeRepository.findById(dto.getOfficeCode())
-                .orElseThrow(() -> new ResourceNotFoundException("Office not found"));
-
+                .orElseThrow(() -> new ResourceNotFoundException("Office not found with code : " + dto.getOfficeCode()));
         existing.setOffice(office);
 
         // Set manager if provided
         if (dto.getManagerId() != null) {
-
             Employee manager = employeeRepository.findById(dto.getManagerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found"));
-
+                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found with ID : " + dto.getManagerId()));
             existing.setManager(manager);
         }
 
-        // Save updated employee
         return mapToDTO(employeeRepository.save(existing));
     }
 
-    // Get employees reporting to a manager
+    // Get subordinates of a manager
     @Override
     public List<EmployeeResponseDTO> getSubordinates(Integer managerId) {
 
-        // Fetch subordinates
-        List<Employee> list =
-                employeeRepository.findByManagerEmployeeNumber(managerId);
+        // ResourceNotFoundException: Check if manager exists
+        employeeRepository.findById(managerId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Manager not found with ID: " + managerId));
 
-        // Throw exception if none found
+        List<Employee> list = employeeRepository.findByManagerEmployeeNumber(managerId);
+
+        // ResourceNotFoundException: No subordinates found
         if (list.isEmpty()) {
-            throw new ResourceNotFoundException("No subordinates found");
+            throw new ResourceNotFoundException(
+                    "No subordinates found for manager ID: " + managerId);
         }
 
-        // Convert entity list to DTO list
-        return list.stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+        return list.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     // Get manager of an employee
     @Override
     public EmployeeResponseDTO getManager(Integer employeeId) {
 
-        // Find employee
+        // ResourceNotFoundException: Find employee
         Employee emp = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Employee not found"));
+                        "Employee not found with ID: " + employeeId));
 
-        // Check if manager exists
+        // ResourceNotFoundException: Check manager is assigned
         if (emp.getManager() == null) {
-            throw new ResourceNotFoundException("Manager not found");
+            throw new ResourceNotFoundException(
+                    "No manager assigned to employee with ID: " + employeeId);
         }
 
-        // Return manager details
         return mapToDTO(emp.getManager());
     }
 
-    // Convert request DTO to Employee entity
+    // Convert DTO to Entity
     private Employee mapToEntity(EmployeeRequestDTO dto) {
 
         Employee emp = new Employee();
-
-        // Set employee details
         emp.setEmployeeNumber(dto.getEmployeeNumber());
         emp.setFirstName(dto.getFirstName());
         emp.setLastName(dto.getLastName());
@@ -150,25 +145,21 @@ public class EmployeeServiceImpl implements EmployeeService {
         emp.setExtension(dto.getExtension());
         emp.setJobTitle(dto.getJobTitle());
 
-        // Fetch and assign office
+        // ResourceNotFoundException: Office must exist
         Office office = officeRepository.findById(dto.getOfficeCode())
-                .orElseThrow(() -> new ResourceNotFoundException("Office not found"));
-
+                .orElseThrow(() -> new ResourceNotFoundException("Office not found with code : " + dto.getOfficeCode()));
         emp.setOffice(office);
 
-        // Assign manager if provided
         if (dto.getManagerId() != null) {
-
             Employee manager = employeeRepository.findById(dto.getManagerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found"));
-
+                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found with ID : " + dto.getManagerId()));
             emp.setManager(manager);
         }
 
         return emp;
     }
 
-    // Convert Employee entity to response DTO
+    // Convert Entity to Response DTO
     private EmployeeResponseDTO mapToDTO(Employee emp) {
 
         return new EmployeeResponseDTO(
@@ -179,11 +170,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 emp.getEmail(),
                 emp.getJobTitle(),
                 emp.getOffice().getOfficeCode(),
-
-                // Return manager id if manager exists
-                emp.getManager() != null
-                        ? emp.getManager().getEmployeeNumber()
-                        : null
+                emp.getManager() != null ? emp.getManager().getEmployeeNumber() : null
         );
     }
 }
