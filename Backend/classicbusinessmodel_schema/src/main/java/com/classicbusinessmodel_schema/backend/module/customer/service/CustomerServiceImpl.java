@@ -2,6 +2,7 @@ package com.classicbusinessmodel_schema.backend.module.customer.service;
 
 import com.classicbusinessmodel_schema.backend.entity.Customer;
 import com.classicbusinessmodel_schema.backend.entity.Employee;
+import com.classicbusinessmodel_schema.backend.exception.ResourceAlreadyExistsException;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import com.classicbusinessmodel_schema.backend.module.customer.dto.request.CustomerRequestDTO;
 import com.classicbusinessmodel_schema.backend.module.customer.dto.response.CustomerResponseDTO;
@@ -54,7 +55,10 @@ public class CustomerServiceImpl implements CustomerService {
     // Create new customer
     @Override
     public CustomerResponseDTO createCustomer(CustomerRequestDTO r) {
-
+        // Check if customer already exists
+        if (customerRepository.existsById(r.getCustomerNumber())) {
+            throw new ResourceAlreadyExistsException("Customer already exists with id: " + r.getCustomerNumber());
+        }
         Customer c = new Customer();
 
         // Map DTO → Entity
@@ -85,7 +89,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Fetch customer
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
         // Clear child relationships (avoid foreign key issues)
         customer.getOrders().clear();
@@ -135,6 +139,9 @@ public class CustomerServiceImpl implements CustomerService {
             customers = customerRepository.findByCity(city);
         } else {
             customers = customerRepository.findAll();
+        }
+        if (customers.isEmpty()) {
+            throw new ResourceNotFoundException("No customers found for given search criteria");
         }
 
         // Convert Entity list → DTO list

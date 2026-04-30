@@ -36,8 +36,15 @@ public class PaymentServiceImpl implements PaymentService {
     public Page<PaymentResponseDTO> getAllPayments(Pageable pageable) {
 
         // Convert each entity to DTO
-        return paymentRepository.findAll(pageable)
+        Page<PaymentResponseDTO> page = paymentRepository.findAll(pageable)
                 .map(this::mapToDTO);
+
+        // Added exception if no data found
+        if (page.isEmpty()) {
+            throw new ResourceNotFoundException("No payments found");
+        }
+
+        return page;
     }
 
     // Fetch payments by customer
@@ -45,10 +52,19 @@ public class PaymentServiceImpl implements PaymentService {
     public List<PaymentResponseDTO> getPaymentsByCustomer(Integer customerNumber) {
 
         // Custom query method + mapping
-        return paymentRepository.findByCustomerCustomerNumber(customerNumber)
+        List<PaymentResponseDTO> list = paymentRepository.findByCustomerCustomerNumber(customerNumber)
                 .stream()
                 .map(this::mapToDTO)
                 .toList();
+
+        // Added exception if no payments for customer
+        if (list.isEmpty()) {
+            throw new ResourceNotFoundException("No payments found for customer: " + customerNumber);
+        }
+
+        return list;
+
+
     }
 
     // Fetch payment by check number
