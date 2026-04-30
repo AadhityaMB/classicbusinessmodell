@@ -9,5 +9,4 @@ public class ClassicbusinessmodelSchemaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ClassicbusinessmodelSchemaApplication.class, args);
 	}
-
 }

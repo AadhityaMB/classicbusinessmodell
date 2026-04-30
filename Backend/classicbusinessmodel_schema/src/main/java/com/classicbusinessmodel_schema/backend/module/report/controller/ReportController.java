@@ -6,6 +6,7 @@ import com.classicbusinessmodel_schema.backend.module.report.dto.response.*;
 import com.classicbusinessmodel_schema.backend.module.report.service.ReportService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +39,7 @@ public class ReportController {
     @GetMapping("/customer-exposure")
     @Operation(summary = "Get customer exposure", description = "Calculates total order value vs credit limit for all customers")
     public ResponseEntity<ApiResponse<Page<CustomerExposureResponseDTO>>> getCustomerExposure(
-            @PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "totalOrderValue", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return success("Customer exposure report fetched successfully",
                 reportService.getCustomerExposure(pageable));
@@ -61,7 +62,7 @@ public class ReportController {
     @GetMapping("/sales-by-country")
     @Operation(summary = "Get sales by country", description = "Aggregates total sales revenue by country")
     public ResponseEntity<ApiResponse<Page<SalesByCountryResponseDTO>>> getSalesByCountry(
-            @PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "totalSales", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return success("Sales by country fetched successfully",
                 reportService.getSalesByCountry(pageable));
@@ -71,7 +72,7 @@ public class ReportController {
     @GetMapping("/sales-by-employee")
     @Operation(summary = "Get sales by employee", description = "Aggregates total sales revenue handled by each employee")
     public ResponseEntity<ApiResponse<Page<SalesByEmployeeResponseDTO>>> getSalesByEmployee(
-            @PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "totalSales", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return success("Sales by employee fetched successfully",
                 reportService.getSalesByEmployee(pageable));
@@ -81,7 +82,7 @@ public class ReportController {
     @GetMapping("/monthly-revenue")
     @Operation(summary = "Get monthly revenue", description = "Calculates total revenue aggregated by month and year")
     public ResponseEntity<ApiResponse<Page<MonthlyRevenueResponseDTO>>> getMonthlyRevenue(
-            @PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 10, sort = {"year", "month"}, direction = Sort.Direction.DESC) Pageable pageable) {
 
         return success("Monthly revenue fetched successfully",
                 reportService.getMonthlyRevenue(pageable));
@@ -91,7 +92,7 @@ public class ReportController {
     @GetMapping("/high-risk-customers")
     @Operation(summary = "Get high risk customers", description = "Identifies customers whose total order value exceeds their credit limit")
     public ResponseEntity<ApiResponse<Page<HighRiskCustomerResponseDTO>>> getHighRiskCustomers(
-            @PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "totalOrderValue", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return success("High risk customers fetched successfully",
                 reportService.getHighRiskCustomers(pageable));

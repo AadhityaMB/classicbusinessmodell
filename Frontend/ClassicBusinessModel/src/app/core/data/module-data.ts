@@ -32,7 +32,9 @@ export const MODULES: ModuleDefinition[] = [
             submitLabel: 'Fetch Report',
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
-              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' },
+              { key: 'sortBy', label: 'Sort By', type: 'select', placeholder: 'Select sort field', defaultValue: 'totalOrderValue', options: ['customerNumber', 'customerName', 'creditLimit', 'totalOrderValue', 'remainingCredit'] },
+              { key: 'sortDirection', label: 'Sort Direction', type: 'select', placeholder: 'Direction', defaultValue: 'DESC', options: ['ASC', 'DESC'] }
             ]
           },
           {
@@ -54,7 +56,9 @@ export const MODULES: ModuleDefinition[] = [
             submitLabel: 'Fetch Report',
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
-              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' },
+              { key: 'sortBy', label: 'Sort By', type: 'select', placeholder: 'Select sort field', defaultValue: 'totalSales', options: ['country', 'totalSales'] },
+              { key: 'sortDirection', label: 'Sort Direction', type: 'select', placeholder: 'Direction', defaultValue: 'DESC', options: ['ASC', 'DESC'] }
             ],
             chartConfig: { type: 'pie', labelKey: 'country', valueKey: 'totalSales' }
           },
@@ -69,7 +73,9 @@ export const MODULES: ModuleDefinition[] = [
             submitLabel: 'Fetch Report',
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
-              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' },
+              { key: 'sortBy', label: 'Sort By', type: 'select', placeholder: 'Select sort field', defaultValue: 'totalSales', options: ['employeeName', 'totalSales'] },
+              { key: 'sortDirection', label: 'Sort Direction', type: 'select', placeholder: 'Direction', defaultValue: 'DESC', options: ['ASC', 'DESC'] }
             ],
             chartConfig: { type: 'bar', labelKey: 'employeeName', valueKey: 'totalSales' }
           },
@@ -84,7 +90,9 @@ export const MODULES: ModuleDefinition[] = [
             submitLabel: 'Fetch Report',
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
-              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' },
+              { key: 'sortBy', label: 'Sort By', type: 'select', placeholder: 'Select sort field', defaultValue: 'year', options: ['year', 'month', 'revenue'] },
+              { key: 'sortDirection', label: 'Sort Direction', type: 'select', placeholder: 'Direction', defaultValue: 'DESC', options: ['ASC', 'DESC'] }
             ],
             chartConfig: { type: 'line', labelKey: 'month', valueKey: 'revenue' }
           },
@@ -99,7 +107,9 @@ export const MODULES: ModuleDefinition[] = [
             submitLabel: 'Fetch Report',
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
-              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' },
+              { key: 'sortBy', label: 'Sort By', type: 'select', placeholder: 'Select sort field', defaultValue: 'riskPercentage', options: ['customerName', 'totalOrderValue', 'riskPercentage'] },
+              { key: 'sortDirection', label: 'Sort Direction', type: 'select', placeholder: 'Direction', defaultValue: 'DESC', options: ['ASC', 'DESC'] }
             ],
             chartConfig: { type: 'bar', labelKey: 'customerName', valueKey: 'riskPercentage' }
           }
