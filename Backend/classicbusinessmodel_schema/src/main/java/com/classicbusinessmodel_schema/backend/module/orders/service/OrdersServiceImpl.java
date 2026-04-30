@@ -2,6 +2,7 @@ package com.classicbusinessmodel_schema.backend.module.orders.service;
 
 import com.classicbusinessmodel_schema.backend.entity.Orders;
 import com.classicbusinessmodel_schema.backend.exception.InvalidDataException;
+import com.classicbusinessmodel_schema.backend.exception.ResourceAlreadyExistsException;
 import com.classicbusinessmodel_schema.backend.exception.ResourceNotFoundException;
 import com.classicbusinessmodel_schema.backend.module.customer.repository.CustomerRepository;
 import com.classicbusinessmodel_schema.backend.module.orders.dto.requestDto.OrderRequestDTO;
@@ -31,10 +32,19 @@ public class OrdersServiceImpl implements OrdersService {
     public OrderResponseDTO createOrder(OrderRequestDTO request) {
 
         Orders order = new Orders();
-        order.setOrderNumber((int) (Math.random() * 100000));
+
+        Integer orderNumber = (int) (Math.random() * 100000);
+
+        if (orderRepository.existsById(orderNumber)) {
+            throw new ResourceAlreadyExistsException("Order with given id: " + orderNumber + " already exists");
+        }
+
+        order.setOrderNumber(orderNumber);
 
         order.setCustomer(customerRepository.findById(request.getCustomerNumber())
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found")));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Customer with given id: " + request.getCustomerNumber() + " not found"
+                )));
 
         order.setOrderDate(request.getOrderDate());
         order.setRequiredDate(request.getRequiredDate());
@@ -56,7 +66,9 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public OrderResponseDTO getOrderById(Integer orderNumber) {
         Orders order = orderRepository.findById(orderNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Order with given id: " + orderNumber + " not found"
+                ));
 
         return mapToDTO(order);
     }
@@ -66,7 +78,9 @@ public class OrdersServiceImpl implements OrdersService {
     public OrderResponseDTO updateOrder(Integer orderNumber, OrderRequestDTO request) {
 
         Orders order = orderRepository.findById(orderNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Order with given id: " + orderNumber + " not found"
+                ));
 
         order.setOrderDate(request.getOrderDate());
         order.setRequiredDate(request.getRequiredDate());
@@ -82,7 +96,9 @@ public class OrdersServiceImpl implements OrdersService {
     public OrderResponseDTO updateOrderStatus(Integer orderNumber, OrderRequestDTO request) {
 
         Orders order = orderRepository.findById(orderNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Order with given id: " + orderNumber + " not found"
+                ));
 
         if (request.getStatus() != null) {
             order.setStatus(request.getStatus());
@@ -94,6 +110,13 @@ public class OrdersServiceImpl implements OrdersService {
     // Fetch all orders belonging to a specific customer
     @Override
     public List<OrderResponseDTO> getOrdersByCustomer(Integer customerNumber) {
+
+        if (!customerRepository.existsById(customerNumber)) {
+            throw new ResourceNotFoundException(
+                    "Customer with given id: " + customerNumber + " not found"
+            );
+        }
+
         return orderRepository.findByCustomerCustomerNumber(customerNumber)
                 .stream()
                 .map(this::mapToDTO)
@@ -103,13 +126,25 @@ public class OrdersServiceImpl implements OrdersService {
     // Search orders based on status and date range
     @Override
     public List<OrderResponseDTO> searchOrders(String status, LocalDate fromDate, LocalDate toDate) {
+
         if (fromDate.isAfter(toDate)) {
             throw new InvalidDataException("From Date cannot be greater than To Date");
         }
-        return orderRepository.findByStatusAndOrderDateBetween(status, fromDate, toDate)
+
+        List<OrderResponseDTO> orders = orderRepository
+                .findByStatusAndOrderDateBetween(status, fromDate, toDate)
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
+
+        if (orders.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No orders found for given status: " + status +
+                            " between " + fromDate + " and " + toDate
+            );
+        }
+
+        return orders;
     }
 
     // Convert Orders entity to OrderResponseDTO
