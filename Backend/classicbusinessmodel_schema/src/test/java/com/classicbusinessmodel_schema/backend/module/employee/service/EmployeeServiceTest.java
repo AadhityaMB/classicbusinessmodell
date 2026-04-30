@@ -43,7 +43,7 @@ class EmployeeServiceTest {
         e.setEmail("test@mail.com");
         e.setExtension("x123");
         e.setJobTitle("Developer");
-        e.setOffice(createOffice()); // 🔥 IMPORTANT FIX
+        e.setOffice(createOffice()); // IMPORTANT FIX
         return e;
     }
 

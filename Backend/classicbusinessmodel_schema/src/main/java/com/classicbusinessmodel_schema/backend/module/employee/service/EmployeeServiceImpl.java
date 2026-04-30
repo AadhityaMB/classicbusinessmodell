@@ -83,13 +83,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         // ResourceNotFoundException: Fetch and set office
         Office office = officeRepository.findById(dto.getOfficeCode())
-                .orElseThrow(() -> new ResourceNotFoundException("Office not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Office not found with code : " + dto.getOfficeCode()));
         existing.setOffice(office);
 
         // Set manager if provided
         if (dto.getManagerId() != null) {
             Employee manager = employeeRepository.findById(dto.getManagerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found with ID : " + dto.getManagerId()));
             existing.setManager(manager);
         }
 
@@ -147,12 +147,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         // ResourceNotFoundException: Office must exist
         Office office = officeRepository.findById(dto.getOfficeCode())
-                .orElseThrow(() -> new ResourceNotFoundException("Office not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Office not found with code : " + dto.getOfficeCode()));
         emp.setOffice(office);
 
         if (dto.getManagerId() != null) {
             Employee manager = employeeRepository.findById(dto.getManagerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found with ID : " + dto.getManagerId()));
             emp.setManager(manager);
         }
 
