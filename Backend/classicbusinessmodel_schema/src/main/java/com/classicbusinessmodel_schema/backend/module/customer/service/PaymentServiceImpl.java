@@ -73,7 +73,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         // Fetch or throw exception
         Payment payment = paymentRepository.findByIdCheckNumber(checkNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("Payment not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Payment not found with CheckNumber "+checkNumber));
 
         // Convert to DTO
         return mapToDTO(payment);
