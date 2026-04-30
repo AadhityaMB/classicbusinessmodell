@@ -1,0 +1,226 @@
+<div class="grid gap-5">
+  <h2 class="text-2xl font-bold text-slate-950">{{ formTitle }}</h2>
+
+  @if (pathFields.length) {
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      @for (field of pathFields; track field.key) {
+        <label class="grid gap-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-slate-700">{{ field.label }}</span>
+            @if (canLoadData && $last) {
+              <button
+                type="button"
+                (click)="loadData.emit()"
+                class="text-xs font-bold text-[#157c6b] hover:underline disabled:opacity-50"
+                [disabled]="isLoading || !pathValues[field.key]"
+              >
+                Load Current Data
+              </button>
+            }
+          </div>
+          @if (field.type === 'select') {
+            <select
+              class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+              [class.border-[#d9deea]]="!pathErrors[field.key]"
+              [class.focus:border-[#1d9a84]]="!pathErrors[field.key]"
+              [class.focus:ring-[#1d9a84]/10]="!pathErrors[field.key]"
+              [class.border-red-300]="!!pathErrors[field.key]"
+              [class.bg-red-50]="!!pathErrors[field.key]"
+              [class.focus:border-red-400]="!!pathErrors[field.key]"
+              [class.focus:ring-red-100]="!!pathErrors[field.key]"
+              [ngModel]="pathValues[field.key]"
+              (ngModelChange)="onPathChange(field.key, $event)"
+              [attr.aria-invalid]="!!pathErrors[field.key]"
+            >
+              <option value="" disabled selected>{{ field.placeholder ?? 'Select ' + field.label }}</option>
+              @for (option of field.options; track option) {
+                <option [value]="option">{{ option }}</option>
+              }
+            </select>
+          } @else {
+            <input
+              class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+              [class.border-[#d9deea]]="!pathErrors[field.key]"
+              [class.focus:border-[#1d9a84]]="!pathErrors[field.key]"
+              [class.focus:ring-[#1d9a84]/10]="!pathErrors[field.key]"
+              [class.border-red-300]="!!pathErrors[field.key]"
+              [class.bg-red-50]="!!pathErrors[field.key]"
+              [class.focus:border-red-400]="!!pathErrors[field.key]"
+              [class.focus:ring-red-100]="!!pathErrors[field.key]"
+              [type]="field.type"
+              [step]="field.step ?? null"
+              [attr.inputmode]="inputMode(field)"
+              [attr.pattern]="fieldPattern(field)"
+              [attr.maxlength]="fieldMaxLength(field)"
+              [attr.minlength]="fieldMinLength(field)"
+              [ngModel]="pathValues[field.key]"
+              (ngModelChange)="onPathChange(field.key, $event)"
+              [placeholder]="field.placeholder ?? ''"
+              [attr.aria-invalid]="!!pathErrors[field.key]"
+            />
+          }
+          @if (pathErrors[field.key]; as message) {
+            <span class="text-sm font-medium text-red-600">{{ message }}</span>
+          }
+        </label>
+      }
+    </div>
+  }
+
+  @if (queryFields.length) {
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      @for (field of queryFields; track field.key) {
+        <label class="grid gap-2.5">
+          <span class="text-sm font-bold text-slate-700">{{ field.label }}</span>
+          @if (field.type === 'textarea') {
+            <textarea
+              class="min-h-32 w-full resize-y rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+              [class.border-[#d9deea]]="!queryErrors[field.key]"
+              [class.focus:border-[#1d9a84]]="!queryErrors[field.key]"
+              [class.focus:ring-[#1d9a84]/10]="!queryErrors[field.key]"
+              [class.border-red-300]="!!queryErrors[field.key]"
+              [class.bg-red-50]="!!queryErrors[field.key]"
+              [class.focus:border-red-400]="!!queryErrors[field.key]"
+              [class.focus:ring-red-100]="!!queryErrors[field.key]"
+              rows="4"
+              [ngModel]="queryValues[field.key]"
+              (ngModelChange)="onQueryChange(field.key, $event)"
+              [placeholder]="field.placeholder ?? ''"
+              [attr.aria-invalid]="!!queryErrors[field.key]"
+            ></textarea>
+          } @else if (field.type === 'select') {
+            <select
+              class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+              [class.border-[#d9deea]]="!queryErrors[field.key]"
+              [class.focus:border-[#1d9a84]]="!queryErrors[field.key]"
+              [class.focus:ring-[#1d9a84]/10]="!queryErrors[field.key]"
+              [class.border-red-300]="!!queryErrors[field.key]"
+              [class.bg-red-50]="!!queryErrors[field.key]"
+              [class.focus:border-red-400]="!!queryErrors[field.key]"
+              [class.focus:ring-red-100]="!!queryErrors[field.key]"
+              [ngModel]="queryValues[field.key]"
+              (ngModelChange)="onQueryChange(field.key, $event)"
+              [attr.aria-invalid]="!!queryErrors[field.key]"
+            >
+              <option value="" disabled selected>{{ field.placeholder ?? 'Select ' + field.label }}</option>
+              @for (option of field.options; track option) {
+                <option [value]="option">{{ option }}</option>
+              }
+            </select>
+          } @else {
+            <input
+              class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+              [class.border-[#d9deea]]="!queryErrors[field.key]"
+              [class.focus:border-[#1d9a84]]="!queryErrors[field.key]"
+              [class.focus:ring-[#1d9a84]/10]="!queryErrors[field.key]"
+              [class.border-red-300]="!!queryErrors[field.key]"
+              [class.bg-red-50]="!!queryErrors[field.key]"
+              [class.focus:border-red-400]="!!queryErrors[field.key]"
+              [class.focus:ring-red-100]="!!queryErrors[field.key]"
+              [type]="field.type"
+              [step]="field.step ?? null"
+              [attr.inputmode]="inputMode(field)"
+              [attr.pattern]="fieldPattern(field)"
+              [attr.maxlength]="fieldMaxLength(field)"
+              [attr.minlength]="fieldMinLength(field)"
+              [ngModel]="queryValues[field.key]"
+              (ngModelChange)="onQueryChange(field.key, $event)"
+              [placeholder]="field.placeholder ?? ''"
+              [attr.aria-invalid]="!!queryErrors[field.key]"
+            />
+          }
+          @if (queryErrors[field.key]; as message) {
+            <span class="text-sm font-medium text-red-600">{{ message }}</span>
+          }
+        </label>
+      }
+    </div>
+  }
+
+  @if (formFields.length) {
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      @for (field of formFields; track field.key) {
+        <label class="grid gap-2.5">
+          <span class="text-sm font-bold text-slate-700">{{ field.label }}</span>
+          @if (field.type === 'textarea') {
+            <textarea
+              class="min-h-36 w-full resize-y rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+              [class.border-[#d9deea]]="!formErrors[field.key]"
+              [class.focus:border-[#1d9a84]]="!formErrors[field.key]"
+              [class.focus:ring-[#1d9a84]/10]="!formErrors[field.key]"
+              [class.border-red-300]="!!formErrors[field.key]"
+              [class.bg-red-50]="!!formErrors[field.key]"
+              [class.focus:border-red-400]="!!formErrors[field.key]"
+              [class.focus:ring-red-100]="!!formErrors[field.key]"
+              rows="5"
+              [ngModel]="formValues[field.key]"
+              (ngModelChange)="onFormChange(field.key, $event)"
+              [placeholder]="field.placeholder ?? ''"
+              [attr.aria-invalid]="!!formErrors[field.key]"
+            ></textarea>
+          } @else if (field.type === 'select') {
+            <select
+              class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+              [class.border-[#d9deea]]="!formErrors[field.key]"
+              [class.focus:border-[#1d9a84]]="!formErrors[field.key]"
+              [class.focus:ring-[#1d9a84]/10]="!formErrors[field.key]"
+              [class.border-red-300]="!!formErrors[field.key]"
+              [class.bg-red-50]="!!formErrors[field.key]"
+              [class.focus:border-red-400]="!!formErrors[field.key]"
+              [class.focus:ring-red-100]="!!formErrors[field.key]"
+              [ngModel]="formValues[field.key]"
+              (ngModelChange)="onFormChange(field.key, $event)"
+              [attr.aria-invalid]="!!formErrors[field.key]"
+            >
+              <option value="" disabled selected>{{ field.placeholder ?? 'Select ' + field.label }}</option>
+              @for (option of field.options; track option) {
+                <option [value]="option">{{ option }}</option>
+              }
+            </select>
+          } @else {
+            <input
+              class="w-full rounded-2xl border bg-white px-4 py-4 text-slate-900 outline-none transition focus:ring-4"
+              [class.border-[#d9deea]]="!formErrors[field.key]"
+              [class.focus:border-[#1d9a84]]="!formErrors[field.key]"
+              [class.focus:ring-[#1d9a84]/10]="!formErrors[field.key]"
+              [class.border-red-300]="!!formErrors[field.key]"
+              [class.bg-red-50]="!!formErrors[field.key]"
+              [class.focus:border-red-400]="!!formErrors[field.key]"
+              [class.focus:ring-red-100]="!!formErrors[field.key]"
+              [type]="field.type"
+              [step]="field.step ?? null"
+              [attr.inputmode]="inputMode(field)"
+              [attr.pattern]="fieldPattern(field)"
+              [attr.maxlength]="fieldMaxLength(field)"
+              [attr.minlength]="fieldMinLength(field)"
+              [ngModel]="formValues[field.key]"
+              (ngModelChange)="onFormChange(field.key, $event)"
+              [placeholder]="field.placeholder ?? ''"
+              [attr.aria-invalid]="!!formErrors[field.key]"
+            />
+          }
+          @if (formErrors[field.key]; as message) {
+            <span class="text-sm font-medium text-red-600">{{ message }}</span>
+          }
+        </label>
+      }
+    </div>
+  }
+
+  @if (isDeleteAction) {
+    <div class="rounded-2xl bg-[#f7ece7] px-4 py-4 text-sm font-semibold text-[#8a4b33]">
+      This action will permanently remove the selected record.
+    </div>
+  }
+
+  <div class="flex justify-center pt-2">
+    <button
+      class="min-w-[220px] rounded-2xl bg-[#1f2f46] px-6 py-4 text-base font-bold text-white transition hover:bg-[#152235] disabled:cursor-progress disabled:opacity-70"
+      type="button"
+      (click)="submitForm.emit()"
+      [disabled]="isLoading"
+    >
+      {{ isLoading ? 'Please wait...' : submitLabel }}
+    </button>
+  </div>
+</div>

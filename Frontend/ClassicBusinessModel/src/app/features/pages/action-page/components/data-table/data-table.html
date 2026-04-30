@@ -1,0 +1,52 @@
+<div class="mt-5 overflow-auto rounded-2xl border border-[#d6deea]">
+  <table class="min-w-full border-collapse bg-white">
+    <thead class="bg-[#f3ead8]">
+      <tr>
+        @for (column of tableColumns; track column) {
+          <th class="px-4 py-3 text-left text-sm font-bold capitalize text-slate-950">{{ column }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of tableRows; track $index) {
+        <tr class="border-t border-slate-200">
+          @for (column of tableColumns; track column) {
+            <td class="px-4 py-3 align-top text-sm text-slate-700 break-words">{{ formatCell(row[column]) }}</td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (paginationState; as pagination) {
+  <div class="mt-5 flex flex-col gap-4 rounded-2xl border border-[#d6deea] bg-white px-5 py-4 md:flex-row md:items-center md:justify-between">
+    <div class="grid gap-1 text-sm text-slate-600">
+      <span class="font-semibold text-slate-900">
+        Page {{ pagination.pageNumber + 1 }} of {{ pagination.totalPages }}
+      </span>
+      <span>
+        Showing {{ pagination.numberOfElements }} of {{ pagination.totalElements }} records
+      </span>
+    </div>
+
+    <div class="flex gap-3">
+      <button
+        class="rounded-xl border border-[#d6deea] px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-[#f7f3ec] disabled:cursor-not-allowed disabled:opacity-50"
+        type="button"
+        (click)="previousPage.emit()"
+        [disabled]="isLoading || pagination.first"
+      >
+        Previous
+      </button>
+      <button
+        class="rounded-xl bg-[#1f2f46] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#152235] disabled:cursor-not-allowed disabled:opacity-50"
+        type="button"
+        (click)="nextPage.emit()"
+        [disabled]="isLoading || pagination.last"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+}

@@ -86,7 +86,6 @@ public interface ReportRepository extends JpaRepository<Customer, Integer> {
            "FROM Orders o " +
            "JOIN o.orderDetails od " +
            "WHERE o.orderDate IS NOT NULL " +
-           "GROUP BY YEAR(o.orderDate), MONTH(o.orderDate) " +
-           "ORDER BY year DESC, month DESC")
+           "GROUP BY YEAR(o.orderDate), MONTH(o.orderDate)")
     Page<MonthlyRevenueProjection> getMonthlyRevenue(Pageable pageable);
 }

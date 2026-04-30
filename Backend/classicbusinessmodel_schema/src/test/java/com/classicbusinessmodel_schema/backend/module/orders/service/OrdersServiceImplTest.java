@@ -60,7 +60,7 @@ class OrdersServiceImplTest {
         request.setStatus("Shipped");
     }
 
-    // ✅ Positive: Order created successfully
+    //  Positive: Order created successfully
     @Test
     void testCreateOrderSuccess() {
         when(customerRepository.findById(101)).thenReturn(Optional.of(customer));
@@ -72,7 +72,7 @@ class OrdersServiceImplTest {
         assertEquals("Shipped", response.getStatus());
     }
 
-    // ❌ Negative: Customer not found
+    //  Negative: Customer not found
     @Test
     void testCreateOrderCustomerNotFound() {
         when(customerRepository.findById(101)).thenReturn(Optional.empty());
@@ -81,7 +81,7 @@ class OrdersServiceImplTest {
                 () -> ordersService.createOrder(request));
     }
 
-    // ✅ Positive: Fetch all orders
+    //  Positive: Fetch all orders
     @Test
     void testGetAllOrders() {
         Pageable pageable = PageRequest.of(0, 10);
@@ -93,7 +93,7 @@ class OrdersServiceImplTest {
         assertEquals(1, result.getTotalElements());
     }
 
-    // ❌ Negative: No orders available
+    //  Negative: No orders available
     @Test
     void testGetAllOrdersEmpty() {
         Pageable pageable = PageRequest.of(0, 10);
@@ -105,7 +105,7 @@ class OrdersServiceImplTest {
         assertTrue(result.isEmpty());
     }
 
-    // ✅ Positive: Get order by ID
+    //  Positive: Get order by ID
     @Test
     void testGetOrderByIdSuccess() {
         when(ordersRepository.findById(1)).thenReturn(Optional.of(order));
@@ -115,7 +115,7 @@ class OrdersServiceImplTest {
         assertEquals(1, result.getOrderNumber());
     }
 
-    // ❌ Negative: Order not found
+    //  Negative: Order not found
     @Test
     void testGetOrderByIdNotFound() {
         when(ordersRepository.findById(1)).thenReturn(Optional.empty());
@@ -124,7 +124,7 @@ class OrdersServiceImplTest {
                 () -> ordersService.getOrderById(1));
     }
 
-    // ✅ Positive: Update order successfully
+    // Positive: Update order successfully
     @Test
     void testUpdateOrderSuccess() {
         when(ordersRepository.findById(1)).thenReturn(Optional.of(order));
@@ -135,7 +135,7 @@ class OrdersServiceImplTest {
         assertEquals("Shipped", result.getStatus());
     }
 
-    // ❌ Negative: Order not found while updating
+    //  Negative: Order not found while updating
     @Test
     void testUpdateOrderNotFound() {
         when(ordersRepository.findById(1)).thenReturn(Optional.empty());
@@ -144,7 +144,7 @@ class OrdersServiceImplTest {
                 () -> ordersService.updateOrder(1, request));
     }
 
-    // ✅ Positive: Update order status
+    //  Positive: Update order status
     @Test
     void testUpdateOrderStatusSuccess() {
         when(ordersRepository.findById(1)).thenReturn(Optional.of(order));
@@ -157,7 +157,7 @@ class OrdersServiceImplTest {
         assertEquals("Cancelled", result.getStatus());
     }
 
-    // ✅ Positive: Search orders with results
+    //  Positive: Search orders with results
     @Test
     void testSearchOrders() {
         when(ordersRepository.findByStatusAndOrderDateBetween(anyString(), any(), any()))

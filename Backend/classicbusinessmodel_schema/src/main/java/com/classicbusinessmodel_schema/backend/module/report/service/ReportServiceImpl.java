@@ -5,6 +5,7 @@ import com.classicbusinessmodel_schema.backend.module.orders.repository.OrdersRe
 import com.classicbusinessmodel_schema.backend.module.report.dto.response.*;
 import com.classicbusinessmodel_schema.backend.module.report.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,18 @@ import java.math.RoundingMode;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+
 public class ReportServiceImpl implements ReportService {
 
+
     private final ReportRepository reportRepository;
+
     private final OrdersRepository ordersRepository;
+
+    public ReportServiceImpl(ReportRepository reportRepository, OrdersRepository ordersRepository) {
+        this.reportRepository = reportRepository;
+        this.ordersRepository = ordersRepository;
+    }
 
     // ===============================
     // 1. CUSTOMER EXPOSURE
@@ -28,11 +36,14 @@ public class ReportServiceImpl implements ReportService {
         return reportRepository.getCustomerExposure(pageable).map(this::mapToCustomerExposureDTO);
     }
 
+
+    //testing method
     @Override
     public List<CustomerExposureResponseDTO> getCustomerExposure() {
         return reportRepository.getCustomerExposure(Pageable.unpaged()).map(this::mapToCustomerExposureDTO).getContent();
     }
 
+    //convert one repository query result into the final response DTO
     private CustomerExposureResponseDTO mapToCustomerExposureDTO(ReportRepository.CustomerExposureProjection projection) {
         BigDecimal credit = projection.getCreditLimit() != null ? projection.getCreditLimit() : BigDecimal.ZERO;
         BigDecimal total = projection.getTotalOrderValue() != null ? projection.getTotalOrderValue() : BigDecimal.ZERO;
@@ -79,6 +90,7 @@ public class ReportServiceImpl implements ReportService {
         );
     }
 
+    //test method
     @Override
     public List<SalesByCountryResponseDTO> getSalesByCountry() {
         return reportRepository.getSalesByCountry(Pageable.unpaged()).map(p ->
@@ -103,6 +115,7 @@ public class ReportServiceImpl implements ReportService {
         );
     }
 
+    //test method
     @Override
     public List<SalesByEmployeeResponseDTO> getSalesByEmployee() {
         return reportRepository.getSalesByEmployee(Pageable.unpaged()).map(p ->
@@ -128,6 +141,7 @@ public class ReportServiceImpl implements ReportService {
         );
     }
 
+    //test method
     @Override
     public List<MonthlyRevenueResponseDTO> getMonthlyRevenue() {
         return reportRepository.getMonthlyRevenue(Pageable.unpaged()).map(p ->

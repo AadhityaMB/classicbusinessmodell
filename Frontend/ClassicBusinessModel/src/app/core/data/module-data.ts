@@ -1,6 +1,7 @@
 import { ModuleDefinition } from '../models/module.models';
 
 const PHONE_PATTERN = '^[+]?[0-9()\\-\\s.]{7,20}$';
+const NAME_PATTERN = '^[a-zA-Z\\s\\-\']+$';
 
 export const MODULES: ModuleDefinition[] = [
   {
@@ -31,7 +32,9 @@ export const MODULES: ModuleDefinition[] = [
             submitLabel: 'Fetch Report',
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
-              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' },
+              { key: 'sortBy', label: 'Sort By', type: 'select', placeholder: 'Select sort field', defaultValue: 'totalOrderValue', options: ['customerNumber', 'customerName', 'creditLimit', 'totalOrderValue', 'remainingCredit'] },
+              { key: 'sortDirection', label: 'Sort Direction', type: 'select', placeholder: 'Direction', defaultValue: 'DESC', options: ['ASC', 'DESC'] }
             ]
           },
           {
@@ -53,7 +56,9 @@ export const MODULES: ModuleDefinition[] = [
             submitLabel: 'Fetch Report',
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
-              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' },
+              { key: 'sortBy', label: 'Sort By', type: 'select', placeholder: 'Select sort field', defaultValue: 'totalSales', options: ['country', 'totalSales'] },
+              { key: 'sortDirection', label: 'Sort Direction', type: 'select', placeholder: 'Direction', defaultValue: 'DESC', options: ['ASC', 'DESC'] }
             ],
             chartConfig: { type: 'pie', labelKey: 'country', valueKey: 'totalSales' }
           },
@@ -68,7 +73,9 @@ export const MODULES: ModuleDefinition[] = [
             submitLabel: 'Fetch Report',
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
-              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' },
+              { key: 'sortBy', label: 'Sort By', type: 'select', placeholder: 'Select sort field', defaultValue: 'totalSales', options: ['employeeName', 'totalSales'] },
+              { key: 'sortDirection', label: 'Sort Direction', type: 'select', placeholder: 'Direction', defaultValue: 'DESC', options: ['ASC', 'DESC'] }
             ],
             chartConfig: { type: 'bar', labelKey: 'employeeName', valueKey: 'totalSales' }
           },
@@ -83,7 +90,9 @@ export const MODULES: ModuleDefinition[] = [
             submitLabel: 'Fetch Report',
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
-              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' },
+              { key: 'sortBy', label: 'Sort By', type: 'select', placeholder: 'Select sort field', defaultValue: 'year', options: ['year', 'month', 'revenue'] },
+              { key: 'sortDirection', label: 'Sort Direction', type: 'select', placeholder: 'Direction', defaultValue: 'DESC', options: ['ASC', 'DESC'] }
             ],
             chartConfig: { type: 'line', labelKey: 'month', valueKey: 'revenue' }
           },
@@ -98,7 +107,9 @@ export const MODULES: ModuleDefinition[] = [
             submitLabel: 'Fetch Report',
             queryFields: [
               { key: 'page', label: 'Page', type: 'number', required: true, placeholder: 'Enter page number', defaultValue: '0' },
-              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' }
+              { key: 'size', label: 'Size', type: 'number', required: true, placeholder: 'Enter page size', defaultValue: '10' },
+              { key: 'sortBy', label: 'Sort By', type: 'select', placeholder: 'Select sort field', defaultValue: 'riskPercentage', options: ['customerName', 'totalOrderValue', 'riskPercentage'] },
+              { key: 'sortDirection', label: 'Sort Direction', type: 'select', placeholder: 'Direction', defaultValue: 'DESC', options: ['ASC', 'DESC'] }
             ],
             chartConfig: { type: 'bar', labelKey: 'customerName', valueKey: 'riskPercentage' }
           }
@@ -134,9 +145,9 @@ export const MODULES: ModuleDefinition[] = [
             successMessage: 'Customer added successfully',
             formFields: [
               { key: 'customerNumber', label: 'Customer Number', type: 'number', required: true, placeholder: 'Enter customer number' },
-              { key: 'customerName', label: 'Customer Name', type: 'text', required: true, placeholder: 'Enter customer name', validation: { notBlank: 'Customer name is required', maxLength: { value: 50 } } },
-              { key: 'contactFirstName', label: 'Contact First Name', type: 'text', required: true, placeholder: 'Enter first name', validation: { notBlank: 'Contact first name is required', maxLength: { value: 50 } } },
-              { key: 'contactLastName', label: 'Contact Last Name', type: 'text', required: true, placeholder: 'Enter last name', validation: { notBlank: 'Contact last name is required', maxLength: { value: 50 } } },
+              { key: 'customerName', label: 'Customer Name', type: 'text', required: true, placeholder: 'Enter customer name', validation: { notBlank: 'Customer name is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Name cannot contain numbers' } } },
+              { key: 'contactFirstName', label: 'Contact First Name', type: 'text', required: true, placeholder: 'Enter first name', validation: { notBlank: 'Contact first name is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Name cannot contain numbers' } } },
+              { key: 'contactLastName', label: 'Contact Last Name', type: 'text', required: true, placeholder: 'Enter last name', validation: { notBlank: 'Contact last name is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Name cannot contain numbers' } } },
               {
                 key: 'phone',
                 label: 'Phone',
@@ -154,10 +165,10 @@ export const MODULES: ModuleDefinition[] = [
               },
               { key: 'addressLine1', label: 'Address Line 1', type: 'text', required: true, placeholder: 'Enter address line 1', validation: { notBlank: 'Address line 1 is required', maxLength: { value: 50 } } },
               { key: 'addressLine2', label: 'Address Line 2', type: 'text', placeholder: 'Enter address line 2', validation: { maxLength: { value: 50 } } },
-              { key: 'city', label: 'City', type: 'text', required: true, placeholder: 'Enter city', validation: { notBlank: 'City is required', maxLength: { value: 50 } } },
-              { key: 'state', label: 'State', type: 'text', placeholder: 'Enter state', validation: { maxLength: { value: 50 } } },
+              { key: 'city', label: 'City', type: 'text', required: true, placeholder: 'Enter city', validation: { notBlank: 'City is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'City cannot contain numbers' } } },
+              { key: 'state', label: 'State', type: 'text', placeholder: 'Enter state', validation: { maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'State cannot contain numbers' } } },
               { key: 'postalCode', label: 'Postal Code', type: 'text', placeholder: 'Enter postal code', validation: { maxLength: { value: 50 } } },
-              { key: 'country', label: 'Country', type: 'text', required: true, placeholder: 'Enter country', validation: { notBlank: 'Country is required', maxLength: { value: 50 } } },
+              { key: 'country', label: 'Country', type: 'text', required: true, placeholder: 'Enter country', validation: { notBlank: 'Country is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Country cannot contain numbers' } } },
               { key: 'creditLimit', label: 'Credit Limit', type: 'number', step: '0.01', placeholder: 'Enter credit limit', validation: { min: { value: 0, message: 'Credit limit cannot be negative' } } },
               { key: 'salesRepEmployeeNumber', label: 'Sales Rep Employee Number', type: 'number', placeholder: 'Enter employee number' }
             ]
@@ -203,9 +214,9 @@ export const MODULES: ModuleDefinition[] = [
             successMessage: 'Customer updated successfully',
             formFields: [
               { key: 'customerNumber', label: 'Customer Number', type: 'number', required: true, placeholder: 'Enter customer number' },
-              { key: 'customerName', label: 'Customer Name', type: 'text', required: true, placeholder: 'Enter customer name', validation: { notBlank: 'Customer name is required', maxLength: { value: 50 } } },
-              { key: 'contactFirstName', label: 'Contact First Name', type: 'text', required: true, placeholder: 'Enter first name', validation: { notBlank: 'Contact first name is required', maxLength: { value: 50 } } },
-              { key: 'contactLastName', label: 'Contact Last Name', type: 'text', required: true, placeholder: 'Enter last name', validation: { notBlank: 'Contact last name is required', maxLength: { value: 50 } } },
+              { key: 'customerName', label: 'Customer Name', type: 'text', required: true, placeholder: 'Enter customer name', validation: { notBlank: 'Customer name is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Name cannot contain numbers' } } },
+              { key: 'contactFirstName', label: 'Contact First Name', type: 'text', required: true, placeholder: 'Enter first name', validation: { notBlank: 'Contact first name is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Name cannot contain numbers' } } },
+              { key: 'contactLastName', label: 'Contact Last Name', type: 'text', required: true, placeholder: 'Enter last name', validation: { notBlank: 'Contact last name is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Name cannot contain numbers' } } },
               {
                 key: 'phone',
                 label: 'Phone',
@@ -223,10 +234,10 @@ export const MODULES: ModuleDefinition[] = [
               },
               { key: 'addressLine1', label: 'Address Line 1', type: 'text', required: true, placeholder: 'Enter address line 1', validation: { notBlank: 'Address line 1 is required', maxLength: { value: 50 } } },
               { key: 'addressLine2', label: 'Address Line 2', type: 'text', placeholder: 'Enter address line 2', validation: { maxLength: { value: 50 } } },
-              { key: 'city', label: 'City', type: 'text', required: true, placeholder: 'Enter city', validation: { notBlank: 'City is required', maxLength: { value: 50 } } },
-              { key: 'state', label: 'State', type: 'text', placeholder: 'Enter state', validation: { maxLength: { value: 50 } } },
+              { key: 'city', label: 'City', type: 'text', required: true, placeholder: 'Enter city', validation: { notBlank: 'City is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'City cannot contain numbers' } } },
+              { key: 'state', label: 'State', type: 'text', placeholder: 'Enter state', validation: { maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'State cannot contain numbers' } } },
               { key: 'postalCode', label: 'Postal Code', type: 'text', placeholder: 'Enter postal code', validation: { maxLength: { value: 50 } } },
-              { key: 'country', label: 'Country', type: 'text', required: true, placeholder: 'Enter country', validation: { notBlank: 'Country is required', maxLength: { value: 50 } } },
+              { key: 'country', label: 'Country', type: 'text', required: true, placeholder: 'Enter country', validation: { notBlank: 'Country is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Country cannot contain numbers' } } },
               { key: 'creditLimit', label: 'Credit Limit', type: 'number', step: '0.01', placeholder: 'Enter credit limit', validation: { min: { value: 0, message: 'Credit limit cannot be negative' } } },
               { key: 'salesRepEmployeeNumber', label: 'Sales Rep Employee Number', type: 'number', placeholder: 'Enter employee number' }
             ]
@@ -343,8 +354,8 @@ export const MODULES: ModuleDefinition[] = [
             successMessage: 'Employee added successfully',
             formFields: [
               { key: 'employeeNumber', label: 'Employee Number', type: 'number', required: true, placeholder: 'Enter employee number' },
-              { key: 'firstName', label: 'First Name', type: 'text', required: true, placeholder: 'Enter first name', validation: { notBlank: 'First name is required', maxLength: { value: 50 } } },
-              { key: 'lastName', label: 'Last Name', type: 'text', required: true, placeholder: 'Enter last name', validation: { notBlank: 'Last name is required', maxLength: { value: 50 } } },
+              { key: 'firstName', label: 'First Name', type: 'text', required: true, placeholder: 'Enter first name', validation: { notBlank: 'First name is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Name cannot contain numbers' } } },
+              { key: 'lastName', label: 'Last Name', type: 'text', required: true, placeholder: 'Enter last name', validation: { notBlank: 'Last name is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Name cannot contain numbers' } } },
               { key: 'extension', label: 'Extension', type: 'text', required: true, placeholder: 'Enter extension', validation: { notBlank: 'Extension is required', maxLength: { value: 10 } } },
               { key: 'email', label: 'Email', type: 'email', required: true, placeholder: 'Enter email', validation: { notBlank: 'Email is required', email: 'Invalid email format', maxLength: { value: 100 } } },
               { key: 'officeCode', label: 'Office Code', type: 'text', required: true, placeholder: 'Enter office code' },
@@ -384,8 +395,8 @@ export const MODULES: ModuleDefinition[] = [
             successMessage: 'Employee updated successfully',
             formFields: [
               { key: 'employeeNumber', label: 'Employee Number', type: 'number', required: true, placeholder: 'Enter employee number' },
-              { key: 'firstName', label: 'First Name', type: 'text', required: true, placeholder: 'Enter first name', validation: { notBlank: 'First name is required', maxLength: { value: 50 } } },
-              { key: 'lastName', label: 'Last Name', type: 'text', required: true, placeholder: 'Enter last name', validation: { notBlank: 'Last name is required', maxLength: { value: 50 } } },
+              { key: 'firstName', label: 'First Name', type: 'text', required: true, placeholder: 'Enter first name', validation: { notBlank: 'First name is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Name cannot contain numbers' } } },
+              { key: 'lastName', label: 'Last Name', type: 'text', required: true, placeholder: 'Enter last name', validation: { notBlank: 'Last name is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Name cannot contain numbers' } } },
               { key: 'extension', label: 'Extension', type: 'text', required: true, placeholder: 'Enter extension', validation: { notBlank: 'Extension is required', maxLength: { value: 10 } } },
               { key: 'email', label: 'Email', type: 'email', required: true, placeholder: 'Enter email', validation: { notBlank: 'Email is required', email: 'Invalid email format', maxLength: { value: 100 } } },
               { key: 'officeCode', label: 'Office Code', type: 'text', required: true, placeholder: 'Enter office code' },
@@ -428,7 +439,7 @@ export const MODULES: ModuleDefinition[] = [
             successMessage: 'Office added successfully',
             formFields: [
               { key: 'officeCode', label: 'Office Code', type: 'text', required: true, placeholder: 'Enter office code' },
-              { key: 'city', label: 'City', type: 'text', required: true, placeholder: 'Enter city', validation: { notBlank: 'City is required', maxLength: { value: 50 } } },
+              { key: 'city', label: 'City', type: 'text', required: true, placeholder: 'Enter city', validation: { notBlank: 'City is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'City cannot contain numbers' } } },
               {
                 key: 'phone',
                 label: 'Phone',
@@ -445,8 +456,8 @@ export const MODULES: ModuleDefinition[] = [
               },
               { key: 'addressLine1', label: 'Address Line 1', type: 'text', required: true, placeholder: 'Enter address line 1' },
               { key: 'addressLine2', label: 'Address Line 2', type: 'text', placeholder: 'Enter address line 2' },
-              { key: 'state', label: 'State', type: 'text', placeholder: 'Enter state' },
-              { key: 'country', label: 'Country', type: 'text', required: true, placeholder: 'Enter country' },
+              { key: 'state', label: 'State', type: 'text', placeholder: 'Enter state', validation: { pattern: { value: NAME_PATTERN, message: 'State cannot contain numbers' } } },
+              { key: 'country', label: 'Country', type: 'text', required: true, placeholder: 'Enter country', validation: { pattern: { value: NAME_PATTERN, message: 'Country cannot contain numbers' } } },
               { key: 'postalCode', label: 'Postal Code', type: 'text', required: true, placeholder: 'Enter postal code' },
               { key: 'territory', label: 'Territory', type: 'text', required: true, placeholder: 'Enter territory' }
             ]
@@ -624,10 +635,10 @@ export const MODULES: ModuleDefinition[] = [
             successMessage: 'Product added successfully',
             formFields: [
               { key: 'productCode', label: 'Product Code', type: 'text', required: true, placeholder: 'Enter product code', validation: { notBlank: 'Product code cannot be empty', maxLength: { value: 15 } } },
-              { key: 'productName', label: 'Product Name', type: 'text', required: true, placeholder: 'Enter product name', validation: { notBlank: 'Product name is required', maxLength: { value: 70 } } },
+              { key: 'productName', label: 'Product Name', type: 'text', required: true, placeholder: 'Enter product name', validation: { notBlank: 'Product name is required', maxLength: { value: 70 }, pattern: { value: NAME_PATTERN, message: 'Name cannot contain numbers' } } },
               { key: 'productLine', label: 'Product Line', type: 'select', required: true, options: ['Classic Cars', 'Motorcycles', 'Planes', 'Ships', 'Trains', 'Trucks and Buses', 'Vintage Cars'], placeholder: 'Select product line' },
               { key: 'productScale', label: 'Product Scale', type: 'text', required: true, placeholder: 'Enter product scale', validation: { notBlank: 'Product scale is required', maxLength: { value: 10 } } },
-              { key: 'productVendor', label: 'Product Vendor', type: 'text', required: true, placeholder: 'Enter product vendor', validation: { notBlank: 'Product vendor is required', maxLength: { value: 50 } } },
+              { key: 'productVendor', label: 'Product Vendor', type: 'text', required: true, placeholder: 'Enter product vendor', validation: { notBlank: 'Product vendor is required', maxLength: { value: 50 }, pattern: { value: NAME_PATTERN, message: 'Vendor name cannot contain numbers' } } },
               { key: 'productDescription', label: 'Product Description', type: 'textarea', required: true, placeholder: 'Enter description' },
               { key: 'quantityInStock', label: 'Quantity In Stock', type: 'number', required: true, placeholder: 'Enter stock quantity', validation: { min: { value: 0, message: 'Stock cannot be negative' } } },
               { key: 'buyPrice', label: 'Buy Price', type: 'number', required: true, step: '0.01', placeholder: 'Enter buy price', validation: { min: { value: 0.01, message: 'Buy price must be greater than 0' } } },
